@@ -1,0 +1,75 @@
+﻿@page "/Test/Client"
+
+@using Repository.RepositoryServices
+@using Models
+@using DataBaseAccess.Models
+
+@inject Repository.RepositoryServices.RepositoryStorage Storage
+
+<h4>Insert New Client</h4>
+<center>
+    <EditForm Model="@newClient" OnValidSubmit="@InsertClient">
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+        <div>Name:      <InputText id="firstName" @bind-Value="newClient.Name"/></div>
+        <br />
+        <div>Surname:   <InputText id="secondName" @bind-Value="newClient.Surname"/></div>
+        <br />
+        <div>E-Mail:    <InputText id="Email" @bind-Value="newClient.EMail"/></div>
+        <br />
+        <div>Login:     <InputText id="Login" @bind-Value="newClient.Login"/></div>
+        <br />
+        <div>Password:  <InputText id="Password" @bind-Value="newClient.Password"/></div>
+        <br />
+
+        <button type="submit" class="btn btn-primary">Insert</button>
+    </EditForm>
+</center>
+<!-- 
+
+<h4>Current People</h4>
+@if(people is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Email Adrdress</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in people)
+           {
+                <tr>
+                    <th>@item.name</th>
+                    <th>@item.surname</th>
+                    <th>@item.e_mail</th>
+                </tr>
+           }
+        </tbody>
+    </table>
+}
+-->
+@code 
+{
+    private List<Account> people;
+    private List<Client> clients;
+    private ClientFront newClient = new ClientFront();
+    /*
+    protected override async Task OnParametersSetAsync()
+        {
+        people = await 
+    }*/
+
+    private async Task InsertClient()
+    {
+        await Storage.AddNewClient(newClient.EMail, newClient.Login, newClient.Password,
+                                   newClient.Name, newClient.Surname, DateTime.Today, null);
+        newClient = new ClientFront();
+    }
+}
