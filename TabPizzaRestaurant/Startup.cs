@@ -32,7 +32,7 @@ namespace TabPizzaRestaurant
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
-            services.AddDbContext<pizza_restaurant_ver_3Context>(options => options.UseSqlServer(Configuration.GetConnectionString("Default")));
+            services.AddDbContext<pizza_restaurant_ver_5Context>(options => options.UseSqlServer(Configuration.GetConnectionString("Default")));
             services.AddScoped<Repository.RepositoryServices.RepositoryStorage>();
         }
 

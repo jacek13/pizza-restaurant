@@ -15,7 +15,7 @@ namespace DataBaseAccess.Models
         public DateTime Date { get; set; }
         public string Status { get; set; }
         public int? ClientIdClient { get; set; }
-        public int RestaurantIdRestaurant { get; set; }
+        public int? RestaurantIdRestaurant { get; set; }
 
         public virtual Client ClientIdClientNavigation { get; set; }
         public virtual Restaurant RestaurantIdRestaurantNavigation { get; set; }

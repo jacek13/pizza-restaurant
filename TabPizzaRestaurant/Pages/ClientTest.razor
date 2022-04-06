@@ -5,71 +5,220 @@
 @using DataBaseAccess.Models
 
 @inject Repository.RepositoryServices.RepositoryStorage Storage
-
-<h4>Insert New Client</h4>
 <center>
-    <EditForm Model="@newClient" OnValidSubmit="@InsertClient">
-        <DataAnnotationsValidator/>
-        <ValidationSummary/>
-        <div>Name:      <InputText id="firstName" @bind-Value="newClient.Name"/></div>
-        <br />
-        <div>Surname:   <InputText id="secondName" @bind-Value="newClient.Surname"/></div>
-        <br />
-        <div>E-Mail:    <InputText id="Email" @bind-Value="newClient.EMail"/></div>
-        <br />
-        <div>Login:     <InputText id="Login" @bind-Value="newClient.Login"/></div>
-        <br />
-        <div>Password:  <InputText id="Password" @bind-Value="newClient.Password"/></div>
-        <br />
-
-        <button type="submit" class="btn btn-primary">Insert</button>
-    </EditForm>
+    <h3>Select a form</h3>
+    <br />
+    <div class="box-shadow">
+        <button type="button" class="btn btn-primary" @onclick="triggerDisplayInsertForm">Display Insert</button>
+        <button type="button" class="btn btn-primary" @onclick="triggerDisplayClients">Display Clients</button>
+        <button type="button" class="btn btn-primary" @onclick="triggerDisplayDeleteClient">Display Delete</button>
+        <button type="button" class="btn btn-primary" @onclick="triggerDisplayUpdatePoints">Display Update</button>
+        <button type="button" class="btn btn-primary" @onclick="refresh">Refresh</button>
+    </div>
 </center>
-<!-- 
 
-<h4>Current People</h4>
-@if(people is null)
+@if (displayInsertForm)
 {
-    <p><em>Loading...</em></p>
+    <h4>Insert New Client</h4>
+    <center>
+        <EditForm Model="@newClient" OnValidSubmit="@InsertClient">
+            <div class="box-shadow">
+                <div>Name:      <InputText id="firstName" @bind-Value="newClient.Name"/></div>
+                <br />
+                <div>Surname:   <InputText id="secondName" @bind-Value="newClient.Surname"/></div>
+                <br />
+                <div>E-Mail:    <InputText id="Email" @bind-Value="newClient.EMail"/></div>
+                <br />
+                <div>Login:     <InputText id="Login" @bind-Value="newClient.Login"/></div>
+                <br />
+                <div>Password:  <InputText id="Password" @bind-Value="newClient.Password"/></div>
+                <br />
+                <div>Phone:     <InputText id="Phone" @bind-Value="newClient.PhoneNumber"/></div>
+                <br />
+                <div>Address:  <InputText id="Address" @bind-Value="newClient.Address"/></div>
+                <br />
+            </div>
+            <div class="box-shadow"> 
+                <DataAnnotationsValidator/>
+                <ValidationSummary/>  
+            </div>
+            <button type="submit" class="btn btn-primary">Insert</button>
+        </EditForm>
+    </center>
 }
-else
+
+@if (displayDeleteClient)
 {
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>First name</th>
-                <th>Last name</th>
-                <th>Email Adrdress</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in people)
-           {
-                <tr>
-                    <th>@item.name</th>
-                    <th>@item.surname</th>
-                    <th>@item.e_mail</th>
-                </tr>
-           }
-        </tbody>
-    </table>
+    <h4>Delete Client</h4>
+
+    <center>
+        <div class="box-shadow"> 
+            <input type="number" @bind-value="userID" @bind-value:event="oninput" />
+            <button type="button" class="btn btn-primary" @onclick="deleteClient">Delete client</button>
+        </div>
+    </center>
 }
--->
+
+@if (displayUpdatePoints)
+{
+    <h4>Update Client</h4>
+
+    <center>
+        <div class="box-shadow"> 
+            <div><p>Client Id:</p><input type="number" @bind-value="clientID" @bind-value:event="oninput" /></div>
+            <div><p>Points:</p><input type="number" @bind-value="points" @bind-value:event="oninput" /></div>
+            <button type="button" class="btn btn-primary" @onclick="AddPoints">Update</button>
+        </div>
+    </center>
+}
+
+@if (displayClients)
+{
+    <h4>Current People</h4>
+    @if (people is null || clients is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        if (displayClients)
+        {
+            <div class="border-secondary">
+                <center>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Client Id</th>
+                                <th>Account Id</th>
+                                <th>Adress</th>
+                                <th>Points</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach(var item in clients)
+                            {
+                                <tr>
+                                    <th>@item.IdClient</th>
+                                    <th>@item.AccountIdAccount</th>
+                                    <th>@item.Address</th>
+                                    <th>@item.Points</th>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </center>
+            </div>
+
+            <div class="border-secondary">
+                <center>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Account Id</th>
+                                <th>First name</th>
+                                <th>Last name</th>
+                                <th>Email Adrdress</th>
+                                <th>Login</th>
+                                <th>Creation Date</th>
+                                <th>Phone number</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach(var item in people)
+                            {
+                                <tr>
+                                    <th>@item.IdAccount</th>
+                                    <th>@item.Name</th>
+                                    <th>@item.Surname</th>
+                                    <th>@item.EMail</th>
+                                    <th>@item.Login</th>
+                                    <th>@item.AccountCreationDate</th>
+                                    <th>@item.PhoneNumber</th>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </center>
+            </div>
+        }
+    }
+}
+
+
 @code 
 {
+    private bool displayClients = true;
+    private bool displayInsertForm;
+    private bool displayUpdatePoints;
+    private bool displayDeleteClient;
+    private int userID;
+    private int points;
+    private int clientID;
     private List<Account> people;
     private List<Client> clients;
     private ClientFront newClient = new ClientFront();
-    /*
-    protected override async Task OnParametersSetAsync()
-        {
-        people = await 
-    }*/
 
-    private async Task InsertClient()
+    protected override async Task OnParametersSetAsync()
     {
-        await Storage.AddNewClient(newClient.EMail, newClient.Login, newClient.Password,
-                                   newClient.Name, newClient.Surname, DateTime.Today, null);
+        people = await Storage.GetAccounts();
+        clients = await Storage.GetClients();
+    }
+
+    private async void refresh()
+    {
+        await this.OnParametersSetAsync();
+        this.StateHasChanged();
+    }
+
+    protected void deleteClient()
+    {
+        Storage.DeleteClient(userID);
+        //this.refresh();
+    }
+
+    private void InsertClient()
+    {
+        Storage.AddNewClient(newClient.EMail, newClient.Login, newClient.Password,
+                                    newClient.Name, newClient.Surname, DateTime.Today, newClient.PhoneNumber, 0, newClient.Address);
         newClient = new ClientFront();
+        //this.refresh();
+    }
+
+    private void AddPoints()
+    {
+        Storage.UpdateClientPoints(clientID, points);
+        //this.refresh();
+    }
+
+    private void triggerDisplayClients()
+    {
+        if (displayClients == true)
+            displayClients = false;
+        else
+            displayClients = true;
+    }
+
+    private void triggerDisplayInsertForm()
+    {
+        if (displayInsertForm == true)
+            displayInsertForm = false;
+        else
+            displayInsertForm = true;
+    }
+
+    private void triggerDisplayUpdatePoints()
+    {
+        if (displayUpdatePoints == true)
+            displayUpdatePoints = false;
+        else
+            displayUpdatePoints = true;
+    }
+
+    private void triggerDisplayDeleteClient()
+    {
+        if (displayDeleteClient == true)
+            displayDeleteClient = false;
+        else
+            displayDeleteClient = true;
     }
 }

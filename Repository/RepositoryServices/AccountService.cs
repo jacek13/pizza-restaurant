@@ -10,41 +10,51 @@ namespace Repository.RepositoryServices
 {
     internal class AccountService : IRepository<Account, int>
     {
-        private readonly pizza_restaurant_ver_3Context _Restaurant_Ver3Context = null;
+        private readonly pizza_restaurant_ver_5Context _RestaurantContext = null;
+        public int lastId { get; set; }
+        // TODO Można też dodać parametr size
 
-        public AccountService(pizza_restaurant_ver_3Context Restaurant_Ver3Context)
+        public AccountService(pizza_restaurant_ver_5Context Restaurant_Ver3Context)
         {
-            this._Restaurant_Ver3Context = Restaurant_Ver3Context;
+            this._RestaurantContext = Restaurant_Ver3Context;
+            this.lastId = _RestaurantContext.Account.ToList().Count + 1;
         }
 
         public async Task Delete(int id)
         {
-            var Account = await _Restaurant_Ver3Context.Account.FirstOrDefaultAsync(b => b.IdAccount == id);
+            var Account = await _RestaurantContext.Account.FirstOrDefaultAsync(b => b.IdAccount == id);
             if (Account != null)
             {
-                _Restaurant_Ver3Context.Remove(Account);
+                _RestaurantContext.Remove(Account);
             }
         }
 
         public async Task<List<Account>> GetAll()
         {
-            return await _Restaurant_Ver3Context.Account.ToListAsync();
+            return await _RestaurantContext.Account.ToListAsync();
+        }
+
+        // Test bez async i await
+        public List<Account> GetAllTest()
+        {
+            return _RestaurantContext.Account.ToList();
         }
 
         public async Task<Account> GetById(int id)
         {
-            return await _Restaurant_Ver3Context.Account.FindAsync(id);
+            return await _RestaurantContext.Account.FindAsync(id);
         }
 
         public async Task<Account> Insert(Account entity)
         {
-            await _Restaurant_Ver3Context.Account.AddAsync(entity);
+            await _RestaurantContext.Account.AddAsync(entity);
+            lastId++;
             return entity;
         }
 
         public async Task Save()
         {
-            await _Restaurant_Ver3Context.SaveChangesAsync();
+            await _RestaurantContext.SaveChangesAsync();
         }
     }
 }

@@ -9,10 +9,10 @@ namespace DataBaseAccess.Models
         public DateTime Date { get; set; }
         public TimeSpan StartOfReservation { get; set; }
         public TimeSpan EndOfReservation { get; set; }
-        public int ManagerIdManager { get; set; }
+        public int? ManagerIdManager { get; set; }
         public int? ClientIdClient { get; set; }
         public int TableIdTable { get; set; }
-        public int TableRestaurantIdRestaurant { get; set; }
+        public int? TableRestaurantIdRestaurant { get; set; }
 
         public virtual Client ClientIdClientNavigation { get; set; }
         public virtual Manager ManagerIdManagerNavigation { get; set; }

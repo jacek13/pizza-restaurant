@@ -31,7 +31,9 @@ namespace TabPizzaRestaurant.Models
         [MinLength(5, ErrorMessage = "Last Name is too short")]
         public string Surname { get; set; }
 
+        [DataType(DataType.PhoneNumber)]
         public string PhoneNumber { get; set; }
+
         public string Address { get; set; }
     }
 }

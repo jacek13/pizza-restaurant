@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace DataBaseAccess.Models
 {
-    public partial class pizza_restaurant_ver_3Context : DbContext
+    public partial class pizza_restaurant_ver_5Context : DbContext
     {
-        public pizza_restaurant_ver_3Context()
+        public pizza_restaurant_ver_5Context()
         {
         }
 
-        public pizza_restaurant_ver_3Context(DbContextOptions<pizza_restaurant_ver_3Context> options)
+        public pizza_restaurant_ver_5Context(DbContextOptions<pizza_restaurant_ver_5Context> options)
             : base(options)
         {
         }
@@ -31,7 +31,7 @@ namespace DataBaseAccess.Models
             if (!optionsBuilder.IsConfigured)
             {
 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-//                optionsBuilder.UseSqlServer("Server=DESKTOP-2S65Q3J;Database=pizza_restaurant_ver_3;Trusted_Connection=True;");
+ //               optionsBuilder.UseSqlServer("Server=DESKTOP-2S65Q3J;Database=pizza_restaurant_ver_5;Trusted_Connection=True;");
             }
         }
 
@@ -111,7 +111,6 @@ namespace DataBaseAccess.Models
                 entity.HasOne(d => d.AccountIdAccountNavigation)
                     .WithOne(p => p.Client)
                     .HasForeignKey<Client>(d => d.AccountIdAccount)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("client_account_FK");
             });
 
@@ -168,7 +167,6 @@ namespace DataBaseAccess.Models
                 entity.HasOne(d => d.AccountIdAccountNavigation)
                     .WithOne(p => p.Manager)
                     .HasForeignKey<Manager>(d => d.AccountIdAccount)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("manager_account_FK");
             });
 
@@ -186,13 +184,11 @@ namespace DataBaseAccess.Models
                 entity.HasOne(d => d.ManagerIdManagerNavigation)
                     .WithMany(p => p.ManagerAssignment)
                     .HasForeignKey(d => d.ManagerIdManager)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ASS_7");
 
                 entity.HasOne(d => d.RestaurantIdRestaurantNavigation)
                     .WithMany(p => p.ManagerAssignment)
                     .HasForeignKey(d => d.RestaurantIdRestaurant)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ASS_8");
             });
 
@@ -237,7 +233,6 @@ namespace DataBaseAccess.Models
                 entity.HasOne(d => d.RestaurantIdRestaurantNavigation)
                     .WithOne(p => p.Order)
                     .HasForeignKey<Order>(d => d.RestaurantIdRestaurant)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("order_restaurant_FK");
             });
 
@@ -300,13 +295,12 @@ namespace DataBaseAccess.Models
                 entity.HasOne(d => d.ManagerIdManagerNavigation)
                     .WithMany(p => p.Reservation)
                     .HasForeignKey(d => d.ManagerIdManager)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("reservation_manager_FK");
 
                 entity.HasOne(d => d.Table)
                     .WithMany(p => p.Reservation)
                     .HasForeignKey(d => new { d.TableIdTable, d.TableRestaurantIdRestaurant })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("reservation_table_FK");
             });
 
@@ -354,7 +348,6 @@ namespace DataBaseAccess.Models
                 entity.HasOne(d => d.RestaurantIdRestaurantNavigation)
                     .WithMany(p => p.Table)
                     .HasForeignKey(d => d.RestaurantIdRestaurant)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("table_restaurant_FK");
             });
 

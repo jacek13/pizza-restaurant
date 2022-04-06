@@ -1,7 +1,87 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
+@using Repository.RepositoryServices
+@using Models
+@using DataBaseAccess.Models
 
-Welcome to your new app.
+@inject Repository.RepositoryServices.RepositoryStorage Storage
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<style>
+    .themed-grid-col {
+        padding-top: .75rem;
+        padding-bottom: .75rem;
+        background-color: rgb(239, 239, 239);
+        border: 1px solid rgba(86, 61, 124, .2);
+    }
+
+    .themed-grid-col-naglowek {
+        padding-top: .75rem;
+        padding-bottom: .75rem;
+        background-color: rgb(0, 123, 255);
+        border: 1px solid rgba(86, 61, 124, .2);
+    }
+
+    .themed-container {
+        padding: .75rem;
+        margin-bottom: 1.5rem;
+        background-color: rgba(0, 123, 255, .15);
+        border: 1px solid rgba(0, 123, 255, .2);
+    }
+
+    .custom-class {
+        border-radius: 10px;
+    }
+</style>
+
+<center>
+    <h1 class="display-4">Witamy w Galak Pizza!</h1>
+</center>
+<hr class="my-4">
+
+@if (menu is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="box-shadow">
+        <center>
+            <div class="text-center">
+                <h3>Menu</h3>
+            </div>
+
+            <div class="container">
+                <div class="row mb-3">
+                    <div class="custom-class text-center text-white col-md-8 themed-grid-col-naglowek">Nazwa</div>
+                    <div class="custom-class text-center text-white col-6 col-md-4 themed-grid-col-naglowek">Cena za pizzę [PLN]</div>
+                </div>
+
+                @foreach (var pizza in menu)
+                {
+                    if (pizza.IsAvailable)
+                    {
+                        <div class="row mb-3">
+                            <div class="custom-class text-center col-md-8 themed-grid-col">@pizza.Type</div>
+                            <div class="custom-class text-center col-6 col-md-4 themed-grid-col">@pizza.Price</div>
+                        </div>
+                    }
+                }
+            </div>
+        </center>
+    </div>
+}
+
+<hr class="my-4"/>
+<div class="text-center">
+    <h5><span class="material-icons">phone</span> 999 998 997</h5>
+</div>
+
+@code
+{
+    private List<Pizza> menu;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        menu = await Storage.GetMenu();
+    }
+}
