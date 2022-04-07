@@ -13,6 +13,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using TabPizzaRestaurant.Data;
 using Repository.RepositoryServices;
+using Microsoft.AspNetCore.Components.Authorization;
+using Blazored.SessionStorage;
 
 namespace TabPizzaRestaurant
 {
@@ -32,8 +34,10 @@ namespace TabPizzaRestaurant
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
-            services.AddDbContext<pizza_restaurant_ver_5Context>(options => options.UseSqlServer(Configuration.GetConnectionString("Default")));
-            services.AddScoped<Repository.RepositoryServices.RepositoryStorage>();
+            services.AddDbContext<pizza_restaurant_ver_6Context>(options => options.UseSqlServer(Configuration.GetConnectionString("Default")));
+            services.AddScoped<Repository.RepositoryServices.RepositoryStorage>(); // TODO Singleton?
+            services.AddBlazoredSessionStorage();
+            services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,6 +58,9 @@ namespace TabPizzaRestaurant
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

@@ -10,13 +10,15 @@ namespace Repository.RepositoryServices
 {
     internal class ManagerService : IRepository<Manager, int>
     {
-        private readonly pizza_restaurant_ver_5Context _RestaurantContext = null;
+        private readonly pizza_restaurant_ver_6Context _RestaurantContext = null;
+        public List<int> foreignKeys; // TODO 
         public int lastId { get; set; }
-
-        public ManagerService(pizza_restaurant_ver_5Context Restaurant_Ver3Context)
+        public ManagerService(pizza_restaurant_ver_6Context Restaurant_Ver3Context)
         {
             this._RestaurantContext = Restaurant_Ver3Context;
-            lastId = _RestaurantContext.Manager.ToList().Count + 1;
+            //var tmp = _RestaurantContext.Manager.ToList();
+            //foreach (var item in tmp)
+            //    foreignKeys.Add(item.AccountIdAccount);
         }
 
         public async Task Delete(int id)

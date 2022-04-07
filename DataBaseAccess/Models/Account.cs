@@ -13,6 +13,7 @@ namespace DataBaseAccess.Models
         public string Surname { get; set; }
         public DateTime? AccountCreationDate { get; set; }
         public string PhoneNumber { get; set; }
+        public string Role { get; set; }
 
         public virtual Client Client { get; set; }
         public virtual Manager Manager { get; set; }

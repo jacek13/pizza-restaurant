@@ -1,0 +1,73 @@
+﻿@layout LoginLayout
+@page "/register"
+
+@using Models
+@using TabPizzaRestaurant.Data
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Repository.RepositoryServices.RepositoryStorage Storage
+
+<center>
+    <h3 class="display-4">Register</h3>
+
+    <EditForm Model="@newClient" OnValidSubmit="@ValidateUser">
+            <div class="box-shadow">
+                <div>Name:      <InputText id="firstName" @bind-Value="newClient.Name"/></div>
+                <br />
+                <div>Surname:   <InputText id="secondName" @bind-Value="newClient.Surname"/></div>
+                <br />
+                <div>E-Mail:    <InputText id="Email" @bind-Value="newClient.EMail"/></div>
+                <br />
+                <div>Login:     <InputText id="Login" @bind-Value="newClient.Login"/></div>
+                <br />
+                <div>Password:  <InputText id="Password" @bind-Value="newClient.Password"/></div>
+                <br />
+                <div>Phone:     <InputText id="Phone" @bind-Value="newClient.PhoneNumber"/></div>
+                <br />
+                <div>Address:  <InputText id="Address" @bind-Value="newClient.Address"/></div>
+                <br />
+            </div>
+            <div class="box-shadow"> 
+                <DataAnnotationsValidator/>
+                <ValidationSummary/>  
+            </div>
+            <button type="submit" class="btn btn-primary">Sign up</button>
+    </EditForm>
+</center>
+
+@code 
+{
+    // private User user;
+    private ClientFront newClient;
+
+    protected override Task OnInitializedAsync()
+    {
+        //user = new User();
+        newClient = new ClientFront();
+        return base.OnInitializedAsync();
+    }
+
+    private async Task<bool> ValidateUser()
+    {
+        newClient.Role = "Client";
+        Storage.AddNewClient(newClient.EMail, newClient.Login, newClient.Password,
+                                    newClient.Name, newClient.Surname, DateTime.Today, newClient.PhoneNumber, 0, newClient.Address, newClient.Role);
+
+        ((CustomAuthenticationStateProvider)AuthenticationStateProvider).MarkUserAsAuthenticated(newClient);
+        NavigationManager.NavigateTo("/");
+
+        await sessionStorage.SetItemAsStringAsync("email", newClient.EMail);
+        await sessionStorage.SetItemAsStringAsync("name", newClient.Name);
+        await sessionStorage.SetItemAsStringAsync("surname", newClient.Surname);
+        await sessionStorage.SetItemAsStringAsync("login", newClient.Login);
+        await sessionStorage.SetItemAsStringAsync("password", newClient.Password);
+        await sessionStorage.SetItemAsStringAsync("phone", newClient.Name);
+        await sessionStorage.SetItemAsStringAsync("address", newClient.Address);
+        await sessionStorage.SetItemAsStringAsync("role", newClient.Role);
+        newClient = new ClientFront();
+
+        return await Task.FromResult(true);
+    }
+}

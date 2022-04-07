@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace DataBaseAccess.Models
 {
-    public partial class pizza_restaurant_ver_5Context : DbContext
+    public partial class pizza_restaurant_ver_6Context : DbContext
     {
-        public pizza_restaurant_ver_5Context()
+        public pizza_restaurant_ver_6Context()
         {
         }
 
-        public pizza_restaurant_ver_5Context(DbContextOptions<pizza_restaurant_ver_5Context> options)
+        public pizza_restaurant_ver_6Context(DbContextOptions<pizza_restaurant_ver_6Context> options)
             : base(options)
         {
         }
@@ -30,8 +30,8 @@ namespace DataBaseAccess.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
- //               optionsBuilder.UseSqlServer("Server=DESKTOP-2S65Q3J;Database=pizza_restaurant_ver_5;Trusted_Connection=True;");
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                optionsBuilder.UseSqlServer("Server=DESKTOP-2S65Q3J;Database=pizza_restaurant_ver_6;Trusted_Connection=True;");
             }
         }
 
@@ -77,6 +77,11 @@ namespace DataBaseAccess.Models
                 entity.Property(e => e.PhoneNumber)
                     .HasColumnName("phone_number")
                     .HasMaxLength(11)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Role)
+                    .HasColumnName("role")
+                    .HasMaxLength(64)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Surname)
@@ -159,10 +164,9 @@ namespace DataBaseAccess.Models
 
                 entity.Property(e => e.AccountIdAccount).HasColumnName("account_id_account");
 
-                entity.Property(e => e.Role)
-                    .HasColumnName("role")
-                    .HasMaxLength(1)
-                    .IsUnicode(false);
+                entity.Property(e => e.SalaryBrutto).HasColumnName("salary_brutto");
+
+                entity.Property(e => e.SalaryNetto).HasColumnName("salary_netto");
 
                 entity.HasOne(d => d.AccountIdAccountNavigation)
                     .WithOne(p => p.Manager)

@@ -29,7 +29,7 @@ W aktualnej wersji w celu połączenia z bazą danych należy utworzyć nową ba
 ---
 
 ## **Schemat bazy danych**
-![](resources/Relacyjny_ver_5.PNG)
+![](resources/Relacyjny_ver_6.PNG)
 
 ---
 

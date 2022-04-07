@@ -12,7 +12,8 @@ namespace DataBaseAccess.Models
         }
 
         public int IdManager { get; set; }
-        public string Role { get; set; }
+        public int? SalaryNetto { get; set; }
+        public int? SalaryBrutto { get; set; }
         public int AccountIdAccount { get; set; }
 
         public virtual Account AccountIdAccountNavigation { get; set; }

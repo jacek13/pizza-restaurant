@@ -11,11 +11,11 @@ namespace Repository.RepositoryServices
 {
     internal class DishesService : IRepository<Dishes, int>
     {
-        private readonly pizza_restaurant_ver_5Context _RestaurantContext = null;
+        private readonly pizza_restaurant_ver_6Context _RestaurantContext = null;
         public int lastId { get; set; }
         // TODO Można też dodać parametr size
 
-        public DishesService(pizza_restaurant_ver_5Context Restaurant_Ver3Context)
+        public DishesService(pizza_restaurant_ver_6Context Restaurant_Ver3Context)
         {
             this._RestaurantContext = Restaurant_Ver3Context;
             this.lastId = _RestaurantContext.Dishes.ToList().Count + 1;

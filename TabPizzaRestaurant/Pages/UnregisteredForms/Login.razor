@@ -1,0 +1,80 @@
+﻿@layout LoginLayout
+@page "/login"
+
+@using Models
+@using TabPizzaRestaurant.Data
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Repository.RepositoryServices.RepositoryStorage Storage
+
+<center>
+    <h3 class="display-4">Login</h3>
+
+    <EditForm Model="@user" OnValidSubmit="@ValidateUser">
+        <div>Email or login:   <InputText id="email" @bind-Value="user.Email"/></div>
+        <div>Password:   <InputText id="password" @bind-Value="user.Password"/></div>
+        <button type="submit" class="btn btn-primary">Login</button>
+    </EditForm>
+    <br />
+    <a class="custom-class text-center col-6 col-md-1 themed-grid-col" href="/register">Register</a>
+</center>
+
+
+@if(isException)
+{
+    <h3>@error</h3>
+}
+@code 
+{
+    private User user;
+    private ClientFront Client;
+    private string error;
+    private bool isException = false;
+
+    protected override Task OnInitializedAsync()
+    {
+        user = new User();
+        Client = new ClientFront();
+        return base.OnInitializedAsync();
+    }
+
+    private async Task<bool> ValidateUser()
+    {
+        try
+        {
+            var dbUser = await Storage.GetAccountByLoginAndPassword(user.Email, user.Password);
+            Client.Name = dbUser.Name;
+            Client.Password = dbUser.Password;
+            Client.Surname = dbUser.Surname;
+            Client.Login = dbUser.Login;
+            Client.Role = dbUser.Role;
+            Client.EMail = dbUser.EMail;
+            Client.Address = "Not loaded";
+            Client.PhoneNumber = "Not loaded";
+            isException = false;
+
+            ((CustomAuthenticationStateProvider)AuthenticationStateProvider).MarkUserAsAuthenticated(Client);
+            NavigationManager.NavigateTo("/");
+
+            //TODO po logowaniu powinno nastąpić połączenie z bazą danych (i na podstawie tych danych wypełnić poniższe)
+            await sessionStorage.SetItemAsStringAsync("email", Client.EMail);
+            await sessionStorage.SetItemAsStringAsync("name", Client.Name);
+            await sessionStorage.SetItemAsStringAsync("surname", Client.Surname);
+            await sessionStorage.SetItemAsStringAsync("login", Client.Login);
+            await sessionStorage.SetItemAsStringAsync("password", Client.Password);
+            await sessionStorage.SetItemAsStringAsync("phone", "Not loaded");
+            await sessionStorage.SetItemAsStringAsync("address", "Not loaded");
+            await sessionStorage.SetItemAsStringAsync("role", Client.Role);
+
+            return await Task.FromResult(true);
+        }
+        catch (Exception e)
+        {
+            error = e.ToString();
+            isException = true;
+            return await Task.FromResult(false);
+        }
+    }
+}

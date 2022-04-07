@@ -8,7 +8,8 @@ CREATE
     name                  VARCHAR (128) NOT NULL ,
     surname               VARCHAR (128) NOT NULL ,
     account_creation_date DATE ,
-    phone_number          VARCHAR (11)
+    phone_number          VARCHAR (11) ,
+    role                  VARCHAR (64)
   )
   ON "default"
 GO
@@ -73,7 +74,8 @@ CREATE
   TABLE manager
   (
     id_manager         INTEGER IDENTITY(1,1) NOT NULL ,
-    role               VARCHAR ,
+    salary_netto       INTEGER ,
+    salary_brutto      INTEGER ,
     account_id_account INTEGER NOT NULL
   )
   ON "default"

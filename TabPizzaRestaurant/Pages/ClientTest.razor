@@ -37,6 +37,8 @@
                 <br />
                 <div>Address:  <InputText id="Address" @bind-Value="newClient.Address"/></div>
                 <br />
+                <div>Role:  <InputText id="Role" @bind-Value="newClient.Role"/></div>
+                <br />
             </div>
             <div class="box-shadow"> 
                 <DataAnnotationsValidator/>
@@ -121,6 +123,7 @@
                                 <th>Login</th>
                                 <th>Creation Date</th>
                                 <th>Phone number</th>
+                                <th>Role</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -134,6 +137,7 @@
                                     <th>@item.Login</th>
                                     <th>@item.AccountCreationDate</th>
                                     <th>@item.PhoneNumber</th>
+                                    <th>@item.Role</th>
                                 </tr>
                             }
                         </tbody>
@@ -179,7 +183,7 @@
     private void InsertClient()
     {
         Storage.AddNewClient(newClient.EMail, newClient.Login, newClient.Password,
-                                    newClient.Name, newClient.Surname, DateTime.Today, newClient.PhoneNumber, 0, newClient.Address);
+                                    newClient.Name, newClient.Surname, DateTime.Today, newClient.PhoneNumber, 0, newClient.Address, newClient.Role);
         newClient = new ClientFront();
         //this.refresh();
     }

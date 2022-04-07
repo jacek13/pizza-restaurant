@@ -10,10 +10,10 @@ namespace Repository.RepositoryServices
 {
     internal class PizzaService : IRepository<Pizza, int>
     {
-        private readonly pizza_restaurant_ver_5Context _RestaurantContext = null;
+        private readonly pizza_restaurant_ver_6Context _RestaurantContext = null;
         public int lastId { get; set; }
 
-        public PizzaService(pizza_restaurant_ver_5Context Restaurant_Ver3Context)
+        public PizzaService(pizza_restaurant_ver_6Context Restaurant_Ver3Context)
         {
             this._RestaurantContext = Restaurant_Ver3Context;
             lastId = _RestaurantContext.Pizza.ToList().Count + 1;

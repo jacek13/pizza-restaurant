@@ -1,4 +1,10 @@
-﻿<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+﻿@using TabPizzaRestaurant.Data
+
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inherits LayoutComponentBase
+
+<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
     <div class="container">
         <a class="navbar-brand" href="">Galak Pizza</a>
         <button class="navbar-toggler" type="button" @onclick="ToggleNavMenu">
@@ -11,64 +17,41 @@
                         <span class="oi oi-home" aria-hidden="true"></span> Home
                     </NavLink>                
                 </li>
-                <li class="nav-item">
-                    <NavLink class="nav-link text-dark" href="Test/Client">
-                        <span class="material-icons">accessibility</span>Test Client 
-                    </NavLink>
-                </li>
-                <li class="nav-item">
-                    <NavLink class="nav-link text-dark" href="Manager/ManageMenu">
-                        <span class="material-icons">edit</span>Manage Menu
-                    </NavLink>
-                </li>
+                <AuthorizeView Roles="Admin">
+                    <Authorized>
+                        <li class="nav-item">
+                            <NavLink class="nav-link text-dark" href="Test/Client">
+                                <span class="material-icons">accessibility</span>Test Client 
+                            </NavLink>
+                        </li>
+                    </Authorized>
+                </AuthorizeView>
+                <AuthorizeView Roles="Manager">
+                    <Authorized>
+                        <li class="nav-item">
+                            <NavLink class="nav-link text-dark" href="Manager/ManageMenu">
+                                <span class="material-icons">edit</span>Manage Menu
+                            </NavLink>
+                        </li>
+                    </Authorized>
+                </AuthorizeView>
             </ul>
         </div>
+        <AuthorizeView>
+            <Authorized>
+                <a class="custom-class text-center col-6 col-md-3 themed-grid-col" href="/myAccount">Welcome @context.User.Identity.Name</a>
+                <a class="custom-class text-center col-6 col-md-1 themed-grid-col" href="/" @onclick="(() => Logout())">Logout</a>
+            </Authorized>
+            <NotAuthorized>
+                <a class="custom-class text-center col-6 col-md-1 themed-grid-col" href="/login">Login</a>
+                <a class="custom-class text-center col-6 col-md-1 themed-grid-col" href="/register">Register</a>
+            </NotAuthorized>
+        </AuthorizeView>
     </div>
 </nav>
 
-<!--
-
-<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">TabPizzaRestaurant</a>
-    <button class="navbar-toggler" @onclick="ToggleNavMenu">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-</div>
-
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
-        </li>
-    </ul>
-</div>
-
--->
-
 @code 
 {
-    /*
-    private bool collapseNavMenu = true;
-
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
-    */
     bool collapseNavMenu = true;
 
     string baseMenuClass = "navbar-collapse d-sm-inline-flex flex-sm-row-reverse";
@@ -78,5 +61,11 @@
     void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    public void Logout()
+    {
+        ((CustomAuthenticationStateProvider)AuthenticationStateProvider).MarkUserAsLoggedOut();
+        NavigationManager.NavigateTo("/");
     }
 }

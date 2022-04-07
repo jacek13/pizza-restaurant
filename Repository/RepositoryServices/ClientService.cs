@@ -10,13 +10,16 @@ namespace Repository.RepositoryServices
 {
     internal class ClientService : IRepository<Client, int>
     {
-        private readonly pizza_restaurant_ver_5Context _RestaurantContext = null;
+        private readonly pizza_restaurant_ver_6Context _RestaurantContext = null;
+        public List<int> foreignKeys; // TODO 
         public int lastId { get; set; }
 
-        public ClientService(pizza_restaurant_ver_5Context Restaurant_Ver3Context)
+        public ClientService(pizza_restaurant_ver_6Context Restaurant_Ver3Context)
         {
             this._RestaurantContext = Restaurant_Ver3Context;
-            lastId = _RestaurantContext.Client.ToList().Count + 1;
+            //var tmp = _RestaurantContext.Client.ToList();
+            //foreach (var item in tmp)
+            //    foreignKeys.Add(item.AccountIdAccount);
         }
 
         public async Task Delete(int id)

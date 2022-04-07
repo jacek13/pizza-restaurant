@@ -9,7 +9,7 @@ namespace Repository.RepositoryServices
 {
     public class RepositoryStorage
     {
-        private readonly pizza_restaurant_ver_5Context _RestaurantContext = null;
+        private readonly pizza_restaurant_ver_6Context _RestaurantContext = null;
         private ClientService _ClientService = null;
         private AccountService _AccountService = null;
         private DishesService _DishesService = null;
@@ -21,7 +21,7 @@ namespace Repository.RepositoryServices
         private RestaurantService _RestaurantService = null;
         private TableService _TableService = null;
 
-        public RepositoryStorage(pizza_restaurant_ver_5Context Restaurant_Ver3Context)
+        public RepositoryStorage(pizza_restaurant_ver_6Context Restaurant_Ver3Context)
         {
             this._RestaurantContext = Restaurant_Ver3Context;
             _ClientService = new ClientService(_RestaurantContext);
@@ -48,6 +48,24 @@ namespace Repository.RepositoryServices
             return _ClientService.GetAll();
         }
 
+        public async Task<Account> GetAccountByLoginAndPassword(string login, string password)
+        {
+            var accounts = await _AccountService.GetAll();
+            var accountTmp = new Account();
+            bool found = false;
+        
+            foreach (var account in accounts)
+                if ((account.Login == login || account.EMail == login) && account.Password == password)
+                {
+                    accountTmp = account;
+                    found = true;
+                    break;
+                }
+            if (found)
+                return accountTmp;
+            else throw new Exception("Incorrect login or password");
+        }
+
         public async void UpdateClientPoints(int id, int points)
         {
             var tmp = await _ClientService.GetAll();
@@ -64,7 +82,7 @@ namespace Repository.RepositoryServices
         }
 
         public async void AddNewClient(String e_mail, String login, String password, String name, String surname, DateTime accountCreationDate, String PhoneNumber,
-                                        int points, String address)
+                                        int points, String address, String role)
         {
             var accountCount = _AccountService.lastId;
             var clientCount = _ClientService.lastId;
@@ -79,7 +97,8 @@ namespace Repository.RepositoryServices
                 Name = name, 
                 Surname = surname, 
                 AccountCreationDate = accountCreationDate, 
-                PhoneNumber = PhoneNumber 
+                PhoneNumber = PhoneNumber,
+                Role = role
             };
 
             var newClient = new Client

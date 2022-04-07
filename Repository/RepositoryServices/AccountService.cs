@@ -10,11 +10,11 @@ namespace Repository.RepositoryServices
 {
     internal class AccountService : IRepository<Account, int>
     {
-        private readonly pizza_restaurant_ver_5Context _RestaurantContext = null;
+        private readonly pizza_restaurant_ver_6Context _RestaurantContext = null;
         public int lastId { get; set; }
         // TODO Można też dodać parametr size
 
-        public AccountService(pizza_restaurant_ver_5Context Restaurant_Ver3Context)
+        public AccountService(pizza_restaurant_ver_6Context Restaurant_Ver3Context)
         {
             this._RestaurantContext = Restaurant_Ver3Context;
             this.lastId = _RestaurantContext.Account.ToList().Count + 1;
