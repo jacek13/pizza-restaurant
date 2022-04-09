@@ -1,39 +1,39 @@
 ﻿using DataBaseAccess.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repository.RepositoryServices
+namespace Repository.Repositories
 {
     public class RepositoryStorage
     {
-        private readonly pizza_restaurant_ver_6Context _RestaurantContext = null;
-        private ClientService _ClientService = null;
-        private AccountService _AccountService = null;
-        private DishesService _DishesService = null;
-        private ManagerAssignmentService _ManagerAssignmentService = null;
-        private ManagerService _ManagerService = null;
-        private OrderService _OrderService = null;
-        private PizzaService _PizzaService = null;
-        private ReservationService _ReservationService = null;
-        private RestaurantService _RestaurantService = null;
-        private TableService _TableService = null;
+        private readonly IDbContextFactory<RestaurantDBContext> _factory = null;
+        private ClientRepository _ClientService = null;
+        private AccountRepository _AccountService = null;
+        private DishesRepository _DishesService = null;
+        private ManagerAssignmentRepository _ManagerAssignmentService = null;
+        private ManagerRepository _ManagerService = null;
+        private OrderRepository _OrderService = null;
+        private PizzaRepository _PizzaService = null;
+        private ReservationRepository _ReservationService = null;
+        private RestaurantRepository _RestaurantService = null;
+        private TableRepository _TableService = null;
 
-        public RepositoryStorage(pizza_restaurant_ver_6Context Restaurant_Ver3Context)
+        public RepositoryStorage(IDbContextFactory<RestaurantDBContext> factory)
         {
-            this._RestaurantContext = Restaurant_Ver3Context;
-            _ClientService = new ClientService(_RestaurantContext);
-            _AccountService = new AccountService(_RestaurantContext);
-            _DishesService = new DishesService(_RestaurantContext);
-            _ManagerAssignmentService = new ManagerAssignmentService(_RestaurantContext);
-            _ManagerService = new ManagerService(_RestaurantContext);
-            _OrderService = new OrderService(_RestaurantContext);
-            _PizzaService= new PizzaService(_RestaurantContext);
-            _ReservationService = new ReservationService(_RestaurantContext);
-            _RestaurantService= new RestaurantService(_RestaurantContext);
-            _TableService = new TableService(_RestaurantContext);
+            _ClientService = new ClientRepository(factory);
+            _AccountService = new AccountRepository(factory);
+            _DishesService = new DishesRepository(factory);
+            _ManagerAssignmentService = new ManagerAssignmentRepository(factory);
+            _ManagerService = new ManagerRepository(factory);
+            _OrderService = new OrderRepository(factory);
+            _PizzaService= new PizzaRepository(factory);
+            _ReservationService = new ReservationRepository(factory);
+            _RestaurantService= new RestaurantRepository(factory);
+            _TableService = new TableRepository(factory);
         }
 
         //---------- ACCOUNT i CLIENT ----------//
@@ -77,11 +77,11 @@ namespace Repository.RepositoryServices
             if (primaryKeys.Contains(id))
             {
                 await _ClientService.UpdatePoints(id, points);
-                await _ClientService.Save();
+                //await _ClientService.Save();
             }
         }
 
-        public async void AddNewClient(String e_mail, String login, String password, String name, String surname, DateTime accountCreationDate, String PhoneNumber,
+        public async Task AddNewClient(String e_mail, String login, String password, String name, String surname, DateTime accountCreationDate, String PhoneNumber,
                                         int points, String address, String role)
         {
             var accountCount = _AccountService.lastId;
@@ -101,7 +101,7 @@ namespace Repository.RepositoryServices
                 Role = role
             };
 
-            var newClient = new Client
+            var newClient = new Client()
             {
                 //IdClient = clientCount,
                 Points = points,
@@ -111,12 +111,13 @@ namespace Repository.RepositoryServices
 
             // Account creation <- tabela
             var entity = await this._AccountService.Insert(newAccount);
-            await this._AccountService.Save();
+            //await this._AccountService.Save();
 
             // Client creation <- tabela
             newClient.AccountIdAccount = entity.IdAccount;
+            //newClient.Account = newAccount;
             await this._ClientService.Insert(newClient);
-            await this._ClientService.Save();
+            //await this._ClientService.Save();
         }
 
         public async void DeleteClient(int id)
@@ -130,9 +131,9 @@ namespace Repository.RepositoryServices
             if (primaryKeys.Contains(id))
             {
                 await this._AccountService.Delete(id);
-                await this._AccountService.Save();
+                //await this._AccountService.Save();
                 await this._ClientService.Delete(id);
-                await this._ClientService.Save();
+                //await this._ClientService.Save();
             }
         }
 
@@ -158,7 +159,7 @@ namespace Repository.RepositoryServices
 
             // Pizza creation <- tabela
             var entity = await this._PizzaService.Insert(newPizza);
-            await this._AccountService.Save();
+            //await this._AccountService.Save();
             return newPizza;
         }
 
@@ -173,7 +174,7 @@ namespace Repository.RepositoryServices
             if (primaryKeys.Contains(id))
             {
                 await _PizzaService.UpdatePizzaAvailability(id, availability);
-                await _PizzaService.Save();
+                //await _PizzaService.Save();
             }
 
         }
@@ -189,7 +190,7 @@ namespace Repository.RepositoryServices
             if (primaryKeys.Contains(id))
             {
                 await _PizzaService.Delete(id);
-                await _PizzaService.Save();
+                //await _PizzaService.Save();
             }
         }
 

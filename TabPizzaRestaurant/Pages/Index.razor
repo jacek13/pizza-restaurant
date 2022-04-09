@@ -1,10 +1,11 @@
 ﻿@page "/"
 
-@using Repository.RepositoryServices
+@using Repository.Repositories;
 @using Models
 @using DataBaseAccess.Models
 
-@inject Repository.RepositoryServices.RepositoryStorage Storage
+@inject Repository.Repositories.RepositoryStorage Storage
+@inject Repository.Services.PizzaService pizzaService
 
 <center>
     <h1 class="display-4">Witamy w Galak Pizza!</h1>
@@ -55,6 +56,6 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-        menu = await Storage.GetMenu();
+        menu = await pizzaService.GetMenu();
     }
 }

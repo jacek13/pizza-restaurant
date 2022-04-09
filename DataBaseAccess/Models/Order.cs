@@ -7,7 +7,7 @@ namespace DataBaseAccess.Models
     {
         public Order()
         {
-            Dishes = new HashSet<Dishes>();
+            DishesCollection = new HashSet<Dishes>();
         }
 
         public int IdOrder { get; set; }
@@ -17,8 +17,8 @@ namespace DataBaseAccess.Models
         public int? ClientIdClient { get; set; }
         public int? RestaurantIdRestaurant { get; set; }
 
-        public virtual Client ClientIdClientNavigation { get; set; }
-        public virtual Restaurant RestaurantIdRestaurantNavigation { get; set; }
-        public virtual ICollection<Dishes> Dishes { get; set; }
+        public virtual Client Client { get; set; }
+        public virtual Restaurant Restaurant { get; set; }
+        public virtual ICollection<Dishes> DishesCollection { get; set; }
     }
 }

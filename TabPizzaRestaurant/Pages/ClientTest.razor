@@ -1,10 +1,10 @@
 ﻿@page "/Test/Client"
 
-@using Repository.RepositoryServices
+@using Repository.Repositories;
 @using Models
 @using DataBaseAccess.Models
 
-@inject Repository.RepositoryServices.RepositoryStorage Storage
+@inject Repository.Repositories.RepositoryStorage Storage
 <center>
     <h3>Select a form</h3>
     <br />
@@ -180,11 +180,11 @@
         //this.refresh();
     }
 
-    private void InsertClient()
+    private async void InsertClient()
     {
-        Storage.AddNewClient(newClient.EMail, newClient.Login, newClient.Password,
-                                    newClient.Name, newClient.Surname, DateTime.Today, newClient.PhoneNumber, 0, newClient.Address, newClient.Role);
         newClient = new ClientFront();
+        await Storage.AddNewClient(newClient.EMail, newClient.Login, newClient.Password,
+                                    newClient.Name, newClient.Surname, DateTime.Today, newClient.PhoneNumber, 0, newClient.Address, newClient.Role);
         //this.refresh();
     }
 

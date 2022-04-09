@@ -14,8 +14,8 @@ namespace DataBaseAccess.Models
         public int TableIdTable { get; set; }
         public int? TableRestaurantIdRestaurant { get; set; }
 
-        public virtual Client ClientIdClientNavigation { get; set; }
-        public virtual Manager ManagerIdManagerNavigation { get; set; }
+        public virtual Client Client { get; set; }
+        public virtual Manager Manager { get; set; }
         public virtual Table Table { get; set; }
     }
 }

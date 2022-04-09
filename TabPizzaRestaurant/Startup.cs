@@ -12,9 +12,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TabPizzaRestaurant.Data;
-using Repository.RepositoryServices;
+using Repository.Repositories;
 using Microsoft.AspNetCore.Components.Authorization;
 using Blazored.SessionStorage;
+using Repository.Services;
 
 namespace TabPizzaRestaurant
 {
@@ -33,9 +34,37 @@ namespace TabPizzaRestaurant
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
-            services.AddDbContext<pizza_restaurant_ver_6Context>(options => options.UseSqlServer(Configuration.GetConnectionString("Default")));
-            services.AddScoped<Repository.RepositoryServices.RepositoryStorage>(); // TODO Singleton?
+            services.AddDbContextFactory<RestaurantDBContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("Default")));
+            services.AddDbContext<RestaurantDBContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("Default")));
+            services.AddScoped<RepositoryStorage>(); // TODO Singleton?
+
+            services.AddScoped<IRepository<Pizza>, PizzaRepository>();
+            services.AddScoped<PizzaService>();
+
+            services.AddScoped<IRepository<Account>, AccountRepository>();
+            services.AddScoped<AccountService>();
+
+            services.AddScoped<IRepository<Client>, ClientRepository>();
+            services.AddScoped<ClientService>();
+
+            services.AddScoped<IRepository<Dishes>, DishesRepository>();
+            services.AddScoped<DishesService>();
+
+            services.AddScoped<IRepository<ManagerAssignment>, ManagerAssignmentRepository>();
+            services.AddScoped<ManagerAssigmentService>();
+
+            services.AddScoped<IRepository<Order>, OrderRepository>();
+            services.AddScoped<OrderService>();
+
+            services.AddScoped<IRepository<Pizza>, PizzaRepository>();
+            services.AddScoped<PizzaService>();
+
+            services.AddScoped<IRepository<Reservation>, ReservationRepository>();
+            services.AddScoped<ReservationService>();
+
+            services.AddScoped<IRepository<Table>, TableRepository>();
+            services.AddScoped<TableService>();
+
             services.AddBlazoredSessionStorage();
             services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
         }

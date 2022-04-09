@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace DataBaseAccess.Models
 {
-    public partial class pizza_restaurant_ver_6Context : DbContext
+    public partial class RestaurantDBContext : DbContext
     {
-        public pizza_restaurant_ver_6Context()
+        public RestaurantDBContext()
         {
         }
 
-        public pizza_restaurant_ver_6Context(DbContextOptions<pizza_restaurant_ver_6Context> options)
+        public RestaurantDBContext(DbContextOptions<RestaurantDBContext> options)
             : base(options)
         {
         }
@@ -113,7 +113,7 @@ namespace DataBaseAccess.Models
 
                 entity.Property(e => e.Points).HasColumnName("points");
 
-                entity.HasOne(d => d.AccountIdAccountNavigation)
+                entity.HasOne(d => d.Account)
                     .WithOne(p => p.Client)
                     .HasForeignKey<Client>(d => d.AccountIdAccount)
                     .HasConstraintName("client_account_FK");
@@ -136,14 +136,14 @@ namespace DataBaseAccess.Models
 
                 entity.Property(e => e.HistoricalPrice).HasColumnName("historical_price");
 
-                entity.HasOne(d => d.OrderIdOrderNavigation)
-                    .WithMany(p => p.Dishes)
+                entity.HasOne(d => d.Order)
+                    .WithMany(p => p.DishesCollection)
                     .HasForeignKey(d => d.OrderIdOrder)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ASS_3");
 
-                entity.HasOne(d => d.PizzaIdPizzaNavigation)
-                    .WithMany(p => p.Dishes)
+                entity.HasOne(d => d.Pizza)
+                    .WithMany(p => p.DishesCollection)
                     .HasForeignKey(d => d.PizzaIdPizza)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ASS_4");
@@ -168,7 +168,7 @@ namespace DataBaseAccess.Models
 
                 entity.Property(e => e.SalaryNetto).HasColumnName("salary_netto");
 
-                entity.HasOne(d => d.AccountIdAccountNavigation)
+                entity.HasOne(d => d.Account)
                     .WithOne(p => p.Manager)
                     .HasForeignKey<Manager>(d => d.AccountIdAccount)
                     .HasConstraintName("manager_account_FK");
@@ -185,13 +185,13 @@ namespace DataBaseAccess.Models
 
                 entity.Property(e => e.RestaurantIdRestaurant).HasColumnName("restaurant_id_restaurant");
 
-                entity.HasOne(d => d.ManagerIdManagerNavigation)
-                    .WithMany(p => p.ManagerAssignment)
+                entity.HasOne(d => d.Manager)
+                    .WithMany(p => p.ManagerAssignments)
                     .HasForeignKey(d => d.ManagerIdManager)
                     .HasConstraintName("FK_ASS_7");
 
-                entity.HasOne(d => d.RestaurantIdRestaurantNavigation)
-                    .WithMany(p => p.ManagerAssignment)
+                entity.HasOne(d => d.Restaurant)
+                    .WithMany(p => p.ManagerAssignments)
                     .HasForeignKey(d => d.RestaurantIdRestaurant)
                     .HasConstraintName("FK_ASS_8");
             });
@@ -229,12 +229,12 @@ namespace DataBaseAccess.Models
                     .IsUnicode(false)
                     .IsFixedLength();
 
-                entity.HasOne(d => d.ClientIdClientNavigation)
-                    .WithMany(p => p.Order)
+                entity.HasOne(d => d.Client)
+                    .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.ClientIdClient)
                     .HasConstraintName("order_client_FK");
 
-                entity.HasOne(d => d.RestaurantIdRestaurantNavigation)
+                entity.HasOne(d => d.Restaurant)
                     .WithOne(p => p.Order)
                     .HasForeignKey<Order>(d => d.RestaurantIdRestaurant)
                     .HasConstraintName("order_restaurant_FK");
@@ -291,18 +291,18 @@ namespace DataBaseAccess.Models
 
                 entity.Property(e => e.TableRestaurantIdRestaurant).HasColumnName("table_restaurant_id_restaurant");
 
-                entity.HasOne(d => d.ClientIdClientNavigation)
-                    .WithMany(p => p.Reservation)
+                entity.HasOne(d => d.Client)
+                    .WithMany(p => p.Reservations)
                     .HasForeignKey(d => d.ClientIdClient)
                     .HasConstraintName("reservation_client_FK");
 
-                entity.HasOne(d => d.ManagerIdManagerNavigation)
-                    .WithMany(p => p.Reservation)
+                entity.HasOne(d => d.Manager)
+                    .WithMany(p => p.Reservations)
                     .HasForeignKey(d => d.ManagerIdManager)
                     .HasConstraintName("reservation_manager_FK");
 
                 entity.HasOne(d => d.Table)
-                    .WithMany(p => p.Reservation)
+                    .WithMany(p => p.Reservations)
                     .HasForeignKey(d => new { d.TableIdTable, d.TableRestaurantIdRestaurant })
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("reservation_table_FK");
@@ -349,8 +349,8 @@ namespace DataBaseAccess.Models
 
                 entity.Property(e => e.Capacity).HasColumnName("capacity");
 
-                entity.HasOne(d => d.RestaurantIdRestaurantNavigation)
-                    .WithMany(p => p.Table)
+                entity.HasOne(d => d.Restaurant)
+                    .WithMany(p => p.Tables)
                     .HasForeignKey(d => d.RestaurantIdRestaurant)
                     .HasConstraintName("table_restaurant_FK");
             });

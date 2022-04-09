@@ -7,8 +7,8 @@ namespace DataBaseAccess.Models
     {
         public Client()
         {
-            Order = new HashSet<Order>();
-            Reservation = new HashSet<Reservation>();
+            Orders = new HashSet<Order>();
+            Reservations = new HashSet<Reservation>();
         }
 
         public int IdClient { get; set; }
@@ -16,8 +16,8 @@ namespace DataBaseAccess.Models
         public string Address { get; set; }
         public int AccountIdAccount { get; set; }
 
-        public virtual Account AccountIdAccountNavigation { get; set; }
-        public virtual ICollection<Order> Order { get; set; }
-        public virtual ICollection<Reservation> Reservation { get; set; }
+        public virtual Account Account { get; set; }
+        public virtual ICollection<Order> Orders { get; set; }
+        public virtual ICollection<Reservation> Reservations { get; set; }
     }
 }
