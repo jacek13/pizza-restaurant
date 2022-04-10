@@ -38,7 +38,7 @@ namespace TabPizzaRestaurant
             services.AddDbContext<RestaurantDBContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("Default")));
 
 
-            services.AddScoped<IRepository<Account>, AccountRepository>();
+            services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<AccountService>();
 
             services.AddScoped<IClientRepository, ClientRepository>();
@@ -46,22 +46,26 @@ namespace TabPizzaRestaurant
 
             services.AddScoped<AccountManagmentService>();
 
-            services.AddScoped<IRepository<Dishes>, DishesRepository>();
+            services.AddScoped<IDishesRepository, DishesRepository>();
             services.AddScoped<DishesService>();
 
-            services.AddScoped<IRepository<ManagerAssignment>, ManagerAssignmentRepository>();
+            services.AddScoped<IManagerAssignmentRepository, ManagerAssignmentRepository>();
             services.AddScoped<ManagerAssigmentService>();
 
-            services.AddScoped<IRepository<Order>, OrderRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<OrderService>();
 
             services.AddScoped<IPizzaRepository, PizzaRepository>();
             services.AddScoped<PizzaService>();
 
-            services.AddScoped<IRepository<Reservation>, ReservationRepository>();
+            services.AddScoped<IRestaurantRepository, RestaurantRepository>();
+            services.AddScoped<RestaurantService>();
+            services.AddScoped<RestaurantReportService>();
+
+            services.AddScoped<IReservationRepository, ReservationRepository>();
             services.AddScoped<ReservationService>();
 
-            services.AddScoped<IRepository<Table>, TableRepository>();
+            services.AddScoped<ITableRepository, TableRepository>();
             services.AddScoped<TableService>();
 
             services.AddBlazoredSessionStorage();

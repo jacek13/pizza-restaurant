@@ -10,9 +10,9 @@ namespace Repository.Services
 {
     public class AccountService
     {
-        private readonly IRepository<Account> _accountRepo;
+        private readonly IAccountRepository _accountRepo;
 
-        public AccountService(IRepository<Account> accountRepo)
+        public AccountService(IAccountRepository accountRepo)
         {
             _accountRepo = accountRepo;
         }

@@ -8,7 +8,12 @@ using System.Threading.Tasks;
 
 namespace Repository.Repositories
 {
-    public class AccountRepository : IRepository<Account>
+    public interface IAccountRepository : IRepository<Account>
+    {
+
+    }
+
+    public class AccountRepository : IAccountRepository
     {
         private readonly IDbContextFactory<RestaurantDBContext> _factory;
         public int lastId { get; set; } // nie wiem do czego to jest potrzebne - zostawiam

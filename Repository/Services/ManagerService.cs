@@ -10,9 +10,9 @@ namespace Repository.Services
 {
     public class ManagerService
     {
-        private readonly IRepository<Manager> _managerRepo;
+        private readonly IManagerRepository _managerRepo;
 
-        public ManagerService(IRepository<Manager> managerRepo)
+        public ManagerService(IManagerRepository managerRepo)
         {
             _managerRepo = managerRepo;
         }

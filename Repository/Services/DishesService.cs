@@ -10,9 +10,9 @@ namespace Repository.Services
 {
     public class DishesService
     {
-        private readonly IRepository<Dishes> _dishesRepo;
+        private readonly IDishesRepository _dishesRepo;
 
-        public DishesService(IRepository<Dishes> dishesRepo)
+        public DishesService(IDishesRepository dishesRepo)
         {
             _dishesRepo = dishesRepo;
         }

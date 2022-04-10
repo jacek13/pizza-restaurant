@@ -8,7 +8,13 @@ using System.Threading.Tasks;
 
 namespace Repository.Repositories
 {
-    public class ManagerRepository : IRepository<Manager>
+    public interface IManagerRepository : IRepository<Manager>
+    {
+
+    }
+
+
+    public class ManagerRepository : IManagerRepository
     {
         private readonly IDbContextFactory<RestaurantDBContext> _factory;
         public List<int> foreignKeys; // TODO 

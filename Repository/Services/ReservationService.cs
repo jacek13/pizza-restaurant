@@ -10,9 +10,9 @@ namespace Repository.Services
 {
     public class ReservationService
     {
-        private readonly IRepository<Reservation> _ReservationRepo;
+        private readonly IReservationRepository _ReservationRepo;
 
-        public ReservationService(IRepository<Reservation> ReservationRepo)
+        public ReservationService(IReservationRepository ReservationRepo)
         {
             _ReservationRepo = ReservationRepo;
         }

@@ -10,9 +10,9 @@ namespace Repository.Services
 {
     public class OrderService
     {
-        private readonly IRepository<Order> _orderRepo;
+        private readonly IOrderRepository _orderRepo;
 
-        public OrderService(IRepository<Order> orderRepo)
+        public OrderService(IOrderRepository orderRepo)
         {
             _orderRepo = orderRepo;
         }

@@ -9,7 +9,12 @@ using System.Threading.Tasks;
 //TODO
 namespace Repository.Repositories
 {
-    public class DishesRepository : IRepository<Dishes>
+    public interface IDishesRepository : IRepository<Dishes>
+    {
+
+    }
+
+    public class DishesRepository : IDishesRepository
     {
         private readonly IDbContextFactory<RestaurantDBContext> _factory;
         public int lastId { get; set; } 

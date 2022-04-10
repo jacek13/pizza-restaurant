@@ -8,15 +8,8 @@ using System.Threading.Tasks;
 
 namespace Repository.Repositories
 {
-    public interface IPizzaRepository
+    public interface IPizzaRepository : IRepository<Pizza>
     {
-        Task<List<Pizza>> GetAll();
-        Task<Pizza> GetById(int id);
-        Task<Pizza> Insert(Pizza entity);
-
-        //Task<T1> Update(T1 entity); TODO
-        Task Delete(int id);
-
         Task<Pizza> UpdatePizzaAvailability(int id, bool isAvailable);
     }
 

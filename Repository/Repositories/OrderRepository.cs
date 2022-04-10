@@ -8,7 +8,13 @@ using System.Threading.Tasks;
 
 namespace Repository.Repositories
 {
-    public class OrderRepository : IRepository<Order>
+    public interface IOrderRepository : IRepository<Order>
+    {
+
+    }
+
+
+    public class OrderRepository : IOrderRepository
     {
         private readonly IDbContextFactory<RestaurantDBContext> _factory;
         public int lastId { get; set; }

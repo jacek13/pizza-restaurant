@@ -10,11 +10,11 @@ namespace Repository.Services
 {
     public class TableService
     {
-        private readonly IRepository<Table> _TableRepo;
+        private readonly ITableRepository _tableRepo;
 
-        public TableService(IRepository<Table> TableRepo)
+        public TableService(ITableRepository tableRepo)
         {
-            _TableRepo = TableRepo;
+            _tableRepo = tableRepo;
         }
     }
 }

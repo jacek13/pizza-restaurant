@@ -9,19 +9,10 @@ using System.Threading.Tasks;
 namespace Repository.Repositories
 {
 
-    public interface IClientRepository
+    public interface IClientRepository : IRepository<Client>
     {
-        Task<List<Client>> GetAll();
-        Task<Client> GetById(int id);
-        Task<Client> Insert(Client entity);
-
-        //Task<T1> Update(T1 entity); TODO
-        Task Delete(int id);
-
         Task<Client> UpdatePoints(int id, int newPoints);
     }
-
-
 
     public class ClientRepository : IClientRepository
     {
