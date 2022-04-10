@@ -55,6 +55,7 @@ namespace Repository.Repositories
             using (var context = _factory.CreateDbContext())
             {
                 await context.Dishes.AddAsync(entity);
+                await context.SaveChangesAsync();
                 lastId++;
                 return entity;
             }

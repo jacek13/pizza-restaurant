@@ -27,7 +27,10 @@ namespace Repository.Repositories
             {
                 var Manager = await context.Manager.FirstOrDefaultAsync(b => b.IdManager == id);
                 if (Manager != null)
+                {
                     context.Remove(Manager);
+                    await context.SaveChangesAsync();
+                }
             }
         }
 
@@ -52,6 +55,7 @@ namespace Repository.Repositories
             using (var context = _factory.CreateDbContext())
             {
                 await context.Manager.AddAsync(entity);
+                await context.SaveChangesAsync();
                 lastId++;
                 return entity;
             }

@@ -4,7 +4,7 @@
 @using Models
 @using DataBaseAccess.Models
 
-@inject Repository.Repositories.RepositoryStorage Storage
+@inject Repository.Services.PizzaService pizzaService
 
 <center>
     <h3>Manage Menu</h3>
@@ -121,28 +121,28 @@
 
     private async void refresh()
     {
-        menu = await Storage.GetMenu();
+        menu = await pizzaService.GetMenu();
         this.StateHasChanged();
     }
 
-    protected override async Task OnParametersSetAsync() => menu = await Storage.GetMenu();
+    protected override async Task OnParametersSetAsync() => menu = await pizzaService.GetMenu();
 
     private async void InsertPizza()
     {
-        await Storage.AddNewPizza(newPizza.price, newPizza.cost, newPizza.isAvailable, newPizza.type, newPizza.size, newPizza.points);
+        await pizzaService.AddNewPizza(newPizza.price, newPizza.cost, newPizza.isAvailable, newPizza.type, newPizza.size, newPizza.points);
         newPizza = new PizzaFront();
         //this.refresh();
     }
 
     protected void deletePizza()
     {
-        Storage.DeletePizza(deletePizzaId);
+        pizzaService.DeletePizza(deletePizzaId);
         //this.refresh();
     }
 
     private void UpdateAvailability()
     {
-        Storage.ChangePizzaAvailability(updatePizzaId, pizzaAvaliability);
+        pizzaService.ChangePizzaAvailability(updatePizzaId, pizzaAvaliability);
         //this.refresh();
     }
 

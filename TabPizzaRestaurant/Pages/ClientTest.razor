@@ -4,7 +4,10 @@
 @using Models
 @using DataBaseAccess.Models
 
-@inject Repository.Repositories.RepositoryStorage Storage
+@inject Repository.Services.AccountManagmentService managmentService
+@inject Repository.Services.AccountService accountService
+@inject Repository.Services.ClientService clientService
+
 <center>
     <h3>Select a form</h3>
     <br />
@@ -164,8 +167,8 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        people = await Storage.GetAccounts();
-        clients = await Storage.GetClients();
+        people = await accountService.GetAccounts();
+        clients = await clientService.GetClients();
     }
 
     private async void refresh()
@@ -176,21 +179,21 @@
 
     protected void deleteClient()
     {
-        Storage.DeleteClient(userID);
+        managmentService.DeleteClient(userID);
         //this.refresh();
     }
 
     private async void InsertClient()
     {
         newClient = new ClientFront();
-        await Storage.AddNewClient(newClient.EMail, newClient.Login, newClient.Password,
+        await managmentService.AddNewClient(newClient.EMail, newClient.Login, newClient.Password,
                                     newClient.Name, newClient.Surname, DateTime.Today, newClient.PhoneNumber, 0, newClient.Address, newClient.Role);
         //this.refresh();
     }
 
     private void AddPoints()
     {
-        Storage.UpdateClientPoints(clientID, points);
+        clientService.UpdateClientPoints(clientID, points);
         //this.refresh();
     }
 

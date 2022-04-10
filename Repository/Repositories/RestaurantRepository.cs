@@ -30,6 +30,7 @@ namespace Repository.Repositories
                 if (Restaurant != null)
                 {
                     context.Remove(Restaurant);
+                    await context.SaveChangesAsync();
                 }
             }
         }
@@ -55,6 +56,7 @@ namespace Repository.Repositories
             using(var context = _factory.CreateDbContext())
             {
                 await context.Restaurant.AddAsync(entity);
+                await context.SaveChangesAsync();
                 lastId++;
                 return entity;
             }

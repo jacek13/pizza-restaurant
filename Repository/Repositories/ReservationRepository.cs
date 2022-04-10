@@ -30,6 +30,7 @@ namespace Repository.Repositories
                 if (Reservation != null)
                 {
                     context.Remove(Reservation);
+                    await context.SaveChangesAsync();
                 }
             }
         }
@@ -55,6 +56,7 @@ namespace Repository.Repositories
             using (var context = _factory.CreateDbContext())
             {
                 await context.Reservation.AddAsync(entity);
+                await context.SaveChangesAsync();
                 lastId++;
                 return entity;
             }

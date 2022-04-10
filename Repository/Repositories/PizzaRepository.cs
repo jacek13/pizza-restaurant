@@ -8,7 +8,19 @@ using System.Threading.Tasks;
 
 namespace Repository.Repositories
 {
-    public class PizzaRepository : IRepository<Pizza>
+    public interface IPizzaRepository
+    {
+        Task<List<Pizza>> GetAll();
+        Task<Pizza> GetById(int id);
+        Task<Pizza> Insert(Pizza entity);
+
+        //Task<T1> Update(T1 entity); TODO
+        Task Delete(int id);
+
+        Task<Pizza> UpdatePizzaAvailability(int id, bool isAvailable);
+    }
+
+    public class PizzaRepository : IPizzaRepository
     {
         private readonly IDbContextFactory<RestaurantDBContext> _factory;
         public int lastId { get; set; }
@@ -30,6 +42,7 @@ namespace Repository.Repositories
                 if (Pizza != null)
                 {
                     context.Remove(Pizza);
+                    await context.SaveChangesAsync();
                 }
             }
         }
@@ -41,6 +54,7 @@ namespace Repository.Repositories
                 var entity = await context.Pizza.FirstOrDefaultAsync(b => b.IdPizza == id);
                 entity.IsAvailable = isAvailable;
                 context.Pizza.Update(entity);
+                await context.SaveChangesAsync();
                 return entity;
             }
         }
@@ -66,6 +80,7 @@ namespace Repository.Repositories
             using (var context = _factory.CreateDbContext())
             {
                 await context.Pizza.AddAsync(entity);
+                await context.SaveChangesAsync();
                 lastId++;
                 return entity;
             }

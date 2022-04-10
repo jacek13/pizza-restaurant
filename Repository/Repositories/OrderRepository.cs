@@ -28,7 +28,10 @@ namespace Repository.Repositories
             {
                 var Order = await context.Order.FirstOrDefaultAsync(b => b.IdOrder == id);
                 if (Order != null)
+                {
                     context.Remove(Order);
+                    await context.SaveChangesAsync();
+                }
             }
         }
 
@@ -53,6 +56,7 @@ namespace Repository.Repositories
             using (var context = _factory.CreateDbContext())
             {
                 await context.AddAsync(entity);
+                await context.SaveChangesAsync();
                 lastId++;
                 return entity;
             }

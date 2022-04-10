@@ -7,7 +7,7 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
-@inject Repository.Repositories.RepositoryStorage Storage
+@inject Repository.Services.AccountManagmentService managmentService
 
 <center>
     <h3 class="display-4">Register</h3>
@@ -52,7 +52,7 @@
     private async Task<bool> ValidateUser()
     {
         newClient.Role = "Client";
-        Storage.AddNewClient(newClient.EMail, newClient.Login, newClient.Password,
+        await managmentService.AddNewClient(newClient.EMail, newClient.Login, newClient.Password,
                                     newClient.Name, newClient.Surname, DateTime.Today, newClient.PhoneNumber, 0, newClient.Address, newClient.Role);
 
         ((CustomAuthenticationStateProvider)AuthenticationStateProvider).MarkUserAsAuthenticated(newClient);

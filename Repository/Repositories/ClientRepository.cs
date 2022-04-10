@@ -8,7 +8,22 @@ using System.Threading.Tasks;
 
 namespace Repository.Repositories
 {
-    public class ClientRepository : IRepository<Client>
+
+    public interface IClientRepository
+    {
+        Task<List<Client>> GetAll();
+        Task<Client> GetById(int id);
+        Task<Client> Insert(Client entity);
+
+        //Task<T1> Update(T1 entity); TODO
+        Task Delete(int id);
+
+        Task<Client> UpdatePoints(int id, int newPoints);
+    }
+
+
+
+    public class ClientRepository : IClientRepository
     {
         private readonly IDbContextFactory<RestaurantDBContext> _factory;
         public List<int> foreignKeys; // TODO - nie wiem do czego to potrzebne, zostawiam
@@ -29,7 +44,10 @@ namespace Repository.Repositories
             {
                 var Client = await context.Client.FirstOrDefaultAsync(b => b.IdClient == id);
                 if (Client != null)
+                {
                     context.Remove(Client);
+                    await context.SaveChangesAsync();
+                }
             }
         }
 
@@ -40,7 +58,7 @@ namespace Repository.Repositories
                 var entity = await context.Client.FirstOrDefaultAsync(b => b.AccountIdAccount == id);
                 entity.Points += newPoints;
                 context.Client.Update(entity);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
                 return entity;
             }
         }

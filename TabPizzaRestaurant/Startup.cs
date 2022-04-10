@@ -36,16 +36,15 @@ namespace TabPizzaRestaurant
             services.AddServerSideBlazor();
             services.AddDbContextFactory<RestaurantDBContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("Default")));
             services.AddDbContext<RestaurantDBContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("Default")));
-            services.AddScoped<RepositoryStorage>(); // TODO Singleton?
 
-            services.AddScoped<IRepository<Pizza>, PizzaRepository>();
-            services.AddScoped<PizzaService>();
 
             services.AddScoped<IRepository<Account>, AccountRepository>();
             services.AddScoped<AccountService>();
 
-            services.AddScoped<IRepository<Client>, ClientRepository>();
+            services.AddScoped<IClientRepository, ClientRepository>();
             services.AddScoped<ClientService>();
+
+            services.AddScoped<AccountManagmentService>();
 
             services.AddScoped<IRepository<Dishes>, DishesRepository>();
             services.AddScoped<DishesService>();
@@ -56,7 +55,7 @@ namespace TabPizzaRestaurant
             services.AddScoped<IRepository<Order>, OrderRepository>();
             services.AddScoped<OrderService>();
 
-            services.AddScoped<IRepository<Pizza>, PizzaRepository>();
+            services.AddScoped<IPizzaRepository, PizzaRepository>();
             services.AddScoped<PizzaService>();
 
             services.AddScoped<IRepository<Reservation>, ReservationRepository>();

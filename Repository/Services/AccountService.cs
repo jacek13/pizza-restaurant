@@ -16,5 +16,29 @@ namespace Repository.Services
         {
             _accountRepo = accountRepo;
         }
+
+        public Task<List<Account>> GetAccounts()
+        {
+            return _accountRepo.GetAll();
+        }
+
+        public async Task<Account> GetAccountByLoginAndPassword(string login, string password)
+        {
+            var accounts = await _accountRepo.GetAll();
+            var accountTmp = new Account();
+            bool found = false;
+
+            foreach (var account in accounts)
+                if ((account.Login == login || account.EMail == login) && account.Password == password)
+                {
+                    accountTmp = account;
+                    found = true;
+                    break;
+                }
+            if (found)
+                return accountTmp;
+            else throw new Exception("Incorrect login or password");
+        }
+
     }
 }

@@ -7,7 +7,7 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
-@inject Repository.Repositories.RepositoryStorage Storage
+@inject Repository.Services.AccountService accountService
 
 <center>
     <h3 class="display-4">Login</h3>
@@ -44,7 +44,7 @@
     {
         try
         {
-            var dbUser = await Storage.GetAccountByLoginAndPassword(user.Email, user.Password);
+            var dbUser = await accountService.GetAccountByLoginAndPassword(user.Email, user.Password);
             Client.Name = dbUser.Name;
             Client.Password = dbUser.Password;
             Client.Surname = dbUser.Surname;
