@@ -12,11 +12,15 @@
         </button>
         <div class="@NavMenuCssClass"  @onclick="ToggleNavMenu">
             <ul class="navbar-nav flex-grow-1">
+
+                <Authorized>
                 <li class="nav-item">
                     <NavLink class="nav-link text-dark" href="" Match="NavLinkMatch.All">
-                        <span class="oi oi-home" aria-hidden="true"></span> Home
+                        <span class="material-icons">home</span> Home
                     </NavLink>                
                 </li>
+                </Authorized>
+
                 <AuthorizeView Roles="Admin">
                     <Authorized>
                         <li class="nav-item">
@@ -25,6 +29,7 @@
                             </NavLink>
                         </li>
                     </Authorized>
+
                 </AuthorizeView>
                 <AuthorizeView Roles="Manager">
                     <Authorized>
@@ -35,6 +40,16 @@
                         </li>
                     </Authorized>
                 </AuthorizeView>
+     
+                    <Authorized>
+                        <li class="nav-item">
+                            <NavLink class="nav-link text-dark" href="Contact">
+                                <span class="material-icons">explore</span> Kontakt
+                            </NavLink>
+                        </li>
+                    </Authorized>
+                
+
             </ul>
         </div>
         <AuthorizeView>

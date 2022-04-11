@@ -35,6 +35,12 @@ namespace Repository.RepositoryServices
             _RestaurantService= new RestaurantService(_RestaurantContext);
             _TableService = new TableService(_RestaurantContext);
         }
+        //---------- RESTAURANT ----------//
+        public Task<List<Restaurant>> GetRestaurants()
+        {
+            return _RestaurantService.GetAll();
+        }
+
 
         //---------- ACCOUNT i CLIENT ----------//
 
