@@ -7,14 +7,14 @@ namespace DataBaseAccess.Models
     {
         public Table()
         {
-            Reservation = new HashSet<Reservation>();
+            Reservations = new HashSet<Reservation>();
         }
 
         public int IdTable { get; set; }
         public int? Capacity { get; set; }
         public int RestaurantIdRestaurant { get; set; }
 
-        public virtual Restaurant RestaurantIdRestaurantNavigation { get; set; }
-        public virtual ICollection<Reservation> Reservation { get; set; }
+        public virtual Restaurant Restaurant { get; set; }
+        public virtual ICollection<Reservation> Reservations { get; set; }
     }
 }

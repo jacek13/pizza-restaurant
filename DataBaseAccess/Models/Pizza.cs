@@ -7,7 +7,7 @@ namespace DataBaseAccess.Models
     {
         public Pizza()
         {
-            Dishes = new HashSet<Dishes>();
+            DishesCollection = new HashSet<Dishes>();
         }
 
         public int IdPizza { get; set; }
@@ -18,6 +18,6 @@ namespace DataBaseAccess.Models
         public int? Size { get; set; }
         public int? Points { get; set; }
 
-        public virtual ICollection<Dishes> Dishes { get; set; }
+        public virtual ICollection<Dishes> DishesCollection { get; set; }
     }
 }

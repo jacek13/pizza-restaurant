@@ -1,10 +1,10 @@
 ﻿@page "/Manager/ManageMenu"
 
-@using Repository.RepositoryServices
+@using Repository.Repositories
 @using Models
 @using DataBaseAccess.Models
 
-@inject Repository.RepositoryServices.RepositoryStorage Storage
+@inject Repository.Services.PizzaService pizzaService
 
 <center>
     <h3>Manage Menu</h3>
@@ -110,7 +110,7 @@
 @code 
 {
     private bool displayInsertForm;
-    private bool displayMenu;
+    private bool displayMenu = true;
     private bool displayDeletePizza;
     private bool displayUpdateAvailability;
     private bool pizzaAvaliability;
@@ -121,29 +121,29 @@
 
     private async void refresh()
     {
-        menu = await Storage.GetMenu();
+        menu = await pizzaService.GetMenu();
         this.StateHasChanged();
     }
 
-    protected override async Task OnParametersSetAsync() => menu = await Storage.GetMenu();
+    protected override async Task OnParametersSetAsync() => menu = await pizzaService.GetMenu();
 
     private async void InsertPizza()
     {
-        await Storage.AddNewPizza(newPizza.price, newPizza.cost, newPizza.isAvailable, newPizza.type, newPizza.size, newPizza.points);
+        await pizzaService.AddNewPizza(newPizza.price, newPizza.cost, newPizza.isAvailable, newPizza.type, newPizza.size, newPizza.points);
         newPizza = new PizzaFront();
-        //this.refresh();
+        this.refresh();
     }
 
     protected void deletePizza()
     {
-        Storage.DeletePizza(deletePizzaId);
-        //this.refresh();
+        pizzaService.DeletePizza(deletePizzaId);
+        this.refresh();
     }
 
     private void UpdateAvailability()
     {
-        Storage.ChangePizzaAvailability(updatePizzaId, pizzaAvaliability);
-        //this.refresh();
+        pizzaService.ChangePizzaAvailability(updatePizzaId, pizzaAvaliability);
+        this.refresh();
     }
 
     private void triggerDisplayInsertForm()

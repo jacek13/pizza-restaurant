@@ -7,8 +7,8 @@ namespace DataBaseAccess.Models
     {
         public Manager()
         {
-            ManagerAssignment = new HashSet<ManagerAssignment>();
-            Reservation = new HashSet<Reservation>();
+            ManagerAssignments = new HashSet<ManagerAssignment>();
+            Reservations = new HashSet<Reservation>();
         }
 
         public int IdManager { get; set; }
@@ -16,8 +16,8 @@ namespace DataBaseAccess.Models
         public int? SalaryBrutto { get; set; }
         public int AccountIdAccount { get; set; }
 
-        public virtual Account AccountIdAccountNavigation { get; set; }
-        public virtual ICollection<ManagerAssignment> ManagerAssignment { get; set; }
-        public virtual ICollection<Reservation> Reservation { get; set; }
+        public virtual Account Account { get; set; }
+        public virtual ICollection<ManagerAssignment> ManagerAssignments { get; set; }
+        public virtual ICollection<Reservation> Reservations { get; set; }
     }
 }

@@ -10,18 +10,18 @@ W aktualnej wersji w celu połączenia z bazą danych należy utworzyć nową ba
 1. Menedżer/Właściciel posiada: 
    - [ ] możliwość przyjmowania zamówień telefonicznych, w postaci wypełniania formularza, w podobny sposób jaki robi to zalogowany użytkownik,
    - [ ] możliwość rezerwacji stolików (dodawaniem, edycja i podgląd rezerwacji),
-   - [ ] możliwość przypisywania punktów lojalnościowych, 
-   - [ ] możliwość modyfikowania cen pizzy,
+   - [X] możliwość przypisywania punktów lojalnościowych, 
+   - [X] możliwość modyfikowania cen pizzy,
    - [ ] możliwość wygenerowania raportu pokazującego dochody w danym przediale czasowym (dochód to różnica ceny bazowej, która ustawiana jest odgórnie w programie a ceny ustalonej przez menedżera).
 2. Klient niezalogowany posiada:
-   - [ ] możliwość zarejestrowania w systemie,
-   - [ ] możliwość zalogowania się w systemie,
+   - [X] możliwość zarejestrowania w systemie,
+   - [X] możliwość zalogowania się w systemie,
    - [X] dostęp do menu,
-   - [ ] dostęp do informacji o lokalach(adres/kontakt),
-   - [ ] możliwość złożenia zamówienia pod podanym numerem telefonu.
+   - [X] dostęp do informacji o lokalach(adres/kontakt),
+   - [X] możliwość złożenia zamówienia pod podanym numerem telefonu.
 3. Klient zalogowany posiada:
    - [ ] możliwość zmiany hasła,
-   - [ ] opcję wylogowania,
+   - [X] opcję wylogowania,
    - [ ] dostęp do menu oraz możliwość złożenia zamówienia przez stonę z wyborem adresu dostawy,
    - [ ] dostęp do informacji związanych ze swoim profilem,
    - [ ] możliwość wyświetlenia raportu, w którym są zestawione rodzaje pizz (posortowane rosnąco/malejąco) według wydanej przez Klienta kwoty w danym okresie czasu oraz łączna kwota zamówień (jako podsumowanie).

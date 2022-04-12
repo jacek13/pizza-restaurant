@@ -1,10 +1,11 @@
 ﻿@page "/"
 
-@using Repository.RepositoryServices
+@using Repository.Services
 @using Models
 @using DataBaseAccess.Models
-
-@inject Repository.RepositoryServices.RepositoryStorage Storage
+@inject NavigationManager NavigationManager
+@inject Repository.Services.PizzaService Storage
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <center>
     <h1 class="display-4">Witamy w Galak Pizza!</h1>
@@ -13,48 +14,117 @@
 
 @if (menu is null)
 {
-    <p><em>Loading...</em></p>
-}
+    <p><em>Loading...</em></p> }
 else
 {
     <div class="box-shadow">
-        <center>
-            <div class="text-center">
-                <h3>Menu</h3>
-            </div>
+    <center>
+        <div class="text-center">
+            <h3>Menu</h3>
+        </div>
 
-            <div class="container">
-                <div class="row mb-3">
-                    <div class="custom-class text-center text-white col-md-8 themed-grid-col-naglowek">Nazwa</div>
-                    <div class="custom-class text-center text-white col-6 col-md-4 themed-grid-col-naglowek">Cena za pizzę [PLN]</div>
-                </div>
+        <div class="container ">
+            <div class="row mb-3 justify-content-center">
+                <div class="custom-class text-center text-white col-md-3 themed-grid-col-naglowek">Nazwa pizzy</div>
+                <div class="custom-class text-center text-white col-6 col-md-2 themed-grid-col-naglowek offset-md-1">Cena za pizzę [PLN]</div>
+                <div class="custom-class text-center text-white col-6 col-md-2 themed-grid-col-naglowek offset-md-1">Punkty</div>
+                <AuthorizeView Roles="Client">
+                    <Authorized>
+                        <div class="custom-class text-center text-white col-6 col-md-2 themed-grid-col-naglowek offset-md-1">Wybór zamówienia</div>
+                    </Authorized>
+                </AuthorizeView>
 
-                @foreach (var pizza in menu)
+             </div>
+            
+            @foreach (var pizza in menu)
+            {
+                if (pizza.IsAvailable)
                 {
-                    if (pizza.IsAvailable)
+                    int local =menu.IndexOf(pizza);
+                    <div class="row mb-3 justify-content-center">
+                    <div class="custom-class text-center col-md-3 themed-grid-col">@pizza.Type</div>
+                    <div class="custom-class text-center col-6 col-md-2 themed-grid-col offset-md-1">@pizza.Price</div>
+
+                    @if (pizza.Points == null || pizza.Points == 0)
                     {
-                        <div class="row mb-3">
-                            <div class="custom-class text-center col-md-8 themed-grid-col">@pizza.Type</div>
-                            <div class="custom-class text-center col-6 col-md-4 themed-grid-col">@pizza.Price</div>
+                        <div class="custom-class text-center col-6 col-md-2 themed-grid-col offset-md-1">brak</div> }
+                    else
+                    {
+                        <div class="custom-class text-center col-6 col-md-2 themed-grid-col offset-md-1">@pizza.Points</div>}
+                            <AuthorizeView Roles="Client">
+                                <Authorized>
+                                    <input type="number" id="pizzaAmount@(pizza.IdPizza)" min="0" step="1" class="custom-class text-center col-md-1 offset-md-1 " @bind-value="@order[local]">
+                                    <div class="form-check text-center col-md-1 col-6">
+                                        <center>
+                                            <input class="checkbox-xl" type="checkbox" id="pizzaIsChecked@(pizza.IdPizza) ">
+                                            <label class="form-check-label" for="flexCheckChecked">
+                                                Dodaj
+                                            </label>
+                                        </center>
+                                    </div>
+                                </Authorized>
+                            </AuthorizeView>
                         </div>
-                    }
                 }
-            </div>
-        </center>
-    </div>
+        }
+        </div>
+        <AuthorizeView Roles="Client">
+            <Authorized>
+                <button @onclick="@realization" class="btn btn-primary">Zrealizuj zamówienie</button>
+            </Authorized>
+        </AuthorizeView>
+    </center>
+</div>
 }
 
-<hr class="my-4"/>
-<div class="text-center">
-    <h5><span class="material-icons">phone</span> 999 998 997</h5>
-</div>
+<hr class="my-4" />
+<center>
+    <AuthorizeView Roles="Client">
+        <NotAuthorized>
+            <div class="custom-class text-center col-md-4 themed-alert">
+                <h4><span class="material-icons">phone</span> 999 998 997</h4>
+                <h6>Złóż zamówienie telefonicznie</h6>
+                <h6>(zamówienie online możliwe dopiero po założeniu konta lub zalogowaniu się)</h6>
+            </div>
+        </NotAuthorized>
+    </AuthorizeView>
+</center>
 
 @code
 {
     private List<Pizza> menu;
+  
+    [Parameter]
+    public List<int> order { get; set; }=new List<int>(); // TODO trzeba dodać do session storage
+    private List<bool> isChecked;
+    private int test;
+
+    protected override Task OnInitializedAsync()
+    {
+        List<bool> isChecked = new List<bool>();
+        return base.OnInitializedAsync();
+    }
 
     protected override async Task OnParametersSetAsync()
     {
+
         menu = await Storage.GetMenu();
+
+        for (int i = 0; i < menu.Count; i++)
+            order.Add(0);
+    }
+
+    private async Task<bool> realization()
+    {
+        try
+        {
+            NavigationManager.NavigateTo("/client/order/summary");
+            return await Task.FromResult(true);
+        }
+        catch (Exception e)
+        {
+
+            return await Task.FromResult(false);
+        }
     }
 }

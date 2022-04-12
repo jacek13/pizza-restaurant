@@ -1,57 +1,58 @@
 ﻿@page "/Contact"
 
-@using Repository.RepositoryServices
+@using Repository.Services
 @using Models
 @using DataBaseAccess.Models
 
-@inject Repository.RepositoryServices.RepositoryStorage Storage
+@inject Repository.Services.RestaurantService Storage
 
-@if (dataCheck)
-{
-    <center>
+<center>
     <br />
     <h2>Zapraszamy do kontaktu w celu złożenia zamówienia!</h2>
     <br />
     <h4>Nasze restauracje</h4>
     <br />
-    @if (restaurants is null )
-    {
-        <p><em>Loading...</em></p>
-    }
-    else
-    {
-        if (dataCheck)
-        {
-            <div class="border-secondary">
-                <center>
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <!-- <th>Restaurant ID</th>  -->
-                                <th>Adres</th>
-                                <th>Telefon</th>
-                                <th>E-mail</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach(var item in restaurants)
-                            {
-                                <tr>
-                                    <!-- <th>@item.IdRestaurant</th> -->
-                                    <th>@item.Address</th>
-                                    <th>@item.PhoneNumber</th>
-                                    <th>@item.EMail</th>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </center>
-            </div>
+</center>
 
-        }
-    }
-    </center>
+
+<center>
+@if (restaurants is null )
+{
+    <p><em>Loading...</em></p>
 }
+else
+{
+    //if (dataCheck)
+    //{
+        <div class="border-secondary">
+            <center>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <!-- <th>Restaurant ID</th>  -->
+                            <th>Adres</th>
+                            <th>Telefon</th>
+                            <th>E-mail</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach(var item in restaurants)
+                        {
+                            <tr>
+                                <!-- <th>@item.IdRestaurant</th> -->
+                                <th>@item.Address</th>
+                                <th>@item.PhoneNumber</th>
+                                <th>@item.EMail</th>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </center>
+        </div>
+
+    //}
+}
+</center>
 
 @code {
 

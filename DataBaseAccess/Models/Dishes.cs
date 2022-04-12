@@ -11,7 +11,7 @@ namespace DataBaseAccess.Models
         public int? HistoricalPrice { get; set; }
         public int? Amount { get; set; }
 
-        public virtual Order OrderIdOrderNavigation { get; set; }
-        public virtual Pizza PizzaIdPizzaNavigation { get; set; }
+        public virtual Order Order { get; set; }
+        public virtual Pizza Pizza { get; set; }
     }
 }

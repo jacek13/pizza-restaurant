@@ -22,3 +22,13 @@ VALUES (0,'Amarantowa 1', (SELECT COUNT(*) FROM pizza_restaurant_ver_6.dbo.accou
 --Create new pizza type
 INSERT INTO pizza_restaurant_ver_6.dbo.pizza (price, cost, isAvailable, type, size, points)
 VALUES (24, 14, 1, 'capriciosa', 32, 2);
+
+--create new restaurats
+INSERT INTO pizza_restaurant_ver_6.dbo.restaurant (address, phone_number, e_mail)
+VALUES ('Konarskiego 13', '1293848576', 'galakPizzaK@gmail.com');
+
+INSERT INTO pizza_restaurant_ver_6.dbo.restaurant (address, phone_number, e_mail)
+VALUES ('Akademicka 16', '322371310', 'galakPizzaA@gmail.com');
+
+INSERT INTO pizza_restaurant_ver_6.dbo.restaurant (address, phone_number, e_mail)
+VALUES ('Chorzowska 23', '123654798', 'galakPizzaC@gmail.com');

@@ -7,7 +7,7 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
-@inject Repository.RepositoryServices.RepositoryStorage Storage
+@inject Repository.Services.AccountManagmentService managmentService
 
 <center>
     <h3 class="display-4">Register</h3>
@@ -37,10 +37,21 @@
     </EditForm>
 </center>
 
+@if(isException)
+{
+    <center> 
+        <hr>
+        <h3 style="color:rgb(255,51,51)">Błędne dane!</h3> 
+    </center>
+    <p>@error</p>
+}
+
 @code 
 {
     // private User user;
     private ClientFront newClient;
+    private string error;
+    private bool isException = false;
 
     protected override Task OnInitializedAsync()
     {
@@ -51,23 +62,33 @@
 
     private async Task<bool> ValidateUser()
     {
-        newClient.Role = "Client";
-        Storage.AddNewClient(newClient.EMail, newClient.Login, newClient.Password,
-                                    newClient.Name, newClient.Surname, DateTime.Today, newClient.PhoneNumber, 0, newClient.Address, newClient.Role);
+        try
+        {
+            isException = false;
+            newClient.Role = "Client";
+            await managmentService.AddNewClient(newClient.EMail, newClient.Login, newClient.Password,
+                                        newClient.Name, newClient.Surname, DateTime.Today, newClient.PhoneNumber, 0, newClient.Address, newClient.Role);
 
-        ((CustomAuthenticationStateProvider)AuthenticationStateProvider).MarkUserAsAuthenticated(newClient);
-        NavigationManager.NavigateTo("/");
+            ((CustomAuthenticationStateProvider)AuthenticationStateProvider).MarkUserAsAuthenticated(newClient);
+            NavigationManager.NavigateTo("/");
 
-        await sessionStorage.SetItemAsStringAsync("email", newClient.EMail);
-        await sessionStorage.SetItemAsStringAsync("name", newClient.Name);
-        await sessionStorage.SetItemAsStringAsync("surname", newClient.Surname);
-        await sessionStorage.SetItemAsStringAsync("login", newClient.Login);
-        await sessionStorage.SetItemAsStringAsync("password", newClient.Password);
-        await sessionStorage.SetItemAsStringAsync("phone", newClient.Name);
-        await sessionStorage.SetItemAsStringAsync("address", newClient.Address);
-        await sessionStorage.SetItemAsStringAsync("role", newClient.Role);
-        newClient = new ClientFront();
+            await sessionStorage.SetItemAsStringAsync("email", newClient.EMail);
+            await sessionStorage.SetItemAsStringAsync("name", newClient.Name);
+            await sessionStorage.SetItemAsStringAsync("surname", newClient.Surname);
+            await sessionStorage.SetItemAsStringAsync("login", newClient.Login);
+            await sessionStorage.SetItemAsStringAsync("password", newClient.Password);
+            await sessionStorage.SetItemAsStringAsync("phone", newClient.Name);
+            await sessionStorage.SetItemAsStringAsync("address", newClient.Address);
+            await sessionStorage.SetItemAsStringAsync("role", newClient.Role);
+            newClient = new ClientFront();
 
-        return await Task.FromResult(true);
+            return await Task.FromResult(true);
+        }
+        catch (Exception e)
+        {
+            error = e.ToString();
+            isException = true;
+            return await Task.FromResult(false);
+        }
     }
 }
