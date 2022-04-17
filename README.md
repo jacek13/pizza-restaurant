@@ -2,7 +2,8 @@
 
 Aplikacja internetowa umożliwiająca zarządzanie siecią pizzeri. W zależności od roli w systemie interfejs oraz funkcjonalność aplikacji będzie się zmieniała. Baza danych będzie przechowywała informacje o użytkonikach systemu oraz dane o potrawach.
 
-W aktualnej wersji w celu połączenia z bazą danych należy utworzyć nową bazę w środowuisku **Microsoft SQL Server Managment Studio**. Następnie utworzyć w niej Query wykorzustując skrypt zamieszczony w repozytorium: **pizza_restaurant_ver_5_DDL.sql** (mieści się on w folderze resources).
+W aktualnej wersji w celu połączenia z bazą danych należy utworzyć nową bazę w środowuisku **Microsoft SQL Server Managment Studio**. Następnie utworzyć w niej Query wykorzustując skrypt zamieszczony w repozytorium: **pizza_restaurant_ver_6_DDL.sql** (mieści się on w folderze resources).
+Można znaleźć tam również skrypt SQL wypełniający bazę danych.
 
 ---
 

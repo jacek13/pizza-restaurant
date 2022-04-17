@@ -8,6 +8,7 @@
 @inject NavigationManager NavigationManager
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @inject Repository.Services.AccountService accountService
+@inject Repository.Services.ClientService clientService
 
 <center>
     <h3 class="display-4">Login</h3>
@@ -49,14 +50,17 @@
         try
         {
             var dbUser = await accountService.GetAccountByLoginAndPassword(user.Email, user.Password);
+            var clientData = await clientService.GetClientByAccountId(dbUser.IdAccount);
             Client.Name = dbUser.Name;
             Client.Password = dbUser.Password;
             Client.Surname = dbUser.Surname;
             Client.Login = dbUser.Login;
             Client.Role = dbUser.Role;
             Client.EMail = dbUser.EMail;
-            Client.Address = "Not loaded";
-            Client.PhoneNumber = "Not loaded";
+            Client.PhoneNumber = dbUser.PhoneNumber;
+            Client.Address = clientData.Address;
+
+            // Client Front nie ma atrybutu points!
             isException = false;
 
             ((CustomAuthenticationStateProvider)AuthenticationStateProvider).MarkUserAsAuthenticated(Client);
@@ -68,9 +72,10 @@
             await sessionStorage.SetItemAsStringAsync("surname", Client.Surname);
             await sessionStorage.SetItemAsStringAsync("login", Client.Login);
             await sessionStorage.SetItemAsStringAsync("password", Client.Password);
-            await sessionStorage.SetItemAsStringAsync("phone", "Not loaded");
-            await sessionStorage.SetItemAsStringAsync("address", "Not loaded");
+            await sessionStorage.SetItemAsStringAsync("phone", Client.PhoneNumber);
+            await sessionStorage.SetItemAsStringAsync("address", Client.Address);
             await sessionStorage.SetItemAsStringAsync("role", Client.Role);
+            await sessionStorage.SetItemAsStringAsync("points", clientData.Points.ToString());
 
             return await Task.FromResult(true);
         }

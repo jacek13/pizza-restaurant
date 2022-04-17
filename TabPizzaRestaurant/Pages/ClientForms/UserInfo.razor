@@ -1,7 +1,56 @@
 ﻿@page "/client/info"
+
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
 <h3>UserInfo TODO</h3>
+
+<hr>
+<AuthorizeView Roles="Client">
+    <Authorized>
+        @if (deleteMe is null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            <center>
+                @for(int i = 0; i < deleteMe.Count; i++)
+                {
+                    <p>@storageAttributes[@i]: @deleteMe[@i]</p>
+                }
+            </center>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <center> 
+        <hr>
+            <h3 style="color:rgb(255,51,51)">Brak upoważnienia!</h3> 
+        </center>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code 
 {
+    private List<string> deleteMe;
+    private readonly List<string> storageAttributes = new List<string>() {   
+                                                                                "email", 
+                                                                                "name", 
+                                                                                "surname", 
+                                                                                "login", 
+                                                                                "password", 
+                                                                                "phone", 
+                                                                                "address", 
+                                                                                "role", 
+                                                                                "points" 
+                                                                            };
 
+    protected override async Task OnParametersSetAsync()
+    {
+        deleteMe = new List<string>();
+        foreach(var item in storageAttributes)
+        {
+            deleteMe.Add(await sessionStorage.GetItemAsStringAsync(item));
+        }
+    }
 }

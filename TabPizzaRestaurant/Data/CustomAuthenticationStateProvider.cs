@@ -1,5 +1,6 @@
 ﻿using Blazored.SessionStorage;
 using Microsoft.AspNetCore.Components.Authorization;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using TabPizzaRestaurant.Models;
@@ -16,14 +17,20 @@ namespace TabPizzaRestaurant.Data
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
+            var name = await _sessionStorageService.GetItemAsync<string>("name");
             var email = await  _sessionStorageService.GetItemAsync<string>("email");
+            var role = await _sessionStorageService.GetItemAsync<string>("role");
+            var surname = await _sessionStorageService.GetItemAsync<string>("surname");
             ClaimsIdentity identity;
 
             if (email != null)
             {
                 identity = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.Name, email),
+                    new Claim(ClaimTypes.Name, name),
+                    new Claim(ClaimTypes.Email, email),
+                    new Claim(ClaimTypes.Role, role),
+                    new Claim(ClaimTypes.Surname, surname)
                 }, "apiauth_type");
             }
             else
@@ -54,6 +61,7 @@ namespace TabPizzaRestaurant.Data
             _sessionStorageService.RemoveItemAsync("phone");
             _sessionStorageService.RemoveItemAsync("address");
             _sessionStorageService.RemoveItemAsync("role");
+            _sessionStorageService.RemoveItemAsync("points");
 
             var identity = new ClaimsIdentity();
             var user = new ClaimsPrincipal(identity);
@@ -65,8 +73,10 @@ namespace TabPizzaRestaurant.Data
         {
             var claimsIdentity = new ClaimsIdentity(new[]
 {
-                new Claim(ClaimTypes.Name, user.EMail),
-                new Claim(ClaimTypes.Role, user.Role)
+                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Email, user.EMail),
+                new Claim(ClaimTypes.Role, user.Role),
+                new Claim(ClaimTypes.Surname, user.Surname)
             }, "apiauth_type");
 
             return claimsIdentity;

@@ -22,6 +22,24 @@ namespace Repository.Services
             return _clientRepo.GetAll();
         }
 
+        public async Task<Client> GetClientByAccountId(int accountId)
+        {
+            var clients = await _clientRepo.GetAll();
+            var clientTmp = new Client();
+            bool found = false;
+
+            foreach (var client in clients)
+                if (client.AccountIdAccount == accountId)
+                {
+                    clientTmp = client;
+                    found = true;
+                    break;
+                }
+            if (found)
+                return clientTmp;
+            else throw new Exception("Client not found!");
+        }
+
         public async void UpdateClientPoints(int id, int points)
         {
             var tmp = await _clientRepo.GetAll();

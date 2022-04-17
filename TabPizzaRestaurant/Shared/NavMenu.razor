@@ -13,13 +13,12 @@
         <div class="@NavMenuCssClass"  @onclick="ToggleNavMenu">
             <ul class="navbar-nav flex-grow-1">
 
-                <Authorized>
+
                 <li class="nav-item">
                     <NavLink class="nav-link text-dark" href="" Match="NavLinkMatch.All">
                         <span class="material-icons">home</span> Home
                     </NavLink>                
                 </li>
-                </Authorized>
 
                 <AuthorizeView Roles="Admin">
                     <Authorized>
@@ -29,8 +28,8 @@
                             </NavLink>
                         </li>
                     </Authorized>
-
                 </AuthorizeView>
+
                 <AuthorizeView Roles="Manager">
                     <Authorized>
                         <li class="nav-item">
@@ -40,14 +39,23 @@
                         </li>
                     </Authorized>
                 </AuthorizeView>
-     
+
+                <AuthorizeView Roles="Client">
                     <Authorized>
                         <li class="nav-item">
-                            <NavLink class="nav-link text-dark" href="Contact">
-                                <span class="material-icons">explore</span> Kontakt
+                            <NavLink class="nav-link text-dark" href="client/info">
+                                <span class="material-icons">edit</span>info
                             </NavLink>
                         </li>
                     </Authorized>
+                </AuthorizeView>
+     
+                <li class="nav-item">
+                    <NavLink class="nav-link text-dark" href="Contact">
+                        <span class="material-icons">explore</span> Kontakt
+                    </NavLink>
+                </li>
+
                 
 
             </ul>
