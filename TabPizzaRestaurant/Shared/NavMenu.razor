@@ -16,7 +16,7 @@
                 <Authorized>
                 <li class="nav-item">
                     <NavLink class="nav-link text-dark" href="" Match="NavLinkMatch.All">
-                        <span class="material-icons">home</span> Home
+                        <span class="material-icons">home</span> Strona domowa
                     </NavLink>                
                 </li>
                 </Authorized>
@@ -25,9 +25,10 @@
                     <Authorized>
                         <li class="nav-item">
                             <NavLink class="nav-link text-dark" href="Test/Client">
-                                <span class="material-icons">accessibility</span>Test Client 
+                                <span class="material-icons">accessibility</span> Testowanie klientów 
                             </NavLink>
                         </li>
+                      
                     </Authorized>
 
                 </AuthorizeView>
@@ -35,7 +36,22 @@
                     <Authorized>
                         <li class="nav-item">
                             <NavLink class="nav-link text-dark" href="Manager/ManageMenu">
-                                <span class="material-icons">edit</span>Manage Menu
+                                <span class="material-icons">edit</span> Zarządzaj menu
+                            </NavLink>
+                        </li>
+                          <li class="nav-item">
+                            <NavLink class="nav-link text-dark" href="/Manager/statistics">
+                                <span class="material-icons">analytics</span> Statystyki
+                            </NavLink>
+                        </li>
+                        <li class="nav-item">
+                            <NavLink class="nav-link text-dark" href="Manager/phoneOrder">
+                                <span class="material-icons">add</span> Dodaj zamówienie
+                            </NavLink>
+                        </li>
+                        <li class="nav-item">
+                            <NavLink class="nav-link text-dark" href="client/reservation">
+                                <span class="material-icons">event_seat</span> Rezerwuj stolik
                             </NavLink>
                         </li>
                     </Authorized>
@@ -44,7 +60,7 @@
                     <Authorized>
                         <li class="nav-item">
                             <NavLink class="nav-link text-dark" href="Contact">
-                                <span class="material-icons">explore</span> Kontakt
+                                <span class="material-icons">contact_page</span> Kontakt
                             </NavLink>
                         </li>
                     </Authorized>
@@ -54,12 +70,12 @@
         </div>
         <AuthorizeView>
             <Authorized>
-                <a class="custom-class text-center col-6 col-md-3 themed-grid-col" href="/myAccount">Welcome @context.User.Identity.Name</a>
-                <a class="custom-class text-center col-6 col-md-1 themed-grid-col" href="/" @onclick="(() => Logout())">Logout</a>
+                <a class="custom-class text-center col col-sm-3 col-md-3 themed-grid-col" href="/myAccount">Witamy @context.User.Identity.Name</a>
+                <a class="custom-class text-center col col-sm-2 col-md-2 themed-grid-col" href="/" @onclick="(() => Logout())">Wyloguj się</a>
             </Authorized>
             <NotAuthorized>
-                <a class="custom-class text-center col-6 col-md-1 themed-grid-col" href="/login">Login</a>
-                <a class="custom-class text-center col-6 col-md-1 themed-grid-col" href="/register">Register</a>
+                <a class="custom-class text-center col col-sm-2 col-md-2 themed-grid-col" href="/login">Logowanie</a>
+                <a class="custom-class text-center col col-sm-2 col-md-2 themed-grid-col" href="/register">Rejestracja</a>
             </NotAuthorized>
         </AuthorizeView>
     </div>
