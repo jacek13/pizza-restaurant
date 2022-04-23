@@ -1,7 +1,139 @@
 ﻿@page "/client/order/summary"
-<h3>OrderSummary TODO</h3>
+<h3>Podsumowanie zamówienia</h3>
+
+@using System
+@using DataBaseAccess.Models
+@using TabPizzaRestaurant.Models
+
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Repository.Services.PizzaService pizzaService
+@inject NavigationManager NavigationManager
+
+@if(orderInfo is null || selectedDishes is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <center> 
+        <hr>
+        <div>
+            <!-- Dane o wybranych pizzach -->
+            <div style="width: 50%; height: 100px; float: left;">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Pizza</th>
+                            <th>Ilość</th>
+                            <th>Cena</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach(var dish in selectedDishes)
+                    { 
+                      <tr>
+                          <th>@dish.Item1.Type</th>
+                          <th>@dish.Item2</th>
+                          <th>@calculatePrice(@dish.Item1.Price, @dish.Item2)</th>
+                      </tr>        
+                    }
+                    </tbody>
+                </table>
+                <h3>Kwota łącznie: @calculateTheSum() @currencyType</h3>
+            </div>
+            <!-- Dane Kliencie-->
+            <div style="margin-left: 50%; height: 100px;">
+                <h3>Dane do zamówienia</h3>
+                <EditForm Model="@orderData" OnValidSubmit="@makeOrder">
+                    <div>
+                        <div class="row">
+                            <div class="flex-md-column"><p>Imię:</p>      <InputText id="firstName" @bind-Value="orderData.FirstName"/></div>
+                            <div class="flex-md-column"><p>Nazwisko:</p>   <InputText id="secondName" @bind-Value="orderData.LastName"/></div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="flex-md-column"><p>Telefon:</p>     <InputText id="Phone" @bind-Value="orderData.PhoneNumber"/></div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="flex-md-column"><p>Adres:</p>  <InputText id="Address" @bind-Value="orderData.Address"/></div>
+                            <div class="flex-md-column"><p>Miasto:</p>  <InputText id="City" @bind-Value="orderData.City"/></div>
+                        </div>
+                    </div>
+                    <div class="box-shadow"> 
+                        <DataAnnotationsValidator/>
+                        <ValidationSummary/>  
+                    </div>
+                    <br />
+                    <button type="submit" class="btn btn-primary">Złóż zamówienie</button>
+                </EditForm>
+            </div>
+        </div>
+    </center>
+}
+
+@if(wasException)
+{
+    <center> 
+        <hr>
+        <p style="color:rgb(255,51,51)">@error</p>
+    </center>   
+}
 
 @code 
 {
+    private string currencyType;
+    private string orderInfo;
+    private string error;
+    private bool wasException;
+    private OrderFront orderData;
+    List<(Pizza, int)> selectedDishes;
 
+    protected override async Task OnParametersSetAsync()
+    {
+        wasException = false;
+        currencyType = "ZŁ";
+        try
+        {
+            await initOrderData();
+            orderInfo = new string("");
+            orderInfo = await sessionStorage.GetItemAsStringAsync("order_info");
+            selectedDishes = await pizzaService.SelectItemsFromTheSummary(orderInfo);
+        }
+        catch(Exception e)
+        {
+            error = e.Message;
+            wasException = true;
+        }
+    }
+
+    private int calculatePrice(int priceFromSinglePizza, int ammount) => priceFromSinglePizza * ammount;
+
+    private int calculateTheSum()
+    {
+        int sum = 0;
+        foreach(var dish in selectedDishes)
+            sum += (dish.Item1.Price * dish.Item2);
+
+        return sum;
+    }
+
+    private async Task initOrderData()
+    {
+        orderData = new OrderFront()
+            {
+                FirstName = await sessionStorage.GetItemAsStringAsync("name"),
+                LastName = await sessionStorage.GetItemAsStringAsync("surname"),
+                PhoneNumber = await sessionStorage.GetItemAsStringAsync("phone"),
+                Address = await sessionStorage.GetItemAsStringAsync("address"),
+                City = "Wprowadz dane..."
+            };
+    }
+
+    private async void makeOrder()
+    {
+        // TODO insert order into database
+        await sessionStorage.RemoveItemAsync("order_info");
+        NavigationManager.NavigateTo("/");
+    }
 }

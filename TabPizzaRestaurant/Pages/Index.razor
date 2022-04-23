@@ -3,16 +3,18 @@
 @using Repository.Services
 @using Models
 @using DataBaseAccess.Models
+
 @inject NavigationManager NavigationManager
 @inject Repository.Services.PizzaService Storage
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
 <center>
     <h1 class="display-4">Witamy w Galak Pizza!</h1>
 </center>
 <hr class="my-4">
 
-@if (menu is null)
+@if (sortedMenu is null)
 {
     <p><em>Loading...</em></p> }
 else
@@ -36,11 +38,11 @@ else
 
              </div>
             
-            @foreach (var pizza in menu)
+            @foreach (var pizza in sortedMenu)
             {
                 if (pizza.IsAvailable)
                 {
-                    int local =menu.IndexOf(pizza);
+                    int local =sortedMenu.IndexOf(pizza);
                     <div class="row mb-3 justify-content-center">
                     <div class="custom-class text-center col-md-3 themed-grid-col">@pizza.Type</div>
                     <div class="custom-class text-center col-6 col-md-2 themed-grid-col offset-md-1">@pizza.Price</div>
@@ -53,7 +55,7 @@ else
                         <div class="custom-class text-center col-6 col-md-2 themed-grid-col offset-md-1">@pizza.Points</div>}
                             <AuthorizeView Roles="Client">
                                 <Authorized>
-                                    <input type="number" id="pizzaAmount@(pizza.IdPizza)" min="0" step="1" class="custom-class text-center col-md-1 offset-md-1 " @bind-value="@order[local]">
+                                    <input type="number" id="pizzaAmount@(pizza.IdPizza)" min="0" step="1" class="custom-class text-center col-md-1 offset-md-1 " @bind="@order[local]">
                                     <div class="form-check text-center col-md-1 col-6">
                                         <center>
                                             <input class="checkbox-xl" type="checkbox" id="pizzaIsChecked@(pizza.IdPizza) ">
@@ -93,7 +95,8 @@ else
 @code
 {
     private List<Pizza> menu;
-  
+    private List<Pizza> sortedMenu;
+
     [Parameter]
     public List<int> order { get; set; }=new List<int>(); // TODO trzeba dodać do session storage
     private List<bool> isChecked;
@@ -101,7 +104,8 @@ else
 
     protected override Task OnInitializedAsync()
     {
-        List<bool> isChecked = new List<bool>();
+        isChecked = new List<bool>();   // TODO to jest w sumie potrzebne? 
+        sortedMenu = new List<Pizza>();
         return base.OnInitializedAsync();
     }
 
@@ -109,15 +113,35 @@ else
     {
 
         menu = await Storage.GetMenu();
+        sortedMenu = menu.OrderBy(o => o.Type).ToList();
 
-        for (int i = 0; i < menu.Count; i++)
+        for (int i = 0; i < sortedMenu.Count; i++)
             order.Add(0);
+    }
+
+    private async void addPizzaToSessionStorage()
+    {
+        string whichPizzaIdWasSelected = "";
+        for(int i = 0; i < order.Count; i++)
+        {
+            //string tmp = "order_how_many_selected_" + sortedMenu[i].IdPizza.ToString();
+            //await sessionStorage.SetItemAsStringAsync(tmp, order[i].ToString());
+            if(order[i] > 0)
+            {
+                whichPizzaIdWasSelected += "*";
+                whichPizzaIdWasSelected += sortedMenu[i].IdPizza.ToString();
+                whichPizzaIdWasSelected += "_" + order[i].ToString();
+                whichPizzaIdWasSelected += "*";
+            }
+        }
+        await sessionStorage.SetItemAsStringAsync("order_info", whichPizzaIdWasSelected);
     }
 
     private async Task<bool> realization()
     {
         try
         {
+            addPizzaToSessionStorage();
             NavigationManager.NavigateTo("/client/order/summary");
             return await Task.FromResult(true);
         }

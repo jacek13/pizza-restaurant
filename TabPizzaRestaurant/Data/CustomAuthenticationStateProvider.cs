@@ -62,6 +62,7 @@ namespace TabPizzaRestaurant.Data
             _sessionStorageService.RemoveItemAsync("address");
             _sessionStorageService.RemoveItemAsync("role");
             _sessionStorageService.RemoveItemAsync("points");
+            _sessionStorageService.RemoveItemAsync("order_info");
 
             var identity = new ClaimsIdentity();
             var user = new ClaimsPrincipal(identity);

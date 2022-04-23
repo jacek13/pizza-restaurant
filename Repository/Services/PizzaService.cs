@@ -73,5 +73,24 @@ namespace Repository.Services
                 //await _pizzaRepo.Save();
             }
         }
+
+        public async Task<List<(Pizza, int)>> SelectItemsFromTheSummary(string summaryFromSessionStorage)
+        {
+            if (summaryFromSessionStorage != null)
+            {
+                // Format: *Id_Ammount**Id_Ammount*
+                var afterSplit = summaryFromSessionStorage.Split('*', StringSplitOptions.RemoveEmptyEntries);
+                List<(Pizza, int)> selectedDishes = new List<(Pizza, int)>();
+                foreach (var item in afterSplit)
+                {
+                    // Format: Id_Ammount
+                    var idAndAmmount = item.Split('_', StringSplitOptions.RemoveEmptyEntries);
+                    selectedDishes.Add((await _pizzaRepo.GetById(Int32.Parse(idAndAmmount[0].ToString())), Int32.Parse(idAndAmmount[1].ToString())));
+                }
+                return selectedDishes;
+            }
+            else
+                throw new Exception("Input string is null!");
+        }
     }
 }
