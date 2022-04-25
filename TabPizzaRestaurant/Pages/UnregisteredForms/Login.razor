@@ -10,16 +10,27 @@
 @inject Repository.Services.AccountService accountService
 @inject Repository.Services.ClientService clientService
 
+<style>
+    button{
+        margin-top:2px;
+    }
+    div{
+        margin:2px;
+    }
+    h3{
+        margin-bottom:3%;
+    }
+</style>
 <center>
-    <h3 class="display-4">Login</h3>
+    <h3 class="display-4">Logowanie</h3>
 
     <EditForm Model="@user" OnValidSubmit="@ValidateUser">
-        <div>Email or login:   <InputText id="email" @bind-Value="user.Email"/></div>
-        <div>Password:   <InputText id="password" @bind-Value="user.Password"/></div>
-        <button type="submit" class="btn btn-primary">Login</button>
+        <div class="email">Email lub login:<br /> <InputText id="email" @bind-Value="user.Email"/></div>
+        <div>Hasło:<br />   <InputText type="password" id="password" @bind-Value="user.Password"/></div>
+        <button type="submit" class="btn btn-primary">Zaloguj się</button>
     </EditForm>
     <br />
-    <a class="custom-class text-center col-6 col-md-1 themed-grid-col" href="/register">Register</a>
+    <a class="custom-class text-center col-6 col-md-1 themed-grid-col" href="/register">Rejestracja</a>
 </center>
 
 

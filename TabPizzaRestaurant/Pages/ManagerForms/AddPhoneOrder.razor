@@ -1,7 +1,222 @@
 ﻿@page "/Manager/phoneOrder"
-<h3>AddPhoneOrder TODO</h3>
+<h3>Wprowadź zamówienie ręcznie</h3>
+
+@using System
+@using DataBaseAccess.Models
+@using System.ComponentModel.DataAnnotations
+@using TabPizzaRestaurant.Models
+
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Repository.Services.ClientService clientService
+@inject Repository.Services.PizzaService pizzaService
+@inject Repository.Services.OrderManagmentService orderManagmentService
+@inject Repository.Services.RestaurantService restaurantService
+@inject NavigationManager NavigationManager
+
+
+@if(menu is null || restaurants is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <center> 
+        <div>
+            <!-- Dane o wybranych pizzach -->
+            <div style="width: 50%; height: 100px; float: left;">
+            <hr>
+            <h4>Wybierz dania</h4>
+            <EditForm Model="@forValidation" OnSubmit="@addDish">
+                    <InputSelect id="date" @bind-Value="forValidation.id">
+                        @foreach (var pizza in menu)
+                        {
+                            <option value="@pizza.IdPizza">@pizza.Type</option>
+                        }
+                    </InputSelect>
+                    <p>Ilość:</p>  <InputNumber id="Ammount" @bind-Value="forValidation.ammount"/>
+                <button type="submit" class="btn btn-primary">Dodaj do zamówienia</button>
+                <DataAnnotationsValidator/>
+                <ValidationSummary/>  
+            </EditForm>
+            @if (selectedDishes is not null)
+            {
+                    @if (selectedDishes.Count > 0)
+                    {
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Pizza</th>
+                                    <th>Ilość</th>
+                                    <th>Cena</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var dish in selectedDishes)
+                                {
+                                    <tr>
+                                        <th>@dish.Item1.Type</th>
+                                        <th>@dish.Item2</th>
+                                        <th>@calculatePrice(@dish.Item1.Price, @dish.Item2)</th>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <h3>Kwota łącznie: @calculateTheSum() @currencyType</h3>
+                    }
+            }
+            </div>
+            <!-- Dane Kliencie-->
+            <div style="margin-left: 50%; height: 100px;">
+                <h3>Dane klienta</h3>
+                <EditForm Model="@orderData" OnValidSubmit="@makeOrder">
+                    <div>
+                        <div class="row">
+                            <div class="flex-md-column"><p>Imię:</p>      <InputText id="firstName" @bind-Value="orderData.FirstName"/></div>
+                            <div class="flex-md-column"><p>Nazwisko:</p>   <InputText id="secondName" @bind-Value="orderData.LastName"/></div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="flex-md-column"><p>Telefon:</p>     <InputText id="Phone" @bind-Value="orderData.PhoneNumber"/></div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="flex-md-column"><p>Adres:</p>  <InputText id="Address" @bind-Value="orderData.Address"/></div>
+                            <div class="flex-md-column"><p>Miasto:</p>  <InputText id="City" @bind-Value="orderData.City"/></div>
+                        </div>
+                        <div class="row">
+                            <div class="flex-md-column"><p>Adres naszej restauracji:</p>  
+                                <InputSelect id="restaurant" @bind-Value="orderData.RestaurantId">
+                                    @foreach (var restaurant in restaurants)
+                                    {
+                                        <option value="@restaurant.IdRestaurant">@restaurant.Address</option>
+                                    }
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-shadow"> 
+                        <DataAnnotationsValidator/>
+                        <ValidationSummary/>  
+                    </div>
+                    <br />
+                    <button type="submit" class="btn btn-primary">Złóż zamówienie</button>
+                </EditForm>
+            </div>
+        </div>
+    </center>
+}
+
+@if(wasException)
+{
+    <center> 
+        <hr>
+        <p style="color:rgb(255,51,51)">@error</p>
+    </center>   
+}
 
 @code 
 {
+    private string currencyType;
+    private string error;
+    private bool wasException;
+    private OrderFront orderData;
+    List<(Pizza, int)> selectedDishes;
+    List<Restaurant> restaurants;
+    private List<Pizza> menu;
+    private PizzaSelectionForm forValidation;
 
+    protected override async Task OnParametersSetAsync()
+    {
+        wasException = false;
+        currencyType = "ZŁ";
+        try
+        {
+            forValidation = new PizzaSelectionForm()
+            {
+                id = 1,
+                ammount = 0
+            };
+            menu = await pizzaService.GetMenu();
+            restaurants = await restaurantService.GetRestaurants();
+            initOrderData();
+            selectedDishes = new List<(Pizza, int)>();
+        }
+        catch(Exception e)
+        {
+            error = e.Message;
+            wasException = true;
+        }
+    }
+
+    private int calculatePrice(int priceFromSinglePizza, int ammount) => priceFromSinglePizza * ammount;
+
+    private int calculateTheSum()
+    {
+        int sum = 0;
+        foreach(var dish in selectedDishes)
+            sum += (dish.Item1.Price * dish.Item2);
+
+        return sum;
+    }
+
+    private int sumOfPoints()
+    {
+        int sum = 0;
+        foreach(var dish in selectedDishes)
+            sum += (dish.Item1.Points.GetValueOrDefault() * dish.Item2);
+        return sum;
+    }
+
+    private void initOrderData()
+    {
+        orderData = new OrderFront()
+            {
+                FirstName = "Wprowadź imię klienta",
+                LastName = "Wprowadź nazwisko klienta",
+                PhoneNumber = "Wprowadź telefon klienta",
+                Address = "Wprowadź adres zamówienia",
+                City = "Gliwice",
+                RestaurantId = 1    // TODO kiedyś dać tutaj selecta
+            };
+    }
+
+    private async void makeOrder()
+    {
+        try
+        {
+            var tmp = await orderManagmentService.AddNewOrderAndDishes( orderData.Address, orderData.City, 
+                                                                        orderData.FirstName, orderData.LastName, 
+                                                                        orderData.PhoneNumber, orderData.RestaurantId, 
+                                                                        null, selectedDishes);
+
+            NavigationManager.NavigateTo("/Manager/phoneOrder"); //TODO nawigacja do statystyk restauracji
+        }
+        catch(Exception e)
+        {
+            wasException = true;
+            error = e.Message;
+            this.StateHasChanged();
+        }
+    }
+
+    private void addDish()
+    {
+        var pizza = menu.FirstOrDefault(p => p.IdPizza == forValidation.id);
+        menu.Remove(pizza);
+        selectedDishes.Add((pizza, forValidation.ammount));
+        this.refresh();
+    }
+
+    private void refresh()
+    {
+        this.StateHasChanged();
+    }
+
+    private class PizzaSelectionForm
+    {
+        public int id { get; set; }
+        [Required]
+        [Range(0, 16, ErrorMessage = "Liczba spoza zakresu!")]
+        public int ammount { get; set; }
+    }
 }

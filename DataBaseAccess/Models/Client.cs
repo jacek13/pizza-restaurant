@@ -16,7 +16,7 @@ namespace DataBaseAccess.Models
         public string Address { get; set; }
         public int AccountIdAccount { get; set; }
 
-        public virtual Account Account { get; set; }
+        public virtual Account AccountIdAccountNavigation { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<Reservation> Reservations { get; set; }
     }

@@ -134,6 +134,14 @@ else
         return sum;
     }
 
+    private int sumOfPoints()
+    {
+        int sum = 0;
+        foreach(var dish in selectedDishes)
+            sum += (dish.Item1.Points.GetValueOrDefault() * dish.Item2);
+        return sum;
+    }
+
     private async Task initOrderData()
     {
         orderData = new OrderFront()
@@ -149,12 +157,17 @@ else
 
     private async void makeOrder()
     {
-        try // TODO jest błąd przy dodawaniu 3 zamówienia (trzeba przeanalizować, coś nie tak z kluczami)
+        try
         {
             await sessionStorage.RemoveItemAsync("order_info");
             var accountId = await sessionStorage.GetItemAsStringAsync("account_id");
             var client = await clientService.GetClientByAccountId(Int32.Parse(accountId));
-            var tmp = await orderManagmentService.AddNewOrderAndDishes(orderData.Address, orderData.City, orderData.RestaurantId, client.IdClient, selectedDishes);
+            var tmp = await orderManagmentService.AddNewOrderAndDishes( orderData.Address, orderData.City, 
+                                                                        orderData.FirstName, orderData.LastName, 
+                                                                        orderData.PhoneNumber, orderData.RestaurantId, 
+                                                                        client.IdClient, selectedDishes);
+
+            clientService.UpdateClientPoints(client.IdClient, sumOfPoints());
             NavigationManager.NavigateTo("/client/statistics");
         }
         catch(Exception e)

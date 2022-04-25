@@ -101,7 +101,8 @@ CREATE
   TABLE manager_assignment
   (
     manager_id_manager       INTEGER NOT NULL ,
-    restaurant_id_restaurant INTEGER NOT NULL
+    restaurant_id_restaurant INTEGER NOT NULL ,
+    assignment_role          VARCHAR (128)
   )
   ON "default"
 GO
@@ -118,21 +119,18 @@ GO
 CREATE
   TABLE "order"
   (
-    id_order                 INTEGER IDENTITY(1,1) NOT NULL ,
-    delivery_adress          VARCHAR (128) NOT NULL ,
-                             DATE DATE NOT NULL ,
-    status                   CHAR (1) ,
-    client_id_client         INTEGER ,
-    restaurant_id_restaurant INTEGER
+    id_order                  INTEGER IDENTITY(1,1) NOT NULL ,
+    delivery_adress           VARCHAR (128) NOT NULL ,
+                              DATE DATE NOT NULL ,
+    status                    CHAR (1) ,
+    phone_number              VARCHAR (11) ,
+    "additional_information " VARCHAR (1024) ,
+    name                      VARCHAR (128) ,
+    surname                   VARCHAR (128) ,
+    client_id_client          INTEGER ,
+    restaurant_id_restaurant  INTEGER
   )
   ON "default"
-GO
-CREATE UNIQUE NONCLUSTERED INDEX
-order__IDX ON "order"
-(
-  restaurant_id_restaurant
-)
-ON "default"
 GO
 ALTER TABLE "order" ADD CONSTRAINT order_PK PRIMARY KEY CLUSTERED (id_order)
 WITH

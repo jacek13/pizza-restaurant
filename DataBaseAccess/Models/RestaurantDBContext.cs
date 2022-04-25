@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -30,8 +31,8 @@ namespace DataBaseAccess.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-//                optionsBuilder.UseSqlServer("Server=DESKTOP-2S65Q3J;Database=pizza_restaurant_ver_6;Trusted_Connection=True;");
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+//                optionsBuilder.UseSqlServer("Server=DESKTOP-2S65Q3J;Database=pizza_restaurant_ver_8;Trusted_Connection=True;");
             }
         }
 
@@ -47,48 +48,48 @@ namespace DataBaseAccess.Models
                 entity.Property(e => e.IdAccount).HasColumnName("id_account");
 
                 entity.Property(e => e.AccountCreationDate)
-                    .HasColumnName("account_creation_date")
-                    .HasColumnType("date");
+                    .HasColumnType("date")
+                    .HasColumnName("account_creation_date");
 
                 entity.Property(e => e.EMail)
                     .IsRequired()
-                    .HasColumnName("e_mail")
                     .HasMaxLength(128)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .HasColumnName("e_mail");
 
                 entity.Property(e => e.Login)
                     .IsRequired()
-                    .HasColumnName("login")
                     .HasMaxLength(64)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .HasColumnName("login");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
-                    .HasColumnName("name")
                     .HasMaxLength(128)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .HasColumnName("name");
 
                 entity.Property(e => e.Password)
                     .IsRequired()
-                    .HasColumnName("password")
                     .HasMaxLength(64)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .HasColumnName("password");
 
                 entity.Property(e => e.PhoneNumber)
-                    .HasColumnName("phone_number")
                     .HasMaxLength(11)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .HasColumnName("phone_number");
 
                 entity.Property(e => e.Role)
-                    .HasColumnName("role")
                     .HasMaxLength(64)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .HasColumnName("role");
 
                 entity.Property(e => e.Surname)
                     .IsRequired()
-                    .HasColumnName("surname")
                     .HasMaxLength(128)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .HasColumnName("surname");
             });
 
             modelBuilder.Entity<Client>(entity =>
@@ -98,8 +99,7 @@ namespace DataBaseAccess.Models
 
                 entity.ToTable("client");
 
-                entity.HasIndex(e => e.AccountIdAccount)
-                    .HasName("client__IDX")
+                entity.HasIndex(e => e.AccountIdAccount, "client__IDX")
                     .IsUnique();
 
                 entity.Property(e => e.IdClient).HasColumnName("id_client");
@@ -107,13 +107,13 @@ namespace DataBaseAccess.Models
                 entity.Property(e => e.AccountIdAccount).HasColumnName("account_id_account");
 
                 entity.Property(e => e.Address)
-                    .HasColumnName("address")
                     .HasMaxLength(256)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .HasColumnName("address");
 
                 entity.Property(e => e.Points).HasColumnName("points");
 
-                entity.HasOne(d => d.Account)
+                entity.HasOne(d => d.AccountIdAccountNavigation)
                     .WithOne(p => p.Client)
                     .HasForeignKey<Client>(d => d.AccountIdAccount)
                     .HasConstraintName("client_account_FK");
@@ -136,14 +136,14 @@ namespace DataBaseAccess.Models
 
                 entity.Property(e => e.HistoricalPrice).HasColumnName("historical_price");
 
-                entity.HasOne(d => d.Order)
-                    .WithMany(p => p.DishesCollection)
+                entity.HasOne(d => d.OrderIdOrderNavigation)
+                    .WithMany(p => p.Dishes)
                     .HasForeignKey(d => d.OrderIdOrder)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ASS_3");
 
-                entity.HasOne(d => d.Pizza)
-                    .WithMany(p => p.DishesCollection)
+                entity.HasOne(d => d.PizzaIdPizzaNavigation)
+                    .WithMany(p => p.Dishes)
                     .HasForeignKey(d => d.PizzaIdPizza)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ASS_4");
@@ -156,8 +156,7 @@ namespace DataBaseAccess.Models
 
                 entity.ToTable("manager");
 
-                entity.HasIndex(e => e.AccountIdAccount)
-                    .HasName("manager__IDX")
+                entity.HasIndex(e => e.AccountIdAccount, "manager__IDX")
                     .IsUnique();
 
                 entity.Property(e => e.IdManager).HasColumnName("id_manager");
@@ -168,7 +167,7 @@ namespace DataBaseAccess.Models
 
                 entity.Property(e => e.SalaryNetto).HasColumnName("salary_netto");
 
-                entity.HasOne(d => d.Account)
+                entity.HasOne(d => d.AccountIdAccountNavigation)
                     .WithOne(p => p.Manager)
                     .HasForeignKey<Manager>(d => d.AccountIdAccount)
                     .HasConstraintName("manager_account_FK");
@@ -185,12 +184,17 @@ namespace DataBaseAccess.Models
 
                 entity.Property(e => e.RestaurantIdRestaurant).HasColumnName("restaurant_id_restaurant");
 
-                entity.HasOne(d => d.Manager)
+                entity.Property(e => e.AssignmentRole)
+                    .HasMaxLength(128)
+                    .IsUnicode(false)
+                    .HasColumnName("assignment_role");
+
+                entity.HasOne(d => d.ManagerIdManagerNavigation)
                     .WithMany(p => p.ManagerAssignments)
                     .HasForeignKey(d => d.ManagerIdManager)
                     .HasConstraintName("FK_ASS_7");
 
-                entity.HasOne(d => d.Restaurant)
+                entity.HasOne(d => d.RestaurantIdRestaurantNavigation)
                     .WithMany(p => p.ManagerAssignments)
                     .HasForeignKey(d => d.RestaurantIdRestaurant)
                     .HasConstraintName("FK_ASS_8");
@@ -203,40 +207,56 @@ namespace DataBaseAccess.Models
 
                 entity.ToTable("order");
 
-                entity.HasIndex(e => e.RestaurantIdRestaurant)
-                    .HasName("order__IDX")
-                    .IsUnique();
-
                 entity.Property(e => e.IdOrder).HasColumnName("id_order");
+
+                entity.Property(e => e.AdditionalInformation)
+                    .HasMaxLength(1024)
+                    .IsUnicode(false)
+                    .HasColumnName("additional_information ");
 
                 entity.Property(e => e.ClientIdClient).HasColumnName("client_id_client");
 
                 entity.Property(e => e.Date)
-                    .HasColumnName("DATE")
-                    .HasColumnType("date");
+                    .HasColumnType("date")
+                    .HasColumnName("DATE");
 
                 entity.Property(e => e.DeliveryAdress)
                     .IsRequired()
-                    .HasColumnName("delivery_adress")
                     .HasMaxLength(128)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .HasColumnName("delivery_adress");
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(128)
+                    .IsUnicode(false)
+                    .HasColumnName("name");
+
+                entity.Property(e => e.PhoneNumber)
+                    .HasMaxLength(11)
+                    .IsUnicode(false)
+                    .HasColumnName("phone_number");
 
                 entity.Property(e => e.RestaurantIdRestaurant).HasColumnName("restaurant_id_restaurant");
 
                 entity.Property(e => e.Status)
-                    .HasColumnName("status")
                     .HasMaxLength(1)
                     .IsUnicode(false)
+                    .HasColumnName("status")
                     .IsFixedLength();
 
-                entity.HasOne(d => d.Client)
+                entity.Property(e => e.Surname)
+                    .HasMaxLength(128)
+                    .IsUnicode(false)
+                    .HasColumnName("surname");
+
+                entity.HasOne(d => d.ClientIdClientNavigation)
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.ClientIdClient)
                     .HasConstraintName("order_client_FK");
 
-                entity.HasOne(d => d.Restaurant)
-                    .WithOne(p => p.Order)
-                    .HasForeignKey<Order>(d => d.RestaurantIdRestaurant)
+                entity.HasOne(d => d.RestaurantIdRestaurantNavigation)
+                    .WithMany(p => p.Orders)
+                    .HasForeignKey(d => d.RestaurantIdRestaurant)
                     .HasConstraintName("order_restaurant_FK");
             });
 
@@ -261,9 +281,9 @@ namespace DataBaseAccess.Models
 
                 entity.Property(e => e.Type)
                     .IsRequired()
-                    .HasColumnName("type")
                     .HasMaxLength(64)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .HasColumnName("type");
             });
 
             modelBuilder.Entity<Reservation>(entity =>
@@ -278,8 +298,8 @@ namespace DataBaseAccess.Models
                 entity.Property(e => e.ClientIdClient).HasColumnName("client_id_client");
 
                 entity.Property(e => e.Date)
-                    .HasColumnName("DATE")
-                    .HasColumnType("date");
+                    .HasColumnType("date")
+                    .HasColumnName("DATE");
 
                 entity.Property(e => e.EndOfReservation).HasColumnName("end_of_reservation");
 
@@ -291,12 +311,12 @@ namespace DataBaseAccess.Models
 
                 entity.Property(e => e.TableRestaurantIdRestaurant).HasColumnName("table_restaurant_id_restaurant");
 
-                entity.HasOne(d => d.Client)
+                entity.HasOne(d => d.ClientIdClientNavigation)
                     .WithMany(p => p.Reservations)
                     .HasForeignKey(d => d.ClientIdClient)
                     .HasConstraintName("reservation_client_FK");
 
-                entity.HasOne(d => d.Manager)
+                entity.HasOne(d => d.ManagerIdManagerNavigation)
                     .WithMany(p => p.Reservations)
                     .HasForeignKey(d => d.ManagerIdManager)
                     .HasConstraintName("reservation_manager_FK");
@@ -319,19 +339,19 @@ namespace DataBaseAccess.Models
 
                 entity.Property(e => e.Address)
                     .IsRequired()
-                    .HasColumnName("address")
                     .HasMaxLength(256)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .HasColumnName("address");
 
                 entity.Property(e => e.EMail)
-                    .HasColumnName("e_mail")
                     .HasMaxLength(128)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .HasColumnName("e_mail");
 
                 entity.Property(e => e.PhoneNumber)
-                    .HasColumnName("phone_number")
                     .HasMaxLength(11)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .HasColumnName("phone_number");
             });
 
             modelBuilder.Entity<Table>(entity =>
@@ -342,14 +362,14 @@ namespace DataBaseAccess.Models
                 entity.ToTable("table");
 
                 entity.Property(e => e.IdTable)
-                    .HasColumnName("id_table")
-                    .ValueGeneratedOnAdd();
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("id_table");
 
                 entity.Property(e => e.RestaurantIdRestaurant).HasColumnName("restaurant_id_restaurant");
 
                 entity.Property(e => e.Capacity).HasColumnName("capacity");
 
-                entity.HasOne(d => d.Restaurant)
+                entity.HasOne(d => d.RestaurantIdRestaurantNavigation)
                     .WithMany(p => p.Tables)
                     .HasForeignKey(d => d.RestaurantIdRestaurant)
                     .HasConstraintName("table_restaurant_FK");

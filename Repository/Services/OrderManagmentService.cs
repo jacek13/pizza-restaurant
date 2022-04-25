@@ -19,7 +19,7 @@ namespace Repository.Services
             _dishesRepo = dishesRepo;
         }
 
-        public async Task<(Order, List<Dishes>)> AddNewOrderAndDishes(string deliveryAddress, string city, int restaurant, int clientId, List<(Pizza, int)> dishes)
+        public async Task<(Order, List<Dishes>)> AddNewOrderAndDishes(string deliveryAddress, string city, string name, string surname, string phoneNumber, int restaurant, int? clientId, List<(Pizza, int)> dishes, string additionalInfo = "")
         {
             List<Dishes> newDishes = new List<Dishes>();
             string newDeliveryAddress = city;
@@ -27,6 +27,10 @@ namespace Repository.Services
 
             var order = new Order()
             {
+                PhoneNumber = phoneNumber,
+                AdditionalInformation = additionalInfo,
+                Name = name,
+                Surname = surname,
                 DeliveryAdress = newDeliveryAddress,
                 Date = DateTime.Now,
                 Status = "P",

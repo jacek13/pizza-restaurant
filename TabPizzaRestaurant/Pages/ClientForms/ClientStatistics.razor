@@ -115,6 +115,8 @@ else
             client = await clientService.GetClientByAccountId(Int32.Parse(accountId));
             menu = await pizzaService.GetMenu();
             historicalOrders = await orderManagmentService.GetAllClientOrdersAndDishes(client.IdClient);
+            //historicalOrders.Sort((a) => a.Item.CompareTo(calculatePrice(a.Item2)); // TODO sortowanie rosnącą/malejąco
+            //var tmp = historicalOrders.OrderByDescending(a => calculatePrice(a.Item2));
             initDays();
             selectedDay = DateOnly.FromDateTime(DateTime.Now);
         }

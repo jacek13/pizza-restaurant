@@ -14,7 +14,7 @@ namespace DataBaseAccess.Models
         public int? Capacity { get; set; }
         public int RestaurantIdRestaurant { get; set; }
 
-        public virtual Restaurant Restaurant { get; set; }
+        public virtual Restaurant RestaurantIdRestaurantNavigation { get; set; }
         public virtual ICollection<Reservation> Reservations { get; set; }
     }
 }

@@ -8,6 +8,7 @@ namespace DataBaseAccess.Models
         public Restaurant()
         {
             ManagerAssignments = new HashSet<ManagerAssignment>();
+            Orders = new HashSet<Order>();
             Tables = new HashSet<Table>();
         }
 
@@ -16,8 +17,8 @@ namespace DataBaseAccess.Models
         public string PhoneNumber { get; set; }
         public string EMail { get; set; }
 
-        public virtual Order Order { get; set; }
         public virtual ICollection<ManagerAssignment> ManagerAssignments { get; set; }
+        public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<Table> Tables { get; set; }
     }
 }

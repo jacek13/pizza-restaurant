@@ -80,7 +80,7 @@ namespace Repository.Repositories
         {
             using (var context = _factory.CreateDbContext())
             {
-                await context.AddAsync(entity);
+                await context.Order.AddAsync(entity);
                 await context.SaveChangesAsync();
                 lastId++;
                 return entity;

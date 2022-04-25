@@ -12,7 +12,7 @@ namespace Repository.Repositories
     {
 
     }
-
+    
     public class ManagerAssignmentRepository : IManagerAssignmentRepository
     {
         private readonly IDbContextFactory<RestaurantDBContext> _factory;
