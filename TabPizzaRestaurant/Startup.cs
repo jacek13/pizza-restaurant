@@ -55,6 +55,8 @@ namespace TabPizzaRestaurant
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<OrderService>();
 
+            services.AddScoped<OrderManagmentService>();
+
             services.AddScoped<IPizzaRepository, PizzaRepository>();
             services.AddScoped<PizzaService>();
 

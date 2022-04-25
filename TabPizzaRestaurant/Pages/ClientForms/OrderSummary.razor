@@ -6,8 +6,12 @@
 @using TabPizzaRestaurant.Models
 
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Repository.Services.ClientService clientService
 @inject Repository.Services.PizzaService pizzaService
+@inject Repository.Services.OrderManagmentService orderManagmentService
+@inject Repository.Services.RestaurantService restaurantService
 @inject NavigationManager NavigationManager
+
 
 @if(orderInfo is null || selectedDishes is null)
 {
@@ -31,11 +35,11 @@ else
                     <tbody>
                     @foreach(var dish in selectedDishes)
                     { 
-                      <tr>
-                          <th>@dish.Item1.Type</th>
-                          <th>@dish.Item2</th>
-                          <th>@calculatePrice(@dish.Item1.Price, @dish.Item2)</th>
-                      </tr>        
+                        <tr>
+                            <th>@dish.Item1.Type</th>
+                            <th>@dish.Item2</th>
+                            <th>@calculatePrice(@dish.Item1.Price, @dish.Item2)</th>
+                        </tr>        
                     }
                     </tbody>
                 </table>
@@ -58,6 +62,16 @@ else
                         <div class="row">
                             <div class="flex-md-column"><p>Adres:</p>  <InputText id="Address" @bind-Value="orderData.Address"/></div>
                             <div class="flex-md-column"><p>Miasto:</p>  <InputText id="City" @bind-Value="orderData.City"/></div>
+                        </div>
+                        <div class="row">
+                            <div class="flex-md-column"><p>Adres naszej restauracji:</p>  
+                                <InputSelect id="restaurant" @bind-Value="orderData.RestaurantId">
+                                    @foreach (var restaurant in restaurants)
+                                    {
+                                        <option value="@restaurant.IdRestaurant">@restaurant.Address</option>
+                                    }
+                                </InputSelect>
+                            </div>
                         </div>
                     </div>
                     <div class="box-shadow"> 
@@ -88,6 +102,7 @@ else
     private bool wasException;
     private OrderFront orderData;
     List<(Pizza, int)> selectedDishes;
+    List<Restaurant> restaurants;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -99,6 +114,7 @@ else
             orderInfo = new string("");
             orderInfo = await sessionStorage.GetItemAsStringAsync("order_info");
             selectedDishes = await pizzaService.SelectItemsFromTheSummary(orderInfo);
+            restaurants = await restaurantService.GetRestaurants();
         }
         catch(Exception e)
         {
@@ -126,14 +142,26 @@ else
                 LastName = await sessionStorage.GetItemAsStringAsync("surname"),
                 PhoneNumber = await sessionStorage.GetItemAsStringAsync("phone"),
                 Address = await sessionStorage.GetItemAsStringAsync("address"),
-                City = "Wprowadz dane..."
+                City = "Gliwice",
+                RestaurantId = 1    // TODO kiedyś dać tutaj selecta
             };
     }
 
     private async void makeOrder()
     {
-        // TODO insert order into database
-        await sessionStorage.RemoveItemAsync("order_info");
-        NavigationManager.NavigateTo("/");
+        try // TODO jest błąd przy dodawaniu 3 zamówienia (trzeba przeanalizować, coś nie tak z kluczami)
+        {
+            await sessionStorage.RemoveItemAsync("order_info");
+            var accountId = await sessionStorage.GetItemAsStringAsync("account_id");
+            var client = await clientService.GetClientByAccountId(Int32.Parse(accountId));
+            var tmp = await orderManagmentService.AddNewOrderAndDishes(orderData.Address, orderData.City, orderData.RestaurantId, client.IdClient, selectedDishes);
+            NavigationManager.NavigateTo("/client/statistics");
+        }
+        catch(Exception e)
+        {
+            wasException = true;
+            error = e.Message;
+            this.StateHasChanged();
+        }
     }
 }

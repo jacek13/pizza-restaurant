@@ -66,7 +66,6 @@
             ((CustomAuthenticationStateProvider)AuthenticationStateProvider).MarkUserAsAuthenticated(Client);
             NavigationManager.NavigateTo("/");
 
-            //TODO po logowaniu powinno nastąpić połączenie z bazą danych (i na podstawie tych danych wypełnić poniższe)
             await sessionStorage.SetItemAsStringAsync("email", Client.EMail);
             await sessionStorage.SetItemAsStringAsync("name", Client.Name);
             await sessionStorage.SetItemAsStringAsync("surname", Client.Surname);
@@ -75,6 +74,7 @@
             await sessionStorage.SetItemAsStringAsync("phone", Client.PhoneNumber);
             await sessionStorage.SetItemAsStringAsync("address", Client.Address);
             await sessionStorage.SetItemAsStringAsync("role", Client.Role);
+            await sessionStorage.SetItemAsStringAsync("account_id", dbUser.IdAccount.ToString());
             await sessionStorage.SetItemAsStringAsync("points", clientData.Points.ToString());
 
             return await Task.FromResult(true);

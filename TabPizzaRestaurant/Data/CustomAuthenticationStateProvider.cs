@@ -53,6 +53,7 @@ namespace TabPizzaRestaurant.Data
 
         public void MarkUserAsLoggedOut()
         {
+            _sessionStorageService.RemoveItemAsync("account_id");
             _sessionStorageService.RemoveItemAsync("email");
             _sessionStorageService.RemoveItemAsync("name");
             _sessionStorageService.RemoveItemAsync("surname");

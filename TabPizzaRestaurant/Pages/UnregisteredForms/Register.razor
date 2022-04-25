@@ -66,7 +66,7 @@
         {
             isException = false;
             newClient.Role = "Client";
-            await managmentService.AddNewClient(newClient.EMail, newClient.Login, newClient.Password,
+            var AccountAndClient = await managmentService.AddNewClient(newClient.EMail, newClient.Login, newClient.Password,
                                         newClient.Name, newClient.Surname, DateTime.Today, newClient.PhoneNumber, 0, newClient.Address, newClient.Role);
 
             ((CustomAuthenticationStateProvider)AuthenticationStateProvider).MarkUserAsAuthenticated(newClient);
@@ -80,6 +80,8 @@
             await sessionStorage.SetItemAsStringAsync("phone", newClient.Name);
             await sessionStorage.SetItemAsStringAsync("address", newClient.Address);
             await sessionStorage.SetItemAsStringAsync("role", newClient.Role);
+            await sessionStorage.SetItemAsStringAsync("account_id", AccountAndClient.Item1.IdAccount.ToString());
+            await sessionStorage.SetItemAsStringAsync("points", AccountAndClient.Item2.Points.ToString());
             newClient = new ClientFront();
 
             return await Task.FromResult(true);

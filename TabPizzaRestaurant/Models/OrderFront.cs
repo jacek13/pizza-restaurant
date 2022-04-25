@@ -26,5 +26,8 @@ namespace TabPizzaRestaurant.Models
 
         [Required]
         public string City { get; set; }
+
+        [Required]
+        public int RestaurantId { get; set; }
     }
 }

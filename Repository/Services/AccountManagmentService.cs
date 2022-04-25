@@ -19,7 +19,7 @@ namespace Repository.Services
             _clientRepo = clientRepo;
         }
 
-        public async Task AddNewClient(String e_mail, String login, String password, String name, String surname, DateTime accountCreationDate, String PhoneNumber,
+        public async Task<(Account,Client)> AddNewClient(String e_mail, String login, String password, String name, String surname, DateTime accountCreationDate, String PhoneNumber,
                                         int points, String address, String role)
         {
             //var accountCount = _accountRepo.lastId;
@@ -56,6 +56,8 @@ namespace Repository.Services
             //newClient.Account = newAccount;
             await _clientRepo.Insert(newClient);
             //await this._ClientService.Save();
+
+            return (newAccount,newClient);
         }
 
         public async void DeleteClient(int id)

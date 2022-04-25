@@ -11,7 +11,7 @@ namespace Repository.Repositories
 {
     public interface IDishesRepository : IRepository<Dishes>
     {
-
+        public Task<List<Dishes>> GetOrderDishes(int orderId);
     }
 
     public class DishesRepository : IDishesRepository
@@ -52,6 +52,14 @@ namespace Repository.Repositories
             using (var context = _factory.CreateDbContext())
             {
                 return await context.Dishes.FindAsync(id);
+            }
+        }
+
+        public async Task<List<Dishes>> GetOrderDishes(int orderId)
+        {
+            using (var context = _factory.CreateDbContext())
+            {
+                return await context.Dishes.Where(d => d.OrderIdOrder == orderId).ToListAsync();
             }
         }
 
