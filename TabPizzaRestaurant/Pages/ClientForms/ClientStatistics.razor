@@ -1,5 +1,121 @@
 ﻿@page "/client/statistics"
-<h3>Twoje historyczne zamówienia</h3>
+<style>
+        .table-fill {
+  background: white;
+  border-radius:3px;
+  border-collapse: collapse;
+  height: 320px;
+  margin: auto;
+  max-width: 1000px;
+  padding:5px;
+  width: 100%;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  animation: float 5s infinite;
+}
+ 
+th {
+  color:#D5DDE5;;
+  background:rgb(0, 123, 255);
+  border-bottom:4px solid #9ea7af;
+  border-right: 1px solid #343a45;
+  font-size:23px;
+  font-weight: 100;
+  padding:24px;
+  text-align:left;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  vertical-align:middle;
+}
+
+th:first-child {
+  border-top-left-radius:3px;
+}
+ 
+th:last-child {
+  border-top-right-radius:3px;
+  border-right:none;
+}
+  
+tr {
+  border-top: 1px solid #C1C3D1;
+  border-bottom-: 1px solid #C1C3D1;
+  color:#666B85;
+  font-size:16px;
+  font-weight:normal;
+  text-shadow: 0 1px 1px rgba(256, 256, 256, 0.1);
+}
+ 
+tr:hover td {
+  background:#4E5066;
+  color:#FFFFFF;
+  border-top: 1px solid #22262e;
+}
+ 
+tr:first-child {
+  border-top:none;
+}
+
+tr:last-child {
+  border-bottom:none;
+}
+ 
+/*tr:nth-child(odd) td {
+  background:#EBEBEB;
+}
+ 
+tr:nth-child(odd):hover td {
+  background:#4E5066;
+}*/
+
+tr:last-child td:first-child {
+  border-bottom-left-radius:3px;
+}
+ 
+tr:last-child td:last-child {
+  border-bottom-right-radius:3px;
+}
+ 
+td {
+  background:#FFFFFF;
+  padding:20px;
+  text-align:left;
+  vertical-align:middle;
+  font-weight:300;
+  font-size:18px;
+  text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.1);
+  border-right: 1px solid #C1C3D1;
+}
+
+td:last-child {
+  border-right: 0px;
+}
+
+th.text-left {
+  text-align: left;
+}
+
+th.text-center {
+  text-align: center;
+}
+
+th.text-right {
+  text-align: right;
+}
+
+td.text-left {
+  text-align: left;
+}
+
+td.text-center {
+  text-align: center;
+}
+
+td.text-right {
+  text-align: right;
+}
+</style>
+<center>
+<h2 class="my-4">Twoje historyczne zamówienia</h2>
+</center>
 
 @using DataBaseAccess.Models
 @using TabPizzaRestaurant.Models
@@ -18,7 +134,7 @@ else
     <center>
         @if(historicalOrders.Count > 0)
         {
-            <h4>Łącznie wydałeś u nas: @calculateOverallPrice() @currencyType</h4>
+            <h3>Łącznie wydałeś u nas: @calculateOverallPrice() @currencyType</h3>
             <hr>
             <h4>Wybierz datę</h4>
             <EditForm Model="@forValidation" OnSubmit="@refresh">
@@ -31,14 +147,14 @@ else
                 <button type="submit" class="btn btn-primary">Pokaż</button>
             </EditForm>
             <hr>
-            <table class="table table-striped">
+            <table class="table-fill">
                 <thead>
                     <tr>
-                        <th>Data zamówienia</th>
-                        <th>Adres dostawy</th>
-                        <th>Status</th>
-                        <th>Kwota</th>
-                        <th>Szczegóły</th>
+                        <th class="text-left">Data zamówienia</th>
+                        <th class="text-left">Adres dostawy</th>
+                        <th class="text-left">Status</th>
+                        <th class="text-left">Kwota</th>
+                        <th class="text-left">Szczegóły</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -47,25 +163,25 @@ else
                     if (@DateOnly.Parse(@historicalOrder.Item1.Date.ToShortDateString()) == @selectedDay)
                     {
                         <tr>
-                            <th>@historicalOrder.Item1.Date.ToShortDateString()</th>
-                            <th>@historicalOrder.Item1.DeliveryAdress</th>
-                            <th>@historicalOrder.Item1.Status</th>
-                            <th>@calculatePrice(@historicalOrder.Item2)</th>
-                            <th>
-                                <table class="table table-striped">
+                            <td class="text-left">@historicalOrder.Item1.Date.ToShortDateString()</td>
+                            <td class="text-left">@historicalOrder.Item1.DeliveryAdress</td>
+                            <td class="text-left">@historicalOrder.Item1.Status</td>
+                            <td class="text-left">@calculatePrice(@historicalOrder.Item2)</td>
+                            <th class="text-left">
+                                <table class="table-hover">
                                     <thead>
                                         <tr>
-                                            <th>Danie</th>
-                                            <th>Ilość</th>
-                                            <th>Cena za sztukę</th>
+                                            <td class="text-left">Danie</td>
+                                            <td class="text-left">Ilość</td>
+                                            <td class="text-left">Cena za sztukę</td>
                                         </tr>
                                     </thead>
                                     @foreach (var dish in @historicalOrder.Item2)
                                     {
                                         <tr>
-                                            <th>@getPizzaName(@dish.PizzaIdPizza)</th>
-                                            <th>@dish.Amount</th>
-                                            <th>@dish.HistoricalPrice</th>
+                                            <td class="text-left">@getPizzaName(@dish.PizzaIdPizza)</td>
+                                            <td class="text-left">@dish.Amount</td>
+                                            <td class="text-left">@dish.HistoricalPrice</td>
                                         </tr>
                                     }
                                 </table>

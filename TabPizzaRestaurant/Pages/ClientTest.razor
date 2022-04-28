@@ -7,6 +7,120 @@
 @inject Repository.Services.AccountManagmentService managmentService
 @inject Repository.Services.AccountService accountService
 @inject Repository.Services.ClientService clientService
+<style>
+   .table-fill {
+  background: white;
+  border-radius:3px;
+  border-collapse: collapse;
+  height: 320px;
+  margin: 2%;
+  max-width: 1000px;
+  padding:5px;
+  width: 100%;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  animation: float 5s infinite;
+}
+ 
+th {
+  color:#D5DDE5;;
+  background:rgb(0, 123, 255);
+  border-bottom:4px solid #9ea7af;
+  border-right: 1px solid #343a45;
+  font-size:23px;
+  font-weight: 100;
+  padding:24px;
+  text-align:left;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  vertical-align:middle;
+}
+
+th:first-child {
+  border-top-left-radius:3px;
+}
+ 
+th:last-child {
+  border-top-right-radius:3px;
+  border-right:none;
+}
+  
+tr {
+  border-top: 1px solid #C1C3D1;
+  border-bottom-: 1px solid #C1C3D1;
+  color:#666B85;
+  font-size:16px;
+  font-weight:normal;
+  text-shadow: 0 1px 1px rgba(256, 256, 256, 0.1);
+}
+ 
+tr:hover td {
+  background:#4E5066;
+  color:#FFFFFF;
+  border-top: 1px solid #22262e;
+}
+ 
+tr:first-child {
+  border-top:none;
+}
+
+tr:last-child {
+  border-bottom:none;
+}
+ 
+tr:nth-child(odd) td {
+  background:#EBEBEB;
+}
+ 
+tr:nth-child(odd):hover td {
+  background:#4E5066;
+}
+
+tr:last-child td:first-child {
+  border-bottom-left-radius:3px;
+}
+ 
+tr:last-child td:last-child {
+  border-bottom-right-radius:3px;
+}
+ 
+td {
+  background:#FFFFFF;
+  padding:20px;
+  text-align:left;
+  vertical-align:middle;
+  font-weight:300;
+  font-size:18px;
+  text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.1);
+  border-right: 1px solid #C1C3D1;
+}
+
+td:last-child {
+  border-right: 0px;
+}
+
+th.text-left {
+  text-align: left;
+}
+
+th.text-center {
+  text-align: center;
+}
+
+th.text-right {
+  text-align: right;
+}
+
+td.text-left {
+  text-align: left;
+}
+
+td.text-center {
+  text-align: center;
+}
+
+td.text-right {
+  text-align: right;
+}
+</style>
 
 <center>
     <h3>Select a form</h3>
@@ -23,9 +137,10 @@
 @if (displayInsertForm)
 {
     <h4>Insert New Client</h4>
+    <div class="box-shadow">
     <center>
         <EditForm Model="@newClient" OnValidSubmit="@InsertClient">
-            <div class="box-shadow">
+            
                 <div>Name:      <InputText id="firstName" @bind-Value="newClient.Name"/></div>
                 <br />
                 <div>Surname:   <InputText id="secondName" @bind-Value="newClient.Surname"/></div>
@@ -42,24 +157,24 @@
                 <br />
                 <div>Role:  <InputText id="Role" @bind-Value="newClient.Role"/></div>
                 <br />
-            </div>
-            <div class="box-shadow"> 
+         
                 <DataAnnotationsValidator/>
                 <ValidationSummary/>  
-            </div>
-            <button type="submit" class="btn btn-primary">Insert</button>
+          
+            <button type="submit" class="btn btn-primary mb-2">Insert</button>
         </EditForm>
     </center>
+      </div>
 }
 
 @if (displayDeleteClient)
 {
+  
     <h4>Delete Client</h4>
-
-    <center>
+      <center>
         <div class="box-shadow"> 
             <input type="number" @bind-value="userID" @bind-value:event="oninput" />
-            <button type="button" class="btn btn-primary" @onclick="deleteClient">Delete client</button>
+            <button type="button" class="btn btn-primary m-2" @onclick="deleteClient">Delete client</button>
         </div>
     </center>
 }
@@ -72,7 +187,7 @@
         <div class="box-shadow"> 
             <div><p>Client Id:</p><input type="number" @bind-value="clientID" @bind-value:event="oninput" /></div>
             <div><p>Points:</p><input type="number" @bind-value="points" @bind-value:event="oninput" /></div>
-            <button type="button" class="btn btn-primary" @onclick="AddPoints">Update</button>
+            <button type="button" class="btn btn-primary m-2" @onclick="AddPoints">Update</button>
         </div>
     </center>
 }
@@ -90,23 +205,23 @@
         {
             <div class="border-secondary">
                 <center>
-                    <table class="table table-striped">
+                    <table class="table-fill">
                         <thead>
                             <tr>
-                                <th>Client Id</th>
-                                <th>Account Id</th>
-                                <th>Adress</th>
-                                <th>Points</th>
+                                <th class="text-left">Client Id</th>
+                                <th class="text-left">Account Id</th>
+                                <th class="text-left">Adress</th>
+                                <th class="text-left">Points</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class ="table-hover">
                             @foreach(var item in clients)
                             {
                                 <tr>
-                                    <th>@item.IdClient</th>
-                                    <th>@item.AccountIdAccount</th>
-                                    <th>@item.Address</th>
-                                    <th>@item.Points</th>
+                                    <td class="text-left">@item.IdClient</td>
+                                    <td class="text-left">@item.AccountIdAccount</td>
+                                    <td class="text-left">@item.Address</td>
+                                    <td class="text-left">@item.Points</td>
                                 </tr>
                             }
                         </tbody>
@@ -116,31 +231,31 @@
 
             <div class="border-secondary">
                 <center>
-                    <table class="table table-striped">
+                    <table class="table-fill">
                         <thead>
                             <tr>
-                                <th>Account Id</th>
-                                <th>First name</th>
-                                <th>Last name</th>
-                                <th>Email Adrdress</th>
-                                <th>Login</th>
-                                <th>Creation Date</th>
-                                <th>Phone number</th>
-                                <th>Role</th>
+                                <th class="text-left">Account Id</th>
+                                <th class="text-left">First name</th>
+                                <th class="text-left">Last name</th>
+                                <th class="text-left">Email Address</th>
+                                <th class="text-left">Login</th>
+                                <th class="text-left">Creation Date</th>
+                                <th class="text-left">Phone number</th>
+                                <th class="text-left">Role</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="table-hover">
                             @foreach(var item in people)
                             {
                                 <tr>
-                                    <th>@item.IdAccount</th>
-                                    <th>@item.Name</th>
-                                    <th>@item.Surname</th>
-                                    <th>@item.EMail</th>
-                                    <th>@item.Login</th>
-                                    <th>@item.AccountCreationDate</th>
-                                    <th>@item.PhoneNumber</th>
-                                    <th>@item.Role</th>
+                                    <td class="text-left">@item.IdAccount</td>
+                                    <td class="text-left">@item.Name</td>
+                                    <td class="text-left">@item.Surname</td>
+                                    <td class="text-left">@item.EMail</td>
+                                    <td class="text-left">@item.Login</td>
+                                    <td class="text-left">@item.AccountCreationDate</td>
+                                    <td class="text-left">@item.PhoneNumber</td>
+                                    <td class="text-left">@item.Role</td>
                                 </tr>
                             }
                         </tbody>

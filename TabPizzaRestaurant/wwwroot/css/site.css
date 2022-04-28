@@ -29,7 +29,7 @@
 a.navbar-brand {
     white-space: normal;
     text-align: center;
-    word-break: break-all;
+    word-break: break-word;
 }
 
 /* Provide sufficient contrast against white background */
