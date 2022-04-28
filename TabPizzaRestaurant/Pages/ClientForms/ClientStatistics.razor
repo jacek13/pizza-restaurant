@@ -1,5 +1,7 @@
 ﻿@page "/client/statistics"
-<h3>Twoje historyczne zamówienia</h3>
+<center>
+<h2 class="my-4">Twoje historyczne zamówienia</h2>
+</center>
 
 @using DataBaseAccess.Models
 @using TabPizzaRestaurant.Models
@@ -18,7 +20,7 @@ else
     <center>
         @if(historicalOrders.Count > 0)
         {
-            <h4>Łącznie wydałeś u nas: @calculateOverallPrice() @currencyType</h4>
+            <h3>Łącznie wydałeś u nas: @calculateOverallPrice() @currencyType</h3>
             <hr>
             <h4>Wybierz datę</h4>
             <EditForm Model="@forValidation" OnSubmit="@refresh">

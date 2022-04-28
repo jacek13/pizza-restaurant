@@ -3,7 +3,12 @@
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inherits LayoutComponentBase
-
+<style>
+    .login_register{
+        margin:2px;
+       
+    }
+</style>
 <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
     <div class="container">
         <a class="navbar-brand" href="">Galak Pizza</a>
@@ -16,7 +21,7 @@
 
                 <li class="nav-item">
                     <NavLink class="nav-link text-dark" href="" Match="NavLinkMatch.All">
-                        <span class="material-icons md-18">home</span> Home
+                        <span class="material-icons md-18">home</span> Strona domowa
                     </NavLink>                
                 </li>
 
@@ -39,7 +44,7 @@
                         </li>
                         <li class="nav-item">
                             <NavLink class="nav-link text-dark" href="/Manager/phoneOrder">
-                                <span class="material-icons md-18">analytics</span>przyjmij zamówienie
+                                <span class="material-icons md-18">analytics</span>Przyjmij zamówienie
                             </NavLink>
                         </li>
                     </Authorized>
@@ -49,12 +54,12 @@
                     <Authorized>
                         <li class="nav-item">
                             <NavLink class="nav-link text-dark" href="client/info">
-                                <span class="material-icons md-18">edit</span>info
+                                <span class="material-icons md-18">edit</span>Info
                             </NavLink>
                         </li>
                         <li class="nav-item">
                             <NavLink class="nav-link text-dark" href="/client/statistics">
-                                <span class="material-icons md-18">analytics</span>zamówienia
+                                <span class="material-icons md-18">analytics</span>Zamówienia
                             </NavLink>
                         </li>
                     </Authorized>
@@ -72,12 +77,16 @@
         </div>
         <AuthorizeView>
             <Authorized>
-                <a class="custom-class text-center col-6 col-md-3 themed-grid-col" href="/myAccount">Welcome @context.User.Identity.Name</a>
-                <a class="custom-class text-center col-6 col-md-1 themed-grid-col" href="/" @onclick="(() => Logout())">Logout</a>
+                 @*<div class = login_register>*@
+                <a class="custom-class text-center col-4 col-sm-3 col-md-3  themed-grid-col mx-2" href="/myAccount">Witamy @context.User.Identity.Name</a>
+                <a class="custom-class text-center col-4 col-sm-3 col-md-2 themed-grid-col" href="/" @onclick="(() => Logout())">Wyloguj</a>
+                 @*</div>*@
             </Authorized>
             <NotAuthorized>
-                <a class="custom-class text-center col-6 col-md-1 themed-grid-col" href="/login">Login</a>
-                <a class="custom-class text-center col-6 col-md-1 themed-grid-col" href="/register">Register</a>
+               @* <div class = login_register>*@
+                <a class="custom-class text-center col-4 col-sm-3 col-md-2  themed-grid-col mx-2" href="/login">Zaloguj się</a>
+                <a class="custom-class text-center col-4 col-sm-3 col-md-3 themed-grid-col" href="/register">Zarejestruj się</a>
+                @*</div>*@
             </NotAuthorized>
         </AuthorizeView>
     </div>

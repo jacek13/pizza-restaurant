@@ -1,5 +1,7 @@
 ﻿@page "/client/order/summary"
+<center>
 <h3>Podsumowanie zamówienia</h3>
+</center>
 
 @using System
 @using DataBaseAccess.Models
@@ -12,6 +14,20 @@
 @inject Repository.Services.RestaurantService restaurantService
 @inject NavigationManager NavigationManager
 
+<style>
+    .flex-container{
+        display:flex;
+        justify-content:center;
+        flex-direction:row;
+        align-items:center;
+    }
+    .flex-item1{
+        margin-right:10%;
+        width:40%;
+    }
+
+    
+</style>
 
 @if(orderInfo is null || selectedDishes is null)
 {
@@ -19,11 +35,14 @@
 }
 else
 {
+    <div class="box-shadow">
     <center> 
         <hr>
         <div>
             <!-- Dane o wybranych pizzach -->
-            <div style="width: 50%; height: 100px; float: left;">
+            @*<div style="width: 50%; height: 100px; float: left;">*@
+                <div class="flex-container">
+                <div class="flex-item1">
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -43,28 +62,31 @@ else
                     }
                     </tbody>
                 </table>
-                <h3>Kwota łącznie: @calculateTheSum() @currencyType</h3>
-            </div>
+                <h4>Kwota łącznie: @calculateTheSum() @currencyType</h4>
+           </div>
             <!-- Dane Kliencie-->
-            <div style="margin-left: 50%; height: 100px;">
+            @*<div style="margin-left: 50%; height: 100px;">*@
+                <div class ="flex-item2">
                 <h3>Dane do zamówienia</h3>
                 <EditForm Model="@orderData" OnValidSubmit="@makeOrder">
                     <div>
                         <div class="row">
-                            <div class="flex-md-column"><p>Imię:</p>      <InputText id="firstName" @bind-Value="orderData.FirstName"/></div>
-                            <div class="flex-md-column"><p>Nazwisko:</p>   <InputText id="secondName" @bind-Value="orderData.LastName"/></div>
+                            <div class="flex-md-column pr-3 mx-auto"><p>Imię:</p>      <InputText id="firstName" @bind-Value="orderData.FirstName"/></div>
+                            <div class="flex-md-column mx-auto"><p>Nazwisko:</p>   <InputText id="secondName" @bind-Value="orderData.LastName"/></div>
                         </div>
                         <br />
+                        
                         <div class="row">
-                            <div class="flex-md-column"><p>Telefon:</p>     <InputText id="Phone" @bind-Value="orderData.PhoneNumber"/></div>
+                            <div class="flex-md-column mx-auto"><p>Telefon:</p>     <InputText id="Phone" @bind-Value="orderData.PhoneNumber"/></div>
                         </div>
+                        
                         <br />
                         <div class="row">
-                            <div class="flex-md-column"><p>Adres:</p>  <InputText id="Address" @bind-Value="orderData.Address"/></div>
-                            <div class="flex-md-column"><p>Miasto:</p>  <InputText id="City" @bind-Value="orderData.City"/></div>
+                            <div class="flex-md-column pr-3 mx-auto"><p>Adres:</p>  <InputText id="Address" @bind-Value="orderData.Address"/></div>
+                            <div class="flex-md-column mx-auto"><p>Miasto:</p>  <InputText id="City" @bind-Value="orderData.City"/></div>
                         </div>
                         <div class="row">
-                            <div class="flex-md-column"><p>Adres naszej restauracji:</p>  
+                            <div class="flex-md-column mt-3 mx-auto"><p>Adres naszej restauracji:</p>  
                                 <InputSelect id="restaurant" @bind-Value="orderData.RestaurantId">
                                     @foreach (var restaurant in restaurants)
                                     {
@@ -74,16 +96,21 @@ else
                             </div>
                         </div>
                     </div>
-                    <div class="box-shadow"> 
+        
+
+                     
+              
                         <DataAnnotationsValidator/>
                         <ValidationSummary/>  
-                    </div>
+                    
                     <br />
-                    <button type="submit" class="btn btn-primary">Złóż zamówienie</button>
+                    <button type="submit" class="btn btn-primary mb-2">Złóż zamówienie</button>
                 </EditForm>
+                </div>
             </div>
         </div>
     </center>
+    </div>
 }
 
 @if(wasException)
