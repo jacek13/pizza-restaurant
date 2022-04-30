@@ -37,7 +37,7 @@ W aktualnej wersji w celu połączenia z bazą danych należy utworzyć nową ba
 | Imię | Nazwisko|github|
 |------|---------|----|
 |Michał|Jackowski|[jacek13](https://github.com/jacek13)|
-|Mikołaj|Smoła|[djnick](https://github.com/djnick)|
+|Mikołaj|Smoła|[MiSmola](https://github.com/MiSmola)|
 |Mateusz|Dąbrowski|[Guardianek34](https://github.com/Guardianek34)|
 |Jakub|Domerecki|[Dom3r](https://github.com/Dom3r)|
 |Tomasz|Długosz|[tmdlu](https://github.com/tmdlu)|
