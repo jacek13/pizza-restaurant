@@ -16,5 +16,27 @@ namespace Repository.Services
         {
             _managerRepo = managerRepo;
         }
+
+        public async Task<Manager> GetManagerByAccountId(int accountId)
+        {
+            var managers = await _managerRepo.GetAll();
+            var managerTmp = new Manager();
+            bool found = false;
+
+            foreach (var manager in managers)
+                if (manager.AccountIdAccount == accountId)
+                {
+                    managerTmp = manager;
+                    found = true;
+                    break;
+                }
+            if (found)
+                return managerTmp;
+            else throw new Exception("Manager not found!");
+        }
+
+
     }
+    
+
 }

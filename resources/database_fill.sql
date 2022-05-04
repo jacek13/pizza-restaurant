@@ -51,3 +51,19 @@ VALUES ('Akademicka 16', '322371310', 'galakPizzaA@gmail.com');
 
 INSERT INTO pizza_restaurant_ver_8.dbo.restaurant (address, phone_number, e_mail)
 VALUES ('Chorzowska 23', '123654798', 'galakPizzaC@gmail.com');
+
+
+
+-----------------
+INSERT INTO pizza_restaurant_ver_8.dbo.[order] (delivery_adress, [DATE], client_id_client, restaurant_id_restaurant)
+VALUES ('Zwyciêstwa 2', GETDATE(), 2, 1);
+
+INSERT INTO pizza_restaurant_ver_8.dbo.[dishes] 
+VALUES (1, 2, 14, 19,6);
+
+INSERT INTO pizza_restaurant_ver_8.dbo.[manager] (salary_netto, salary_brutto, account_id_account) 
+VALUES ( 2000, 3000, 3);
+
+INSERT INTO pizza_restaurant_ver_8.dbo.[manager_assignment] 
+VALUES ( 1, 1, 'menager');
+

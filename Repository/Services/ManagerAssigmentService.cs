@@ -16,5 +16,11 @@ namespace Repository.Services
         {
             _managerAssignRepo = managerAssignRepo;
         }
+
+        public Task<List<ManagerAssignment>> GetManagerAssigment()
+        {
+            return _managerAssignRepo.GetAll();
+        }
+
     }
 }

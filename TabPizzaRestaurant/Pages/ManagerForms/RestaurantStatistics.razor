@@ -1,7 +1,279 @@
-﻿@page "/Manager/statistics"
-<h3>Statistics TODO</h3>
+﻿@page "/Manager/RestaurantStatistics"
 
-@code 
+@using Repository.Repositories
+@using Models
+@using DataBaseAccess.Models
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Repository.Services.PizzaService pizzaService
+@inject Repository.Services.RestaurantReportService restaurantReportService
+@inject Repository.Services.ManagerService managerService
+@inject Repository.Services.ManagerAssigmentService managerAssigmentService
+@inject Repository.Services.RestaurantService restaurantService
+
+
+<center>
+    <h3>Statystyki restauracji  </h3>
+    
+    <br />
+
+   
+    @if (dishes is null || restaurants is null || menu is null || managerAssignments is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <div class="box-shadow">
+        <h4>Wybierz restauracje</h4>
+        <select id="restaurant" @bind="chosenRestaurantId">
+           
+       @if(assignedRestaurants!=null)
+       {
+           
+           @foreach(var assignedRestaurant in assignedRestaurants)
+              {
+                <option value="@assignedRestaurant.IdRestaurant">@assignedRestaurant.Address</option>
+              }
+       }
+       
+    </select>
+
+    <br />
+
+    <br />
+        <h4> Wybierz przedział</h4>
+       <form>
+         <input type="date" id="datemin" @bind="lowerDate">
+         <label> - </label>
+         <input type="date" id="datemax" @bind="upperDate">
+         <br />
+    
+         
+      
+       
+        </form>
+    </div>
+
+    
+        <div class="border-secondary">
+            <center>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Pizza Id</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Income</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach(var item in menu)
+                        {
+                            <tr>
+                               
+                                <th>@item.IdPizza</th>
+                                <th>@item.Type</th>
+                                <th>@sumsOfPizza(@item.IdPizza).Item1</th>
+                                <th>@sumsOfPizza(@item.IdPizza).Item2 zł</th>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </center>
+        </div>
+        <hr />
+       
+        @if(chosenRestaurantId>0 && assignedRestaurants!=null)
+        {
+             <h6>Dochód Restauracji z @assignedRestaurants.Find(item=> item.IdRestaurant ==chosenRestaurantId).Address: @sumsOfAll().Item2 zł</h6>
+             <h6>z @sumsOfAll().Item1 sztuk pizzy.</h6>
+        }
+       
+    }
+
+    
+    
+ 
+    
+    
+</center>
+
+
+@if(wasException)
 {
+    <center> 
+        <hr>
+        <p style="color:rgb(255,51,51)">@error</p>
+    </center>   
+}
+
+@code {
+    private DateOnly lowerDate; 
+    private DateOnly upperDate;
+    private List<Pizza> menu;
+    private Manager manager;
+    private List<ManagerAssignment> managerAssignments;
+    private bool wasException = false;
+    private string error;
+    private Restaurant chosenRestaurant;
+    private int chosenRestaurantId;
+    private List<Restaurant> assignedRestaurants;
+    private List<Restaurant> restaurants;
+    private List<Tuple<Dishes, DateOnly, int>> dishes;
+    protected override async Task OnParametersSetAsync()
+    {
+
+        wasException = false;
+
+        try
+        {
+            assignedRestaurants= new List<Restaurant>();
+            var accountId = await sessionStorage.GetItemAsStringAsync("account_id");
+            manager = await managerService.GetManagerByAccountId(Int32.Parse(accountId));
+            menu = await pizzaService.GetMenu();
+            managerAssignments = await managerAssigmentService.GetManagerAssigment();
+            restaurants = await restaurantService.GetRestaurants();
+            dishes = await restaurantReportService.GetDishes();
+
+            upperDate = DateOnly.FromDateTime(DateTime.Now);
+            lowerDate = upperDate.AddMonths(-1);
+            initRestaurants();
+
+
+        }
+        catch(Exception e)
+        {
+            error = e.Message;
+            wasException = true;
+        }
+    }
+    private void initRestaurants()
+    {
+
+        if(restaurants!=null && managerAssignments!=null)
+        {
+            assignedRestaurants = new List<Restaurant>();
+            foreach (var restaurant in restaurants)
+            {
+                foreach (var managerAssignment in managerAssignments)
+                {
+                    if(restaurant.IdRestaurant==managerAssignment.RestaurantIdRestaurant && managerAssignment.ManagerIdManager==manager.IdManager)
+                    {
+                        assignedRestaurants.Add(restaurant);
+                    }
+                }
+            }
+            chosenRestaurantId = assignedRestaurants[0].IdRestaurant;
+        }
+    }
+    private Tuple<int, int> sumsOfPizza(int pizzaId)
+    {
+
+        int amountOfPizza = 0;
+        int pizzaIncome = 0;
+        if (dishes != null)
+        {
+
+
+            if (lowerDate <= upperDate)
+            {
+
+                foreach (var dish in dishes)
+                {
+                    if (dish.Item2 >= lowerDate && dish.Item2 <= upperDate)
+                    {
+                        if (pizzaId == dish.Item1.PizzaIdPizza)
+                        {
+                            if (dish.Item1.Amount != null && dish.Item3 == chosenRestaurantId)
+                            {
+                                amountOfPizza += dish.Item1.Amount.GetValueOrDefault();
+                                if (dish.Item1.HistoricalCost != null && dish.Item1.HistoricalPrice != null)
+                                {
+                                    pizzaIncome += dish.Item1.Amount.GetValueOrDefault() * (dish.Item1.HistoricalPrice.GetValueOrDefault() - dish.Item1.HistoricalCost.GetValueOrDefault());
+                                }
+
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+        Tuple<int, int> sum = new Tuple<int, int>(amountOfPizza,pizzaIncome);
+        return sum;
+    }
+
+  
+
+    private Tuple<int, int> sumsOfAll()
+    {
+
+        int amountOfPizza = 0;
+        int pizzaIncome = 0;
+        if (dishes != null)
+        {
+            if (lowerDate <= upperDate)
+            {
+                foreach (var dish in dishes)
+                {
+                    if (dish.Item2 >= lowerDate && dish.Item2 <= upperDate)
+                    {
+
+                        if (dish.Item1.Amount != null && dish.Item3 == chosenRestaurantId)
+                        {
+                            amountOfPizza += dish.Item1.Amount.GetValueOrDefault();
+                            if (dish.Item1.HistoricalCost != null && dish.Item1.HistoricalPrice != null)
+                            {
+                                pizzaIncome += dish.Item1.Amount.GetValueOrDefault() * (dish.Item1.HistoricalPrice.GetValueOrDefault() - dish.Item1.HistoricalCost.GetValueOrDefault());
+                            }
+
+                        }
+
+
+                    }
+                }
+            }
+        }
+        Tuple<int, int> sum = new Tuple<int, int>(amountOfPizza,pizzaIncome);
+        return sum;
+    }
+
+    private Tuple<int, int> sumsOfAllOverall()
+    {
+
+        int amountOfPizza = 0;
+        int pizzaIncome = 0;
+        if (dishes != null)
+        {
+            if (lowerDate <= upperDate)
+            {
+                foreach (var dish in dishes)
+                {
+                    foreach (var assignedRestaurant in assignedRestaurants)
+                    {
+                        if (dish.Item2 >= lowerDate && dish.Item2 <= upperDate && dish.Item3 == assignedRestaurant.IdRestaurant)
+                        {
+
+                            if (dish.Item1.Amount != null)
+                            {
+                                amountOfPizza += dish.Item1.Amount.GetValueOrDefault();
+                                if (dish.Item1.HistoricalCost != null && dish.Item1.HistoricalPrice != null)
+                                {
+                                    pizzaIncome += dish.Item1.Amount.GetValueOrDefault() * (dish.Item1.HistoricalPrice.GetValueOrDefault() - dish.Item1.HistoricalCost.GetValueOrDefault());
+                                }
+
+                            }
+
+
+                        }
+                    }
+
+                }
+            }
+        }
+        Tuple<int, int> sum = new Tuple<int, int>(amountOfPizza,pizzaIncome);
+        return sum;
+    }
+
 
 }
