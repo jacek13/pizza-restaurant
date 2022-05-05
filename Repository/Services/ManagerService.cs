@@ -16,5 +16,10 @@ namespace Repository.Services
         {
             _managerRepo = managerRepo;
         }
+
+        public async Task<Manager> getManagerFromAccountID(int accountID)
+        {
+            return await _managerRepo.fetchManagerByAccountId(accountID);
+        }
     }
 }

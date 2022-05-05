@@ -10,9 +10,8 @@ namespace Repository.Repositories
 {
     public interface IManagerRepository : IRepository<Manager>
     {
-
+        Task<Manager> fetchManagerByAccountId(int accountID);
     }
-
 
     public class ManagerRepository : IManagerRepository
     {
@@ -66,5 +65,18 @@ namespace Repository.Repositories
                 return entity;
             }
         }
+
+        public async Task<Manager> fetchManagerByAccountId(int accountID)
+        {
+            using (var context = _factory.CreateDbContext())
+            {
+                Manager manager = context.Manager
+                    .Where(manager => manager.AccountIdAccount == accountID)
+                    .FirstOrDefault<Manager>();
+                return await Task.FromResult(manager);
+            }
+        }
+
+
     }
 }

@@ -17,9 +17,20 @@ namespace Repository.Services
             _restaurantRepo = restaurantRepo;
         }
 
-        public Task<List<Restaurant>> GetRestaurants()
+        public async Task<List<Restaurant>> GetRestaurants()
         {
-            return _restaurantRepo.GetAll();
+            return await _restaurantRepo.GetAll();
         }
+
+        public async Task<Restaurant> getRestaurantBy(int restaurantID)
+        {
+            return await _restaurantRepo.GetById(restaurantID);
+        }
+
+        public async Task<List<Restaurant>> getAllAssignedRestaurants(int managerID)
+        {
+            return await _restaurantRepo.fetchAllRestaurantsManagedByManager(managerID);
+        }
+
     }
 }

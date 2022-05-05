@@ -1,0 +1,141 @@
+﻿@page "/Manager/DisplayTables/{RestaurantID:int}"
+@using DataBaseAccess.Models
+@using TabPizzaRestaurant.Pages.ManagerForms.TableReservations.Modal
+@inject Repository.Services.ManagerService managerService
+@inject Repository.Services.ReservationService reservationService
+@inject Repository.Services.RestaurantService restaurantService
+@inject Repository.Services.TableService tableService
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
+@if(isLoaded && isAuthorised){
+    @foreach (Table table in tables)
+    {
+        <div class="card m-3" style="min-width: 18rem; max-width:50.auto%;">
+            <div class="card-header">
+                <h3 class="card-title">Table</h3>
+                <h3>Capacity: @table.Capacity</h3>
+                <a href="/Manager/AddReservation/@table.IdTable/@RestaurantID" class="btn btn-success btn-sm"> Add new Reservation</a>
+                <div class="table-responsive">
+                    <table class="table table-hover table-dark">
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">Name</th>
+                          <th scope="col">Date</th>
+                          <th scope="col">Starting Time</th>
+                          <th scope="col">End Time</th>
+                          <th scope="col">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      @{ int rowIndex = 1;}
+                      @foreach(Reservation reservation in table.Reservations)
+                      {
+                          <tr>
+                          <th scope="row">@rowIndex</th>
+                          <td>Marek</td>
+                          <td>@reservation.Date</td>
+                          <td>@reservation.StartOfReservation</td>
+                          <td>@reservation.EndOfReservation</td>
+                          <td>
+                              <a href="/Manager/EditReservation/@table.IdTable/@RestaurantID/@reservation.IdReservation" class="btn btn-success btn-sm">Edit</a>
+                              <button class="btn btn-danger btn-sm" 
+                              @onclick="() => OpenDeleteDialog(reservation)">Delete</button>
+                          </td>
+                          </tr>
+                          rowIndex++;
+                      }
+                      </tbody>
+                    </table>
+                  </div>
+            </div>
+        </div>
+    }
+}
+
+@if (DeleteDialogReservationOpen)
+{
+    <ModalDialog Title="Are you sure?"
+                 Text="Do you want to delete this reservation?"
+                 OnClose="@OnDeleteReservationDialogClose"
+                 DialogType="ModalDialog.ModalDialogType.DeleteCancel">
+    </ModalDialog>
+}
+
+@if (!isAuthorised)
+{
+    <h2>You are not authorized to obtain this resource!</h2>
+}
+
+@code {
+    [Parameter]
+    public int RestaurantID { get; set; }
+
+    private List<Table> tables;
+    private Restaurant ourRestaurant;
+    private Reservation reservationToDelete;
+    private bool isLoaded;
+    private bool isAuthorised = true;
+    private bool DeleteDialogReservationOpen { get; set; }
+    int id = 1;
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        authorizationHandle();
+        ourRestaurant = await restaurantService.getRestaurantBy(RestaurantID);
+        tables = await tableService.getTablesWithReservationsIn(ourRestaurant);
+        isLoaded = true;
+    }
+
+    public async void authorizationHandle()
+    {
+        try
+        {
+            await authorizeManager();
+        }
+        catch // assuming manager of a given ID has not been found
+        {
+            isAuthorised = false;
+        }
+    }
+
+
+    public async Task authorizeManager()
+    {
+        String accountId = await sessionStorage.GetItemAsStringAsync("account_id");
+        Manager manager = await managerService.getManagerFromAccountID(Int32.Parse(accountId)); 
+    }
+
+
+    private void OpenDeleteDialog(Reservation reservation)
+    {
+        reservationToDelete = reservation;
+        DeleteDialogReservationOpen = true;
+        StateHasChanged();
+    }
+
+    private void OnDeleteReservationDialogClose(bool accepted)
+    {
+        if (accepted)
+        {
+            deleteReservation();
+        }
+
+        DeleteDialogReservationOpen = false;
+        StateHasChanged();
+    }
+
+    private void deleteReservation()
+    {
+        foreach(Table table in tables)
+        {
+            if (table.Reservations.Contains(reservationToDelete))
+            {
+                table.Reservations.Remove(reservationToDelete);
+                reservationService.deleteReservationByID(reservationToDelete.IdReservation);
+                reservationToDelete = null;
+            }
+        }
+    }
+}

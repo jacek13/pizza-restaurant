@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Repository.Converters;
 
 namespace DataBaseAccess.Models
 {
@@ -189,12 +190,12 @@ namespace DataBaseAccess.Models
                     .IsUnicode(false)
                     .HasColumnName("assignment_role");
 
-                entity.HasOne(d => d.ManagerIdManagerNavigation)
+                entity.HasOne(d => d.Manager)
                     .WithMany(p => p.ManagerAssignments)
                     .HasForeignKey(d => d.ManagerIdManager)
                     .HasConstraintName("FK_ASS_7");
 
-                entity.HasOne(d => d.RestaurantIdRestaurantNavigation)
+                entity.HasOne(d => d.Restaurant)
                     .WithMany(p => p.ManagerAssignments)
                     .HasForeignKey(d => d.RestaurantIdRestaurant)
                     .HasConstraintName("FK_ASS_8");
@@ -298,14 +299,17 @@ namespace DataBaseAccess.Models
                 entity.Property(e => e.ClientIdClient).HasColumnName("client_id_client");
 
                 entity.Property(e => e.Date)
+                    .HasConversion<DateOnlyConverter, DateOnlyComparer>()
                     .HasColumnType("date")
                     .HasColumnName("DATE");
 
-                entity.Property(e => e.EndOfReservation).HasColumnName("end_of_reservation");
+                entity.Property(e => e.EndOfReservation).HasColumnName("end_of_reservation")
+                .HasConversion<TimeOnlyConverter, TimeOnlyComparer>();
 
                 entity.Property(e => e.ManagerIdManager).HasColumnName("manager_id_manager");
 
-                entity.Property(e => e.StartOfReservation).HasColumnName("start_of_reservation");
+                entity.Property(e => e.StartOfReservation).HasColumnName("start_of_reservation")
+                .HasConversion<TimeOnlyConverter, TimeOnlyComparer>();
 
                 entity.Property(e => e.TableIdTable).HasColumnName("table_id_table");
 
@@ -369,10 +373,11 @@ namespace DataBaseAccess.Models
 
                 entity.Property(e => e.Capacity).HasColumnName("capacity");
 
-                entity.HasOne(d => d.RestaurantIdRestaurantNavigation)
+                entity.HasOne(d => d.restaurant)
                     .WithMany(p => p.Tables)
                     .HasForeignKey(d => d.RestaurantIdRestaurant)
                     .HasConstraintName("table_restaurant_FK");
+
             });
 
             OnModelCreatingPartial(modelBuilder);

@@ -1,0 +1,252 @@
+﻿@using DataBaseAccess.Models
+@using TabPizzaRestaurant.Models
+@page "/Manager/AddReservation/{tableID:int}/{restaurantID:int}"
+@page "/Manager/EditReservation/{tableID:int}/{restaurantID:int}/{reservationID:int}"
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Repository.Services.ManagerService managerService
+@inject Repository.Services.ReservationService reservationService
+@inject NavigationManager navigationManager
+
+@if (isLoaded && isAuthorised)
+{
+    <center class="box-shadow"> 
+        <div class ="flex_container">
+            <div class ="flex-item1">
+                <EditForm Model="@reservationData" OnValidSubmit="@performOperation">
+                    <div>
+                        <div class="row">
+                            <div class="flex-md-column mx-auto pr-3"><p>Imię:</p><InputText id="FirstName" 
+                                @bind-Value="reservationData.FirstName"/></div>
+                        </div>
+                        <br/>
+                        <div class="row">
+                            <div class="flex-md-column mx-auto pr-3"><p>Telefon:</p><InputText id="PhoneNumber" 
+                                @bind-Value="reservationData.PhoneNumber"/></div>
+                        </div>
+                        <br/>
+                        <div class="row">
+                            <div class="flex-md-column mx-auto pr-3"><p>Data:</p><InputDate id="Date"
+                                @bind-Value="reservationData.Date" /></div>
+                        </div>
+                        <br/>
+                        <div class="row">
+                            <div class="flex-md-column mx-auto pr-3"><p>Data rozpoczęcia:</p><InputText id="ReservationStart" type="time" 
+                                @bind-Value="reservationData.ReservationStart" /></div>
+                        </div>                                                      
+                        <br/>
+                        <div class="row">
+                            <div class="flex-md-column mx-auto pr-3"><p>Data końca:</p><InputText id="ReservationEnd" type="time" 
+                                @bind-Value="reservationData.ReservationEnd" /></div>
+                        </div>
+                        <br/>
+                    </div>
+                    <div class="box-shadow"> 
+                        <DataAnnotationsValidator/>
+                        <ValidationSummary/>  
+                    </div>
+                    <br />
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary mb-3">Dodaj rezerwacje</button>
+                            <button class="btn btn-danger mb-3">Anuluj zamówienie</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </center>
+}
+
+@if (!isAuthorised)
+{
+    <h2>You are not authorized to obtain this resource!</h2>
+}
+
+@if (!isTimeFrameCorrect)
+{
+    <div class="alert alert-warning" role="alert">
+        There is already reservation made in the same timeframe.
+    </div>
+}
+
+@if (!isEndTimeLaterThanStart)
+{
+    <div class="alert alert-warning" role="alert">
+        Start time cannot come after end time.
+    </div>
+}
+
+@code {
+        [Parameter]
+        public int TableID { get; set; }
+
+        [Parameter] 
+        public int RestaurantID { get; set; }
+
+        [Parameter]
+        public int? ReservationID { get; set; }
+
+    private Manager manager { get; set; }
+    private ReservationFront reservationData = new ReservationFront();
+    private bool isTimeFrameCorrect = true;
+    private bool isEndTimeLaterThanStart = true;
+    private bool isLoaded = false;
+    private bool isAuthorised = true;
+    private bool isCreateOperation = true;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        authorizationHandle();
+        getReservationData();
+        isLoaded = true;
+    }
+
+    public bool checkIfUpdatingExistingEntry()
+    {
+        if (ReservationID is null)
+        {
+            return false;
+        }
+        else
+        {
+            isCreateOperation = false;
+            return true;
+        }
+    }
+
+
+    public async void getReservationData()
+    {
+        if (checkIfUpdatingExistingEntry())
+        {
+            int unpackedID = ReservationID ?? -1;
+            Reservation reservationToUpdate = await reservationService.GetReservationByID(unpackedID);
+            populateFields(reservationToUpdate);
+        }
+    }
+
+    public void populateFields(Reservation existingReservation)
+    {
+        reservationData = new ReservationFront()
+        {
+            FirstName = "UPDATE", //TODO to change when DB updated
+            PhoneNumber = "666 666 666", //TODO to change when DB updated
+            Date = existingReservation.Date,
+            ReservationStart = existingReservation.StartOfReservation.ToString(),
+            ReservationEnd = existingReservation.EndOfReservation.ToString()
+        };
+    }
+
+    public async void authorizationHandle()
+    {
+        try
+        {
+            await authorizeManager();
+        }
+        catch // assuming manager of a given ID has not been found
+        {
+            isAuthorised = false;
+        }
+    }
+
+
+    public async Task authorizeManager()
+    {
+        String accountId = await sessionStorage.GetItemAsStringAsync("account_id");
+        manager = await managerService.getManagerFromAccountID(Int32.Parse(accountId)); 
+    }
+
+    private async Task performOperation()
+    {
+        bool isInputDataCorrect = await isDataCorrect();
+        Reservation newReservation = createReservationBasedOnData(reservationData);
+
+        if (isCreateOperation && isInputDataCorrect)
+        {
+            await reservationService.addNewReservation(newReservation);
+            navigationManager.NavigateTo("/Manager/DisplayTables/" + RestaurantID);
+        }
+        else if(!isCreateOperation && isInputDataCorrect)
+        {
+            if (ReservationID is int valueID)
+            {
+                await reservationService.deleteReservationByID(valueID);
+            }
+
+            await reservationService.updateReservation(newReservation);
+            navigationManager.NavigateTo("/Manager/DisplayTables/" + RestaurantID);
+        }
+    }
+
+    private Reservation createReservationBasedOnData(ReservationFront data)
+    {
+        Reservation newReservation = new Reservation()
+            {
+                Date = data.Date,
+                StartOfReservation = parseTime(data.ReservationStart),
+                EndOfReservation = parseTime(data.ReservationEnd),
+                ManagerIdManager = manager.IdManager,
+                TableIdTable = TableID,
+                TableRestaurantIdRestaurant = RestaurantID
+            };
+
+        return newReservation;
+    }
+
+    private TimeOnly parseTime(string time)
+    {
+        return TimeOnly.Parse(time);
+    }
+
+
+    private async Task<bool> isDataCorrect()
+    {
+        if (!await isReservationTimeCorrect())
+        {
+            isTimeFrameCorrect = false;
+        }
+        else if (!isStartTimeEarlier(reservationData))
+        {
+            isEndTimeLaterThanStart = false;
+        }
+        else return true;
+
+        return false;
+    }
+
+    private bool isStartTimeEarlier(ReservationFront data)
+    {
+        if (parseTime(data.ReservationStart) > parseTime(data.ReservationEnd))
+        {
+            return false;
+        }
+        else return true;
+    }
+
+    private async Task<bool> isReservationTimeCorrect()
+    {
+        List<Reservation> collidingReservations = await getReservationsInSameTime();
+        int numberOfCollides = collidingReservations.Count;
+        // assuming we are editing existing entry, there will be always one colliding
+        // (same entry), so we substract 1 in that scenario
+        if (!isCreateOperation)
+        {
+            numberOfCollides -= 1;
+        }
+
+        if(numberOfCollides > 0)
+        {
+            return false;
+        }
+        else return true;
+    }
+
+    private async Task<List<Reservation>> getReservationsInSameTime()
+    {
+        List<Reservation> collidingReservations = await reservationService.getReservationInTimeFrame(
+            TableID,
+            reservationData.ReservationStart,
+            reservationData.ReservationEnd,
+            reservationData.Date);
+
+        return collidingReservations;
+    }
+}

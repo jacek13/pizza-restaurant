@@ -6,9 +6,9 @@ namespace DataBaseAccess.Models
     public partial class Reservation
     {
         public int IdReservation { get; set; }
-        public DateTime Date { get; set; }
-        public TimeSpan StartOfReservation { get; set; }
-        public TimeSpan EndOfReservation { get; set; }
+        public DateOnly Date { get; set; }
+        public TimeOnly StartOfReservation { get; set; }
+        public TimeOnly EndOfReservation { get; set; }
         public int? ManagerIdManager { get; set; }
         public int? ClientIdClient { get; set; }
         public int TableIdTable { get; set; }

@@ -8,11 +8,11 @@ using DataBaseAccess.Models;
 
 namespace Repository.Services
 {
-    public class ManagerAssigmentService
+    public class ManagerAssignmentService
     {
         private readonly IManagerAssignmentRepository _managerAssignRepo;
 
-        public ManagerAssigmentService(IManagerAssignmentRepository managerAssignRepo)
+        public ManagerAssignmentService(IManagerAssignmentRepository managerAssignRepo)
         {
             _managerAssignRepo = managerAssignRepo;
         }

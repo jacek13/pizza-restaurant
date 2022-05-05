@@ -10,7 +10,7 @@ namespace Repository.Repositories
 {
     public interface IRestaurantRepository : IRepository<Restaurant>
     {
-
+        Task<List<Restaurant>> fetchAllRestaurantsManagedByManager(int managerID);
     }
 
     public class RestaurantRepository : IRestaurantRepository
@@ -66,5 +66,26 @@ namespace Repository.Repositories
                 return entity;
             }
         }
+
+        public async Task<List<Restaurant>> fetchAllRestaurantsManagedByManager(int managerID)
+        {
+            using (var context = _factory.CreateDbContext())
+            {
+                /*
+                var restaurants = from r in context.Restaurant
+                                  join assign in context.ManagerAssignment
+                                  on r.IdRestaurant equals assign.RestaurantIdRestaurant
+                                  join m in context.Manager
+                                  on assign.ManagerIdManager equals managerID
+                                  select r;
+                */
+                var restaurants = context.Restaurant
+                    .Where(restaurant => restaurant.ManagerAssignments
+                    .Any(assign => assign.ManagerIdManager == managerID));
+
+                return await Task.FromResult(restaurants.ToList());
+            }
+        }
+
     }
 }
