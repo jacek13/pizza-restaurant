@@ -27,6 +27,10 @@ namespace Repository.Repositories
             }
         }
 
+        public ManagerAssignmentRepository()
+        {
+        }
+
         public async Task Delete(int id)
         {
             throw new NotImplementedException();
@@ -64,6 +68,11 @@ namespace Repository.Repositories
                 lastId++;
                 return entity;
             }
+        }
+
+        public Task<ManagerAssignment> Update(ManagerAssignment entity)
+        {
+            return null;
         }
     }
 }

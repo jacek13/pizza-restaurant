@@ -27,6 +27,10 @@ namespace Repository.Repositories
             }
         }
 
+        public ReservationRepository()
+        {
+        }
+
         public async Task Delete(int id)
         {
             using (var context = _factory.CreateDbContext())
@@ -65,6 +69,11 @@ namespace Repository.Repositories
                 lastId++;
                 return entity;
             }
+        }
+
+        public Task<Reservation> Update(Reservation entity)
+        {
+            return null;
         }
     }
 }

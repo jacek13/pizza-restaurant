@@ -27,6 +27,10 @@ namespace Repository.Repositories
             }
         }
 
+        public PizzaRepository()
+        {
+        }
+
         public async Task Delete(int id)
         {
             using (var context = _factory.CreateDbContext())
@@ -77,6 +81,11 @@ namespace Repository.Repositories
                 lastId++;
                 return entity;
             }
+        }
+
+        public Task<Pizza> Update(Pizza entity)
+        {
+            return null;
         }
     }
 }

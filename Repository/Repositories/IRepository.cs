@@ -22,7 +22,7 @@ namespace Repository.Repositories
         Task<List<T1>> GetAll();
         Task<T1> GetById(int id);
         Task<T1> Insert(T1 entity);
-        //Task<T1> Update(T1 entity); TODO
+        Task<T1> Update(T1 entity); //TODO
         Task Delete(int id);
 
         // Task Save();

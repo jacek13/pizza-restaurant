@@ -29,6 +29,10 @@ namespace Repository.Repositories
             }
         }
 
+        public DishesRepository()
+        {
+        }
+
         public async Task Delete(int id)
         {
             throw new NotImplementedException("W naszym projekcie historyczne zamówienia mają być zapisywane!");
@@ -74,5 +78,9 @@ namespace Repository.Repositories
             }
         }
 
+        public Task<Dishes> Update(Dishes entity)
+        {
+            return null;
+        }
     }
 }

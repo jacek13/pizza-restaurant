@@ -8,27 +8,27 @@ namespace TabPizzaRestaurant.Models
 {
     public class ClientFront
     {
-        [Required]
-        [EmailAddress]
+        //[Required]
+        //[EmailAddress]
         public string EMail { get; set; }
 
-        [Required]
-        [StringLength(30, ErrorMessage = "Login is too long.")]
-        [MinLength(5, ErrorMessage = "Login is too short")]
+        //[Required]
+        //[StringLength(30, ErrorMessage = "Login is too long.")]
+        //[MinLength(5, ErrorMessage = "Login is too short")]
         public string Login { get; set; }
 
-        [Required]
-        [DataType(DataType.Password)]
+        //[Required]
+        //[DataType(DataType.Password)]
         public string Password { get; set; }
 
-        [Required]
-        [StringLength(15, ErrorMessage = "First Name is too long.")]
-        [MinLength(5, ErrorMessage = "First Name is too short")]
+        //[Required]
+        //[StringLength(15, ErrorMessage = "First Name is too long.")]
+        //[MinLength(5, ErrorMessage = "First Name is too short")]
         public string Name { get; set; }
 
-        [Required]
-        [StringLength(15, ErrorMessage = "Last Name is too long.")]
-        [MinLength(5, ErrorMessage = "Last Name is too short")]
+        //[Required]
+        //[StringLength(15, ErrorMessage = "Last Name is too long.")]
+        //[MinLength(5, ErrorMessage = "Last Name is too short")]
         public string Surname { get; set; }
 
         [DataType(DataType.PhoneNumber)]

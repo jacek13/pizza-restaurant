@@ -66,5 +66,10 @@ namespace Repository.Repositories
                 return entity;
             }
         }
+
+        public Task<Manager> Update(Manager entity)
+        {
+            return null;
+        }
     }
 }

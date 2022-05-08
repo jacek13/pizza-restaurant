@@ -77,6 +77,39 @@ namespace Repository.Services
             }
         }
 
+        //Update client&account
+        public async Task<(Account, Client)> UpdateAccountAndClient(int idAccount, String e_mail, String login, 
+            String password, String name, String surname, DateTime? accountCreationDate, String PhoneNumber,
+                                        int points, String address, String role, int idClient)
+        {
+            var updatedAccount = new Account()
+            {
+                IdAccount = idAccount,
+                EMail = e_mail,
+                Login = login,
+                Password = password,
+                Name = name,
+                Surname = surname,
+                AccountCreationDate = accountCreationDate,
+                PhoneNumber = PhoneNumber,
+                Role = role
+            };
+
+            var updatedClient = new Client()
+            {
+                IdClient = idClient,
+                Points = points,
+                Address = address,
+                AccountIdAccount = updatedAccount.IdAccount
+            };
+
+            var entity = await _accountRepo.Update(updatedAccount);
+          
+            await _clientRepo.Update(updatedClient);
+            
+            return (updatedAccount, updatedClient);
+
+        }
 
     }
 }
