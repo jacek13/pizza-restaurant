@@ -14,12 +14,16 @@
     @foreach (Restaurant restaurant in availableRestaurants)
     {
         <div class="card m-3" style="min-width: 18rem; max-width:30.auto%;">
-            <div class="card-header">
-                <h3>@restaurant.Address @restaurant.EMail @restaurant.PhoneNumber</h3>
+            <div class="card-body text-center">
+                <h3 class = "card-title">@restaurant.Address </h3>
             </div>
+            <ul class="list-group list-group-flush text-center">
+                <li class="list-group-item">@restaurant.EMail</li>
+                <li class="list-group-item">@restaurant.PhoneNumber</li>
+            </ul>
             <div class="card-footer text-center">
                 <a href="/Manager/DisplayTables/@restaurant.IdRestaurant" 
-                    class="btn btn-primary m-1">Manage reservations</a>
+                    class="btn btn-primary m-1">Zarządzaj rezerwacjami</a>
             </div>
         </div>
     }

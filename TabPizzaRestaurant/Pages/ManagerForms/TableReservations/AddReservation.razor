@@ -20,7 +20,7 @@
                         </div>
                         <br/>
                         <div class="row">
-                            <div class="flex-md-column mx-auto pr-3"><p>Telefon:</p><InputText id="PhoneNumber" 
+                            <div class="flex-md-column mx-auto pr-3"><p>Numer telefonu:</p><InputText id="PhoneNumber" 
                                 @bind-Value="reservationData.PhoneNumber"/></div>
                         </div>
                         <br/>
@@ -30,12 +30,12 @@
                         </div>
                         <br/>
                         <div class="row">
-                            <div class="flex-md-column mx-auto pr-3"><p>Data rozpoczęcia:</p><InputText id="ReservationStart" type="time" 
+                            <div class="flex-md-column mx-auto pr-3"><p>Godzina rozpoczęcia:</p><InputText id="ReservationStart" type="time" 
                                 @bind-Value="reservationData.ReservationStart" /></div>
                         </div>                                                      
                         <br/>
                         <div class="row">
-                            <div class="flex-md-column mx-auto pr-3"><p>Data końca:</p><InputText id="ReservationEnd" type="time" 
+                            <div class="flex-md-column mx-auto pr-3"><p>Godzina końca:</p><InputText id="ReservationEnd" type="time" 
                                 @bind-Value="reservationData.ReservationEnd" /></div>
                         </div>
                         <br/>
@@ -57,35 +57,35 @@
 
 @if (!isAuthorised)
 {
-    <h2>You are not authorized to obtain this resource!</h2>
+    <h2>Nie jesteś autoryzowany do uzyskania tego zasobu!</h2>
 }
 
 @if (!isTimeFrameCorrect)
 {
     <div class="alert alert-warning" role="alert">
-        There is already reservation made in the same timeframe.
+        W tym samym czasie jest już utworzona rezerwacja na tym stoliku.
     </div>
 }
 
 @if (!isEndTimeLaterThanStart)
 {
     <div class="alert alert-warning" role="alert">
-        Start time cannot come after end time.
+        Końcowy czas rezerwacji nie może poprzedzać początkowego.
     </div>
 }
 
 @code {
-        [Parameter]
-        public int TableID { get; set; }
+    [Parameter]
+    public int TableID { get; set; }
 
-        [Parameter] 
-        public int RestaurantID { get; set; }
+    [Parameter] 
+    public int RestaurantID { get; set; }
 
-        [Parameter]
-        public int? ReservationID { get; set; }
+    [Parameter]
+    public int? ReservationID { get; set; }
 
     private Manager manager { get; set; }
-    private ReservationFront reservationData = new ReservationFront();
+    private ReservationFront reservationData;
     private bool isTimeFrameCorrect = true;
     private bool isEndTimeLaterThanStart = true;
     private bool isLoaded = false;
@@ -95,7 +95,7 @@
     protected override async Task OnParametersSetAsync()
     {
         authorizationHandle();
-        getReservationData();
+        await getReservationData();
         isLoaded = true;
     }
 
@@ -113,7 +113,7 @@
     }
 
 
-    public async void getReservationData()
+    public async Task getReservationData()
     {
         if (checkIfUpdatingExistingEntry())
         {
