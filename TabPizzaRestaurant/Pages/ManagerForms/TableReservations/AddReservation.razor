@@ -85,7 +85,7 @@
     public int? ReservationID { get; set; }
 
     private Manager manager { get; set; }
-    private ReservationFront reservationData;
+    private ReservationFront reservationData = new ReservationFront();
     private bool isTimeFrameCorrect = true;
     private bool isEndTimeLaterThanStart = true;
     private bool isLoaded = false;
