@@ -19,7 +19,9 @@ namespace Repository.Services
             _dishesRepo = dishesRepo;
         }
 
-        public async Task<(Order, List<Dishes>)> AddNewOrderAndDishes(string deliveryAddress, string city, string name, string surname, string phoneNumber, int restaurant, int? clientId, List<(Pizza, int)> dishes, string additionalInfo = "")
+        public async Task<(Order, List<Dishes>)> AddNewOrderAndDishes(string deliveryAddress, 
+            string city, string name, string surname, string phoneNumber, int restaurant, 
+            int? clientId, List<(Pizza, int)> dishes, string additionalInfo = "")
         {
             List<Dishes> newDishes = new List<Dishes>();
             string newDeliveryAddress = city;

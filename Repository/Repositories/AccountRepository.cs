@@ -63,5 +63,15 @@ namespace Repository.Repositories
             }
         }
 
+        public async Task<Account>Update(Account updatedEntity)
+        {
+            using (var context = _factory.CreateDbContext())
+            {
+         
+                context.Account.Update(updatedEntity);
+                await context.SaveChangesAsync();
+                return updatedEntity;
+            }
+        }
     }
 }

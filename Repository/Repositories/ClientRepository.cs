@@ -29,6 +29,10 @@ namespace Repository.Repositories
             //    foreignKeys.Add(item.AccountIdAccount);
         }
 
+        public ClientRepository()
+        {
+        }
+
         public async Task Delete(int id)
         {
             using (var context = _factory.CreateDbContext())
@@ -42,17 +46,7 @@ namespace Repository.Repositories
             }
         }
 
-        public async Task<Client> UpdatePoints(int id, int newPoints)
-        {
-            using (var context = _factory.CreateDbContext())
-            {
-                var entity = await context.Client.FirstOrDefaultAsync(b => b.AccountIdAccount == id);
-                entity.Points += newPoints;
-                context.Client.Update(entity);
-                await context.SaveChangesAsync();
-                return entity;
-            }
-        }
+        
 
         public async Task<List<Client>> GetAll()
         {
@@ -81,5 +75,30 @@ namespace Repository.Repositories
             }
         }
 
+        public async Task<Client> UpdatePoints(int id, int newPoints)
+        {
+            using (var context = _factory.CreateDbContext())
+            {
+                var entity = await context.Client.FirstOrDefaultAsync(b => b.AccountIdAccount == id);
+                entity.Points += newPoints;
+                context.Client.Update(entity);
+                await context.SaveChangesAsync();
+                return entity;
+            }
+        }
+
+
+        public async Task<Client> Update(Client updatedEntity)
+        {
+            using (var context = _factory.CreateDbContext())
+            {
+                context.Client.Update(updatedEntity);
+                await context.SaveChangesAsync();
+                return updatedEntity;
+            }
+        }
+
+
     }
+
 }

@@ -70,7 +70,7 @@
                     <Authorized>
                         <li class="nav-item">
                             <NavLink class="nav-link text-dark" href="client/info">
-                                <span class="material-icons md-18">edit</span>Info
+                                <span class="material-icons md-18">edit</span>Dane konta
                             </NavLink>
                         </li>
                         <li class="nav-item">
@@ -94,7 +94,7 @@
         <AuthorizeView>
             <Authorized>
                  @*<div class = login_register>*@
-                <a class="custom-class text-center col-4 col-sm-3 col-md-3  themed-grid-col mx-2" href="/myAccount">Witamy @context.User.Identity.Name</a>
+                <a class="custom-class text-center col-4 col-sm-3 col-md-3  themed-grid-col mx-2" href="/client/info">Witamy @context.User.Identity.Name</a>
                 <a class="custom-class text-center col-4 col-sm-3 col-md-2 themed-grid-col" href="/" @onclick="(() => Logout())">Wyloguj</a>
                  @*</div>*@
             </Authorized>

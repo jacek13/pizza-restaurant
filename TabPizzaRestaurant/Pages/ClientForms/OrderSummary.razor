@@ -12,6 +12,7 @@
 @inject Repository.Services.PizzaService pizzaService
 @inject Repository.Services.OrderManagmentService orderManagmentService
 @inject Repository.Services.RestaurantService restaurantService
+@inject Repository.Services.AccountService accountService
 @inject NavigationManager NavigationManager
 
 <style>
@@ -188,13 +189,15 @@ else
         {
             await sessionStorage.RemoveItemAsync("order_info");
             var accountId = await sessionStorage.GetItemAsStringAsync("account_id");
-            var client = await clientService.GetClientByAccountId(Int32.Parse(accountId));
+            //var client = await clientService.GetClientByAccountId(Int32.Parse(accountId));
+            var client = await accountService.GetAccountByLoginAndPassword(await sessionStorage.GetItemAsStringAsync("email"), 
+            await sessionStorage.GetItemAsStringAsync("password"));
             var tmp = await orderManagmentService.AddNewOrderAndDishes( orderData.Address, orderData.City, 
                                                                         orderData.FirstName, orderData.LastName, 
                                                                         orderData.PhoneNumber, orderData.RestaurantId, 
-                                                                        client.IdClient, selectedDishes);
+                                                                        client.IdAccount, selectedDishes);
 
-            clientService.UpdateClientPoints(client.IdClient, sumOfPoints());
+            clientService.UpdateClientPoints(client.IdAccount, sumOfPoints());
             NavigationManager.NavigateTo("/client/statistics");
         }
         catch(Exception e)

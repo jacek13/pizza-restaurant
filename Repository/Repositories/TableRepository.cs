@@ -28,6 +28,10 @@ namespace Repository.Repositories
             }
         }
 
+        public TableRepository()
+        {
+        }
+
         public async Task Delete(int id)
         {
             using (var context = _factory.CreateDbContext())
@@ -66,6 +70,11 @@ namespace Repository.Repositories
                 lastId++;
                 return entity;
             }
+        }
+
+        public Task<Table> Update(Table entity)
+        {
+            return null;
         }
     }
 }
