@@ -10,7 +10,7 @@
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
 <center>
-    <h1 class="display-4">Witamy w Galak Pizza!</h1>
+    <h1>Witamy w Galak Pizza!</h1>
 </center>
 <hr class="my-4">
 
@@ -27,8 +27,8 @@ else
 
         <div class="container ">
             <div class="row mb-3 justify-content-center">
-                <div class="custom-class text-center text-white col-md-3 themed-grid-col-naglowek">Nazwa pizzy</div>
-                <div class="custom-class text-center text-white col-6 col-md-2 themed-grid-col-naglowek offset-md-1">Cena za pizzę [PLN]</div>
+                <div class="custom-class text-center text-white col-md-5 themed-grid-col-naglowek">Nazwa pizzy</div>
+                <div class="custom-class text-center text-white col-8 col-md-2 themed-grid-col-naglowek offset-md-1">Cena za pizzę [PLN]</div>
                 <div class="custom-class text-center text-white col-6 col-md-2 themed-grid-col-naglowek offset-md-1">Punkty</div>
                 <AuthorizeView Roles="Client">
                     <Authorized>
@@ -44,8 +44,8 @@ else
                 {
                     int local =sortedMenu.IndexOf(pizza);
                     <div class="row mb-3 justify-content-center">
-                    <div class="custom-class text-center col-md-3 themed-grid-col">@pizza.Type</div>
-                    <div class="custom-class text-center col-6 col-md-2 themed-grid-col offset-md-1">@pizza.Price</div>
+                    <div class="custom-class text-center col-md-5 themed-grid-col">@pizza.Type</div>
+                    <div class="custom-class text-center col-8 col-md-2 themed-grid-col offset-md-1">@pizza.Price</div>
 
                     @if (pizza.Points == null || pizza.Points == 0)
                     {
@@ -83,7 +83,7 @@ else
 <center>
     <AuthorizeView Roles="Client">
         <NotAuthorized>
-            <div class="custom-class text-center col-md-4 themed-alert">
+            <div class="custom-class text-center col-md-6 themed-alert">
                 <h4><span class="material-icons">phone</span> 999 998 997</h4>
                 <h6>Złóż zamówienie telefonicznie</h6>
                 <h6>(zamówienie online możliwe dopiero po założeniu konta lub zalogowaniu się)</h6>
