@@ -77,6 +77,9 @@ namespace Repository.Repositories
             }
         }
 
-
+        public Task<Manager> Update(Manager entity)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

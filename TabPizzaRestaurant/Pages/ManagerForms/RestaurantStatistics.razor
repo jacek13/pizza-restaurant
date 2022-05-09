@@ -7,7 +7,7 @@
 @inject Repository.Services.PizzaService pizzaService
 @inject Repository.Services.RestaurantReportService restaurantReportService
 @inject Repository.Services.ManagerService managerService
-@inject Repository.Services.ManagerAssigmentService managerAssigmentService
+@inject Repository.Services.ManagerAssignmentService managerAssigmentService
 @inject Repository.Services.RestaurantService restaurantService
 
 
@@ -129,7 +129,7 @@
         {
             assignedRestaurants= new List<Restaurant>();
             var accountId = await sessionStorage.GetItemAsStringAsync("account_id");
-            manager = await managerService.GetManagerByAccountId(Int32.Parse(accountId));
+            manager = await managerService.getManagerFromAccountID(Int32.Parse(accountId));
             menu = await pizzaService.GetMenu();
             managerAssignments = await managerAssigmentService.GetManagerAssigment();
             restaurants = await restaurantService.GetRestaurants();
