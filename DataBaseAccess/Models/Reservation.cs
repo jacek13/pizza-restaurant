@@ -9,6 +9,8 @@ namespace DataBaseAccess.Models
         public DateOnly Date { get; set; }
         public TimeOnly StartOfReservation { get; set; }
         public TimeOnly EndOfReservation { get; set; }
+        public string Name { get; set; }
+        public string Phone { get; set; }
         public int? ManagerIdManager { get; set; }
         public int? ClientIdClient { get; set; }
         public int TableIdTable { get; set; }

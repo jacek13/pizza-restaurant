@@ -56,7 +56,20 @@ namespace Repository.Services
                 await _pizzaRepo.UpdatePizzaAvailability(id, availability);
                 //await _pizzaRepo.Save();
             }
+        }
 
+        public async void UpdatePizza(Pizza pizza)
+        {
+            var tmp = await _pizzaRepo.GetAll();
+            var primaryKeys = new List<int>();
+
+            foreach (var item in tmp)
+                primaryKeys.Add(item.IdPizza);
+
+            if (primaryKeys.Contains(pizza.IdPizza))
+            {
+                await _pizzaRepo.Update(pizza);
+            }
         }
 
         public async void DeletePizza(int id)
@@ -91,6 +104,11 @@ namespace Repository.Services
             }
             else
                 throw new Exception("Input string is null!");
+        }
+
+        public async Task<Pizza> GetPizzaById(int id)
+        {
+            return await _pizzaRepo.GetById(id);
         }
     }
 }

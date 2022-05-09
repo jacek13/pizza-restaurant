@@ -5,6 +5,7 @@
 @using DataBaseAccess.Models
 
 @inject Repository.Services.PizzaService pizzaService
+@inject NavigationManager navigationManager
 
 <style>
     .table-fill {
@@ -125,63 +126,11 @@ td.text-right {
     <h3>Manage Menu</h3>
     <br />
     <div class="box-shadow">
-        <button type="button" class="btn btn-primary" @onclick="triggerDisplayInsertForm">Display Insert</button>
         <button type="button" class="btn btn-primary" @onclick="triggerDisplayMenu">Display Menu</button>
-        <button type="button" class="btn btn-primary" @onclick="triggerDisplayDeletePizza">Display Delete</button>
-        <button type="button" class="btn btn-primary" @onclick="triggerDisplayUpdateAvaliability">Display Update</button>
+        <button type="button" class="btn btn-primary" @onclick="InsertPizza">New Pizza</button>
         <button type="button" class="btn btn-primary" @onclick="refresh">Refresh</button>
     </div>
 </center>
-
-@if (displayInsertForm)
-{
-    <center>
-    <h4>Insert New Pizza</h4>
-    
-         <div class="box-shadow">
-        <EditForm Model="@newPizza" OnValidSubmit="@InsertPizza">
-           
-                <div>Price:         <InputNumber id="price" @bind-Value="newPizza.price"/></div>
-                <br />
-                <div>Cost:          <InputNumber id="cost" @bind-Value="newPizza.cost"/></div>
-                <br />
-                <div>Availability:  <InputCheckbox id="availability" @bind-Value="newPizza.isAvailable"/></div>
-                <br />
-                <div>Type:          <InputText id="type" @bind-Value="newPizza.type"/></div>
-                <br />
-                <div>Size:          <InputNumber id="size" @bind-Value="newPizza.size"/></div>
-                <br />
-                <div>Points:        <InputNumber id="points" @bind-Value="newPizza.points"/></div>
-           
-                <DataAnnotationsValidator/>
-                <ValidationSummary/>  
-
-            <button type="submit" class="btn btn-primary ml-2 mt-2">Insert</button>
-        </EditForm>
-         </div>
-    </center>
-}
-<center>
-@if (displayDeletePizza)
-{
-    <h4>Delete Pizza</h4>
-
-    <div class="box-shadow"> 
-        <input type="number" @bind-value="deletePizzaId" @bind-value:event="oninput" />
-        <button type="button" class="btn btn-primary m-2" @onclick="deletePizza">Delete Pizza</button>
-    </div>
-}
-
-@if (displayUpdateAvailability)
-{
-    <h4>Update Availability</h4>
-    <div class="box-shadow"> 
-        <div><p>Pizza Id:</p><input type="number" @bind-value="updatePizzaId" @bind-value:event="oninput" /></div>
-        <div><p>Availability:</p><input type="checkbox" @bind-value="pizzaAvaliability" @bind-value:event="oninput" /></div>
-        <button type="button" class="btn btn-primary" @onclick="UpdateAvailability">Update</button>
-    </div>
-}
- </center>
 
 @if (displayMenu)
 {
@@ -205,6 +154,7 @@ td.text-right {
                             <th class="text-left">Availability</th>
                             <th class="text-left">Type</th>
                             <th class="text-left">Points</th>
+                            <th class="text-left"></th>
                         </tr>
                     </thead>
                     <tbody class ="table-hover">
@@ -217,6 +167,9 @@ td.text-right {
                                 <td class="text-left">@item.IsAvailable</td>
                                 <td class="text-left">@item.Type</td>
                                 <td class="text-left">@item.Points</td>
+                                <td class="text-left">
+                                    <button type="submit" class="btn btn-primary" @onclick="() => editPizza(item)">Edit</button>
+                                </td>
                             </tr>
                         }
                     </tbody>
@@ -246,11 +199,9 @@ td.text-right {
 
     protected override async Task OnParametersSetAsync() => menu = await pizzaService.GetMenu();
 
-    private async void InsertPizza()
+    private void InsertPizza()
     {
-        await pizzaService.AddNewPizza(newPizza.price, newPizza.cost, newPizza.isAvailable, newPizza.type, newPizza.size, newPizza.points);
-        newPizza = new PizzaFront();
-        this.refresh();
+        navigationManager.NavigateTo("/Manager/EditPizza/-1");
     }
 
     protected void deletePizza()
@@ -265,14 +216,6 @@ td.text-right {
         this.refresh();
     }
 
-    private void triggerDisplayInsertForm()
-    {
-        if (displayInsertForm == true)
-            displayInsertForm = false;
-        else
-            displayInsertForm = true;
-    }
-
     private void triggerDisplayMenu()
     {
         if (displayMenu == true)
@@ -281,19 +224,8 @@ td.text-right {
             displayMenu = true;
     }
 
-    private void triggerDisplayUpdateAvaliability()
+    private void editPizza(Pizza pizza)
     {
-        if (displayUpdateAvailability == true)
-            displayUpdateAvailability = false;
-        else
-            displayUpdateAvailability = true;
-    }
-
-    private void triggerDisplayDeletePizza()
-    {
-        if (displayDeletePizza == true)
-            displayDeletePizza = false;
-        else
-            displayDeletePizza = true;
+        navigationManager.NavigateTo($"/Manager/EditPizza/{pizza.IdPizza}");
     }
 }

@@ -170,6 +170,8 @@ CREATE
                    DATE DATE NOT NULL ,
     start_of_reservation TIME NOT NULL ,
     end_of_reservation TIME NOT NULL ,
+    name                           VARCHAR (128) NOT NULL ,
+    phone                          VARCHAR (11) NOT NULL ,
     manager_id_manager             INTEGER ,
     client_id_client               INTEGER ,
     table_id_table                 INTEGER NOT NULL ,

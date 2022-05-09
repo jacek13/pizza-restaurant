@@ -21,7 +21,7 @@ namespace Repository.Services
         {
             Table newTable = new Table()
             {
-                restaurant = restaurant,
+                RestaurantIdRestaurant = restaurant.IdRestaurant,
                 Capacity = capacity,
             };
 

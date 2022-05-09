@@ -82,10 +82,14 @@ namespace Repository.Repositories
                 return entity;
             }
         }
-
-        public Task<Pizza> Update(Pizza entity)
+        public async Task<Pizza> Update(Pizza pizza)
         {
-            return null;
+            using (var context = _factory.CreateDbContext())
+            {
+                context.Pizza.Update(pizza);
+                await context.SaveChangesAsync();
+                return pizza;
+            }
         }
     }
 }

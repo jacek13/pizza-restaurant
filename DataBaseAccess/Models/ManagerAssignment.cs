@@ -9,7 +9,7 @@ namespace DataBaseAccess.Models
         public int RestaurantIdRestaurant { get; set; }
         public string AssignmentRole { get; set; }
 
-        public virtual Manager Manager { get; set; }
-        public virtual Restaurant Restaurant { get; set; }
+        public virtual Manager ManagerIdManagerNavigation { get; set; }
+        public virtual Restaurant RestaurantIdRestaurantNavigation { get; set; }
     }
 }

@@ -190,12 +190,12 @@ namespace DataBaseAccess.Models
                     .IsUnicode(false)
                     .HasColumnName("assignment_role");
 
-                entity.HasOne(d => d.Manager)
+                entity.HasOne(d => d.ManagerIdManagerNavigation)
                     .WithMany(p => p.ManagerAssignments)
                     .HasForeignKey(d => d.ManagerIdManager)
                     .HasConstraintName("FK_ASS_7");
 
-                entity.HasOne(d => d.Restaurant)
+                entity.HasOne(d => d.RestaurantIdRestaurantNavigation)
                     .WithMany(p => p.ManagerAssignments)
                     .HasForeignKey(d => d.RestaurantIdRestaurant)
                     .HasConstraintName("FK_ASS_8");
@@ -308,6 +308,18 @@ namespace DataBaseAccess.Models
 
                 entity.Property(e => e.ManagerIdManager).HasColumnName("manager_id_manager");
 
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(128)
+                    .IsUnicode(false)
+                    .HasColumnName("name");
+
+                entity.Property(e => e.Phone)
+                    .IsRequired()
+                    .HasMaxLength(11)
+                    .IsUnicode(false)
+                    .HasColumnName("phone");
+
                 entity.Property(e => e.StartOfReservation).HasColumnName("start_of_reservation")
                 .HasConversion<TimeOnlyConverter, TimeOnlyComparer>();
 
@@ -377,7 +389,6 @@ namespace DataBaseAccess.Models
                     .WithMany(p => p.Tables)
                     .HasForeignKey(d => d.RestaurantIdRestaurant)
                     .HasConstraintName("table_restaurant_FK");
-
             });
 
             OnModelCreatingPartial(modelBuilder);

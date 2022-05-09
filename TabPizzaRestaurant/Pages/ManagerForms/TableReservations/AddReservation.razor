@@ -127,8 +127,8 @@
     {
         reservationData = new ReservationFront()
         {
-            FirstName = "UPDATE", //TODO to change when DB updated
-            PhoneNumber = "666 666 666", //TODO to change when DB updated
+            FirstName = existingReservation.Name,
+            PhoneNumber = existingReservation.Phone, //TODO to change when DB updated
             Date = existingReservation.Date,
             ReservationStart = existingReservation.StartOfReservation.ToString(),
             ReservationEnd = existingReservation.EndOfReservation.ToString()
@@ -183,6 +183,8 @@
                 Date = data.Date,
                 StartOfReservation = parseTime(data.ReservationStart),
                 EndOfReservation = parseTime(data.ReservationEnd),
+                Name = data.FirstName,
+                Phone = data.PhoneNumber,
                 ManagerIdManager = manager.IdManager,
                 TableIdTable = TableID,
                 TableRestaurantIdRestaurant = RestaurantID
