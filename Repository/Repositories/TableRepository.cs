@@ -10,9 +10,10 @@ namespace Repository.Repositories
 {
     public interface ITableRepository : IRepository<Table>
     {
-
+        Task<Table> updateCapacity(Table table, int newCapacity);
+        Task<List<Table>> fetchAllTablesIn(Restaurant restaurant);
+        Task<List<Table>> fetchAllTablesWithReservationsIn(Restaurant restaurant);
     }
-
 
     public class TableRepository : ITableRepository
     {
@@ -28,9 +29,39 @@ namespace Repository.Repositories
             }
         }
 
-        public TableRepository()
+        public async Task<Table> updateCapacity(Table table, int newCapacity)
         {
+            using (var context = _factory.CreateDbContext())
+            {
+                table.Capacity = newCapacity;
+                context.Table.Update(table);
+                await context.SaveChangesAsync();
+                return table;
+            }
         }
+
+        public async Task<List<Table>> fetchAllTablesIn(Restaurant restaurant)
+        {
+            using (var context = _factory.CreateDbContext())
+            {
+                return await context.Table
+                    .Where(t => t.RestaurantIdRestaurant == restaurant.IdRestaurant)
+                    .ToListAsync();
+            }
+        }
+
+        public async Task<List<Table>> fetchAllTablesWithReservationsIn(Restaurant restaurant)
+        {
+            using (var context = _factory.CreateDbContext())
+            {
+                return await context.Table
+                    .Where(t => t.RestaurantIdRestaurant == restaurant.IdRestaurant)
+                    .Include(r => r.Reservations).Take(5)
+                    .ToListAsync();
+            }
+        }
+
+
 
         public async Task Delete(int id)
         {
@@ -76,5 +107,7 @@ namespace Repository.Repositories
         {
             return null;
         }
+
+       
     }
 }

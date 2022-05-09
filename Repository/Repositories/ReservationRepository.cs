@@ -10,7 +10,13 @@ namespace Repository.Repositories
 {
     public interface IReservationRepository : IRepository<Reservation>
     {
-
+        Task<List<Reservation>> fetchAllReservationsIn(Restaurant restaurant);
+        Task<List<Reservation>> getReservationByTimeAndTable(
+            int tableID, 
+            TimeOnly reservationStart, 
+            TimeOnly reservationEnd,
+            DateOnly date);
+        Task update(Reservation reservation);
     }
 
     public class ReservationRepository : IReservationRepository
@@ -27,8 +33,39 @@ namespace Repository.Repositories
             }
         }
 
-        public ReservationRepository()
+        public async Task<List<Reservation>> fetchAllReservationsIn(Restaurant restaurant)
         {
+            using (var context = _factory.CreateDbContext())
+            {
+                var reservations = from r in context.Reservation
+                                   join t in context.Table
+                                   on r.TableIdTable equals t.IdTable
+                                   join re in context.Restaurant
+                                   on t.IdTable equals restaurant.IdRestaurant
+                                   select r;
+
+                return await Task.FromResult(reservations.ToList());
+            }
+        }
+
+        public async Task<List<Reservation>> getReservationByTimeAndTable(
+            int tableID,
+            TimeOnly reservationStart,
+            TimeOnly reservationEnd,
+            DateOnly date)
+        {
+            using (var context = _factory.CreateDbContext())
+            {
+                var reservations = from r in context.Reservation
+                                   join t in context.Table
+                                   on r.TableIdTable equals tableID
+                                   where (r.Date.CompareTo(date).Equals(0)
+                                   && r.StartOfReservation < reservationEnd
+                                   && reservationStart < r.EndOfReservation)
+                                   select r;
+
+                return await Task.FromResult(reservations.Distinct().ToList());
+            }
         }
 
         public async Task Delete(int id)
@@ -68,6 +105,15 @@ namespace Repository.Repositories
                 await context.SaveChangesAsync();
                 lastId++;
                 return entity;
+            }
+        }
+
+        public async Task update(Reservation reservation)
+        {
+            using (var context = _factory.CreateDbContext())
+            {
+                context.Reservation.Update(reservation);
+                await context.SaveChangesAsync();
             }
         }
 

@@ -19,6 +19,9 @@ VALUES ('kowalski@o2.pl','Kowal','1234','Janek','Kowalski', GETDATE(), '12365478
 INSERT INTO pizza_restaurant_ver_8.dbo.client (points,address,account_id_account)
 VALUES (0,'Amarantowa 1', (SELECT COUNT(*) FROM pizza_restaurant_ver_8.dbo.account));
 
+INSERT INTO pizza_restaurant_ver_8.dbo.manager (salary_netto,salary_brutto,account_id_account)
+VALUES (3600,2800, (SELECT COUNT(*) FROM pizza_restaurant_ver_8.dbo.account));
+
 --Create new pizza type
 INSERT INTO pizza_restaurant_ver_8.dbo.pizza (price, cost, isAvailable, type, size, points)
 VALUES (16, 14, 1, 'Margherita', 32, 0);
@@ -52,18 +55,43 @@ VALUES ('Akademicka 16', '322371310', 'galakPizzaA@gmail.com');
 INSERT INTO pizza_restaurant_ver_8.dbo.restaurant (address, phone_number, e_mail)
 VALUES ('Chorzowska 23', '123654798', 'galakPizzaC@gmail.com');
 
+-- assign a manager to two restaurants
+
+INSERT INTO pizza_restaurant_ver_8.dbo.manager_assignment (manager_id_manager, restaurant_id_restaurant, assignment_role)
+VALUES ( (SELECT COUNT(*) FROM pizza_restaurant_ver_8.dbo.manager), 1, 'Manager');
+
+INSERT INTO pizza_restaurant_ver_8.dbo.manager_assignment (manager_id_manager, restaurant_id_restaurant, assignment_role)
+VALUES ( (SELECT COUNT(*) FROM pizza_restaurant_ver_8.dbo.manager), 2, 'Manager');
+
+-- create tables in restaurants
+
+INSERT INTO [pizza_restaurant_ver_8].[dbo].[table] (capacity, restaurant_id_restaurant)
+VALUES (2, 1);
+
+INSERT INTO [pizza_restaurant_ver_8].[dbo].[table] (capacity, restaurant_id_restaurant)
+VALUES (4, 1);
+
+INSERT INTO [pizza_restaurant_ver_8].[dbo].[table] (capacity, restaurant_id_restaurant)
+VALUES (6, 1);
 
 
------------------
-INSERT INTO pizza_restaurant_ver_8.dbo.[order] (delivery_adress, [DATE], client_id_client, restaurant_id_restaurant)
-VALUES ('Zwyciêstwa 2', GETDATE(), 2, 1);
 
-INSERT INTO pizza_restaurant_ver_8.dbo.[dishes] 
-VALUES (1, 2, 14, 19,6);
+INSERT INTO [pizza_restaurant_ver_8].[dbo].[table] (capacity, restaurant_id_restaurant)
+VALUES (4, 2);
 
-INSERT INTO pizza_restaurant_ver_8.dbo.[manager] (salary_netto, salary_brutto, account_id_account) 
-VALUES ( 2000, 3000, 3);
+INSERT INTO [pizza_restaurant_ver_8].[dbo].[table] (capacity, restaurant_id_restaurant)
+VALUES (5, 2);
 
-INSERT INTO pizza_restaurant_ver_8.dbo.[manager_assignment] 
-VALUES ( 1, 1, 'menager');
+INSERT INTO [pizza_restaurant_ver_8].[dbo].[table] (capacity, restaurant_id_restaurant)
+VALUES (7, 2);
 
+
+
+INSERT INTO [pizza_restaurant_ver_8].[dbo].[table] (capacity, restaurant_id_restaurant)
+VALUES (4, 3);
+
+INSERT INTO [pizza_restaurant_ver_8].[dbo].[table] (capacity, restaurant_id_restaurant)
+VALUES (6, 3);
+
+INSERT INTO [pizza_restaurant_ver_8].[dbo].[table] (capacity, restaurant_id_restaurant)
+VALUES (8, 3);

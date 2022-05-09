@@ -1,0 +1,70 @@
+﻿@page "/Manager/TableReservations"
+<h3>TableReservation</h3>
+
+@using DataBaseAccess.Models
+
+@inject Repository.Services.ManagerService managerService
+@inject Repository.Services.RestaurantService restaurantService
+@inject Repository.Services.ReservationService reservationService
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
+@if(isLoaded && isAuthorised)
+{
+    <div class="card-deck">
+    @foreach (Restaurant restaurant in availableRestaurants)
+    {
+        <div class="card m-3" style="min-width: 18rem; max-width:30.auto%;">
+            <div class="card-body text-center">
+                <h3 class = "card-title">@restaurant.Address </h3>
+            </div>
+            <ul class="list-group list-group-flush text-center">
+                <li class="list-group-item">@restaurant.EMail</li>
+                <li class="list-group-item">@restaurant.PhoneNumber</li>
+            </ul>
+            <div class="card-footer text-center">
+                <a href="/Manager/DisplayTables/@restaurant.IdRestaurant" 
+                    class="btn btn-primary m-1">Zarządzaj rezerwacjami</a>
+            </div>
+        </div>
+    }
+    </div>
+}
+
+@if (!isAuthorised)
+{
+    <h2>You are not authorized to obtain this resource!</h2>
+}
+
+@code {
+    private List<Restaurant> availableRestaurants;
+    private Manager manager;
+    private bool isLoaded = false;
+    private bool isAuthorised = true;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await authorizationHandler();
+        isLoaded = true;
+    }
+
+    public async Task authorizationHandler()
+    {
+        try
+        {
+            await authorizeManager();
+        }
+        catch
+        {
+            isAuthorised = false;
+        }
+    }
+
+
+    public async Task authorizeManager()
+    {
+       String accountId = await sessionStorage.GetItemAsStringAsync("account_id");
+       manager = await managerService.getManagerFromAccountID(Int32.Parse(accountId)); 
+       availableRestaurants = await restaurantService.getAllAssignedRestaurants(manager.IdManager);
+    }
+
+}
