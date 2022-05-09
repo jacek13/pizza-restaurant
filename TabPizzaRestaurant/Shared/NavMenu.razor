@@ -3,12 +3,7 @@
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inherits LayoutComponentBase
-<style>
-    .login_register{
-        margin:2px;
-       
-    }
-</style>
+
 <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
     <div class="container">
         <a class="navbar-brand" href="">Galak Pizza</a>
@@ -84,16 +79,16 @@
         </div>
         <AuthorizeView>
             <Authorized>
-                 @*<div class = login_register>*@
+                 
                 <a class="custom-class text-center col-4 col-sm-3 col-md-3  themed-grid-col mx-2" href="/client/info">Witamy @context.User.Identity.Name</a>
                 <a class="custom-class text-center col-4 col-sm-3 col-md-2 themed-grid-col" href="/" @onclick="(() => Logout())">Wyloguj</a>
-                 @*</div>*@
+                 
             </Authorized>
             <NotAuthorized>
-               @* <div class = login_register>*@
+              
                 <a class="custom-class text-center col-4 col-sm-3 col-md-2  themed-grid-col mx-2" href="/login">Zaloguj się</a>
                 <a class="custom-class text-center col-4 col-sm-3 col-md-3 themed-grid-col" href="/register">Zarejestruj się</a>
-                @*</div>*@
+                
             </NotAuthorized>
         </AuthorizeView>
     </div>
