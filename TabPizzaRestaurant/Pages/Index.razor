@@ -96,7 +96,7 @@ else
 {
     private List<Pizza> menu;
     private List<Pizza> sortedMenu;
-
+    private List<Order> o;
     [Parameter]
     public List<int> order { get; set; }=new List<int>(); // TODO trzeba dodać do session storage
     private List<bool> isChecked;
@@ -111,7 +111,7 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-
+        
         menu = await Storage.GetMenu();
         sortedMenu = menu.OrderBy(o => o.Type).ToList();
 

@@ -12,6 +12,7 @@ namespace Repository.Repositories
     {
         public Task<List<Order>> GetUserOrders(int clientId);
         public Task<Order> UpdateOrderStatus(int id, char newStatus);
+        public Task<List<Order>> GetRestaurantOrders(int RestaurantId);
     }
 
 
@@ -65,6 +66,16 @@ namespace Repository.Repositories
                 return await context.Order.Where(o => o.ClientIdClient == clientId).ToListAsync();
             }
         }
+
+
+        public async Task<List<Order>> GetRestaurantOrders(int RestaurantId)
+        {
+            using (var context = _factory.CreateDbContext())
+            {
+                return await context.Order.Where(o => o.RestaurantIdRestaurant == RestaurantId).ToListAsync();
+            }
+        }
+
         public async Task<Order> UpdateOrderStatus(int id, char newStatus)
         {
             using (var context = _factory.CreateDbContext())
