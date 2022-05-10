@@ -38,19 +38,29 @@ else
 
                 <br />
                 <div class="row">
-                    <div class="flex-md-column pr-3 mx-auto"><p>Hasło:</p>  <InputText id="Password" @bind-Value="accountFront.Password" /></div>
+
+                    <div class="flex-md-column pr-3 mx-auto"><p>Stare hasło:</p>  <InputText type="password" id="Password" @bind-Value="oldPassword" /></div>
+                    
                     <div class="flex-md-column mx-auto"><p>Telefon:</p>     <InputText id="PhoneNumber" @bind-Value="accountFront.PhoneNumber" /></div>
                 </div>
                 <br />
 
                 <div class="row">
+                    <div class="flex-md-column pr-3 mx-auto"><p>Nowe hasło:</p>  <InputText type="password"id="ConfirmPassword" @bind-Value="insertedNewPassword" /></div>
                     <div class="flex-md-column pr-3 mx-auto"><p>Adres:</p>  <InputText id="Address" @bind-Value="clientFrontDataUpdate.Address" /></div>
-                    <div class="flex-md-column pr-3 mx-auto"><p>Punkty:</p> <p> @clientFrontDataUpdate.Points</p>  </div>
-                    <br />
+                </div>
+                <br />
+                <div class="row">
+                        <div class="flex-md-column pr-3 mx-auto"><p>Potwierdź nowe hasło:</p>  <InputText type="password"id="ConfirmPassword" @bind-Value="insertedNewPasswordConfirmation" /></div>
+                        <div class="flex-md-column pr-3 mx-auto"><p>Punkty:</p> <p> @clientFrontDataUpdate.Points</p>  </div>
+                    </div>
+                        <br />
+
                     </div>
                     </div>
+
                     </div>
-            </div>
+
 
             <DataAnnotationsValidator />
             <ValidationSummary />
@@ -75,6 +85,10 @@ else
 
 @code
 {
+    private string oldPassword;
+    private string insertedNewPassword;
+    private string insertedNewPasswordConfirmation;
+    private string insertedOldPassword;
     private Models.AccountFront accountFront;
     private Models.ClientFrontDataUpdate clientFrontDataUpdate;
     private string error;
@@ -86,6 +100,10 @@ else
         try
         {
             await initAccountData();
+            oldPassword = "";
+            insertedNewPassword = "";
+            insertedNewPasswordConfirmation = "";
+
         }
         catch (Exception e)
         {
@@ -127,13 +145,19 @@ else
     {
         try
         {
-
-            var accountId = await sessionStorage.GetItemAsStringAsync("account_id");
+            if(oldPassword != await sessionStorage.GetItemAsStringAsync("password") 
+                || insertedNewPassword != insertedNewPasswordConfirmation)
+            {
+                throw new Exception("Błędnie podane stare lub nowe hasła!");
+            }
+            else
+            {
+                var accountId = await sessionStorage.GetItemAsStringAsync("account_id");
 
 
             var tmp = await accountManagementService.UpdateAccountAndClient(accountFront.IdAccount,
                 accountFront.EMail, accountFront.Login,
-            accountFront.Password, accountFront.Name, accountFront.Surname, accountFront.AccountCreationDate,
+            insertedNewPassword, accountFront.Name, accountFront.Surname, accountFront.AccountCreationDate,
             accountFront.PhoneNumber, clientFrontDataUpdate.Points, clientFrontDataUpdate.Address, accountFront.Role,
             clientFrontDataUpdate.IdClient);
 
@@ -141,21 +165,23 @@ else
             await sessionStorage.SetItemAsStringAsync("name", accountFront.Name);
             await sessionStorage.SetItemAsStringAsync("surname", accountFront.Surname);
             await sessionStorage.SetItemAsStringAsync("login", accountFront.Login);
-            await sessionStorage.SetItemAsStringAsync("password", accountFront.Password);
+            await sessionStorage.SetItemAsStringAsync("password", insertedNewPassword);
             await sessionStorage.SetItemAsStringAsync("phone", accountFront.PhoneNumber);
             await sessionStorage.SetItemAsStringAsync("address", clientFrontDataUpdate.Address);
             await sessionStorage.SetItemAsStringAsync("role", accountFront.Role);
             await sessionStorage.SetItemAsStringAsync("account_id", accountFront.IdAccount.ToString());
             await sessionStorage.SetItemAsStringAsync("points", clientFrontDataUpdate.Points.ToString());
 
-            System.Diagnostics.Debug.WriteLine("updateAccountData end");
+            
 
             NavigationManager.NavigateTo("/client/info");
-            System.Diagnostics.Debug.WriteLine("updateAccountData the very end");
+            }
+
+        
         }
         catch (Exception e)
         {
-            System.Diagnostics.Debug.WriteLine("updateAccountData exception");
+
             wasException = true;
             error = e.Message;
             this.StateHasChanged();
