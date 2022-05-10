@@ -84,7 +84,13 @@ else
                         <br />
                         <div class="row">
                             <div class="flex-md-column pr-3 mx-auto"><p>Adres:</p>  <InputText id="Address" @bind-Value="orderData.Address"/></div>
-                            <div class="flex-md-column mx-auto"><p>Miasto:</p>  <InputText id="City" @bind-Value="orderData.City"/></div>
+                            <div class="flex-md-column mx-auto"><p>Miasto:</p>
+                                <InputSelect id="restaurant" @bind-Value="orderData.City">
+                                    @foreach (var city in Cities)
+                                    {
+                                        <option value="@city">@city</option>
+                                    }
+                                </InputSelect></div>
                         </div>
                         <div class="row">
                             <div class="flex-md-column mt-3 mx-auto"><p>Adres naszej restauracji:</p>  
@@ -97,13 +103,8 @@ else
                             </div>
                         </div>
                     </div>
-        
-
-                     
-              
                         <DataAnnotationsValidator/>
                         <ValidationSummary/>  
-                    
                     <br />
                     <button type="submit" class="btn btn-primary mb-2">Złóż zamówienie</button>
                 </EditForm>
@@ -131,6 +132,7 @@ else
     private OrderFront orderData;
     List<(Pizza, int)> selectedDishes;
     List<Restaurant> restaurants;
+    List<string> Cities;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -138,6 +140,11 @@ else
         currencyType = "ZŁ";
         try
         {
+            Cities = new List<string>();
+            Cities.Add("Gliwice");
+            Cities.Add("Katowice");
+            Cities.Add("Zabrze");
+
             await initOrderData();
             orderInfo = new string("");
             orderInfo = await sessionStorage.GetItemAsStringAsync("order_info");
@@ -189,15 +196,15 @@ else
         {
             await sessionStorage.RemoveItemAsync("order_info");
             var accountId = await sessionStorage.GetItemAsStringAsync("account_id");
-            //var client = await clientService.GetClientByAccountId(Int32.Parse(accountId));
-            var client = await accountService.GetAccountByLoginAndPassword(await sessionStorage.GetItemAsStringAsync("email"), 
+            var client = await clientService.GetClientByAccountId(Int32.Parse(accountId));
+            var account = await accountService.GetAccountByLoginAndPassword(await sessionStorage.GetItemAsStringAsync("email"), 
             await sessionStorage.GetItemAsStringAsync("password"));
             var tmp = await orderManagmentService.AddNewOrderAndDishes( orderData.Address, orderData.City, 
                                                                         orderData.FirstName, orderData.LastName, 
                                                                         orderData.PhoneNumber, orderData.RestaurantId, 
-                                                                        client.IdAccount, selectedDishes);
+                                                                        client.IdClient, selectedDishes);
 
-            clientService.UpdateClientPoints(client.IdAccount, sumOfPoints());
+            clientService.UpdateClientPoints(account.IdAccount, sumOfPoints());
             NavigationManager.NavigateTo("/client/statistics");
         }
         catch(Exception e)

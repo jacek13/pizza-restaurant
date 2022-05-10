@@ -52,7 +52,9 @@
                 <br />
                 <div>Login: <br />    <InputText id="Login" @bind-Value="newClient.Login"/></div>
                 <br />
-                <div>Hasło:<br />  <InputText id="Password" @bind-Value="newClient.Password"/></div>
+                <div>Hasło:<br />   <InputText type="password" id="password" @bind-Value="newClient.Password"/></div>
+                <br />
+                <div>Powtórz:<br />   <InputText type="password" id="retypePassword" @bind-Value="retypePassword"/></div>
                 <br />
                 <center>
                     <button type="submit" class="btn btn-primary">Zarejestruj się</button>
@@ -88,6 +90,7 @@
     // private User user;
     private ClientFront newClient;
     private string error;
+    private string retypePassword;
     private bool isException = false;
 
     protected override Task OnInitializedAsync()
@@ -97,31 +100,41 @@
         return base.OnInitializedAsync();
     }
 
+    private bool checkPasswordFront() => newClient.Password == retypePassword ? true : false;
+
     private async Task<bool> ValidateUser()
     {
         try
         {
-            isException = false;
-            newClient.Role = "Client";
-            var AccountAndClient = await managmentService.AddNewClient(newClient.EMail, newClient.Login, newClient.Password,
-                                        newClient.Name, newClient.Surname, DateTime.Today, newClient.PhoneNumber, 0, newClient.Address, newClient.Role);
+            if (checkPasswordFront())
+            {
+                isException = false;
+                newClient.Role = "Client";
+                var AccountAndClient = await managmentService.AddNewClient(newClient.EMail, newClient.Login, newClient.Password,
+                                            newClient.Name, newClient.Surname, DateTime.Today, newClient.PhoneNumber, 0, newClient.Address, newClient.Role);
 
-            ((CustomAuthenticationStateProvider)AuthenticationStateProvider).MarkUserAsAuthenticated(newClient);
-            NavigationManager.NavigateTo("/");
+                ((CustomAuthenticationStateProvider)AuthenticationStateProvider).MarkUserAsAuthenticated(newClient);
+                NavigationManager.NavigateTo("/");
 
-            await sessionStorage.SetItemAsStringAsync("email", newClient.EMail);
-            await sessionStorage.SetItemAsStringAsync("name", newClient.Name);
-            await sessionStorage.SetItemAsStringAsync("surname", newClient.Surname);
-            await sessionStorage.SetItemAsStringAsync("login", newClient.Login);
-            await sessionStorage.SetItemAsStringAsync("password", newClient.Password);
-            await sessionStorage.SetItemAsStringAsync("phone", newClient.Name);
-            await sessionStorage.SetItemAsStringAsync("address", newClient.Address);
-            await sessionStorage.SetItemAsStringAsync("role", newClient.Role);
-            await sessionStorage.SetItemAsStringAsync("account_id", AccountAndClient.Item1.IdAccount.ToString());
-            await sessionStorage.SetItemAsStringAsync("points", AccountAndClient.Item2.Points.ToString());
-            newClient = new ClientFront();
+                await sessionStorage.SetItemAsStringAsync("email", newClient.EMail);
+                await sessionStorage.SetItemAsStringAsync("name", newClient.Name);
+                await sessionStorage.SetItemAsStringAsync("surname", newClient.Surname);
+                await sessionStorage.SetItemAsStringAsync("login", newClient.Login);
+                await sessionStorage.SetItemAsStringAsync("password", newClient.Password);
+                await sessionStorage.SetItemAsStringAsync("phone", newClient.Name);
+                await sessionStorage.SetItemAsStringAsync("address", newClient.Address);
+                await sessionStorage.SetItemAsStringAsync("role", newClient.Role);
+                await sessionStorage.SetItemAsStringAsync("account_id", AccountAndClient.Item1.IdAccount.ToString());
+                await sessionStorage.SetItemAsStringAsync("points", AccountAndClient.Item2.Points.ToString());
+                newClient = new ClientFront();
 
-            return await Task.FromResult(true);
+                return await Task.FromResult(true);
+            }
+            else
+            {
+                isException = true;
+                throw new Exception("Incorect password!");
+            }
         }
         catch (Exception e)
         {
