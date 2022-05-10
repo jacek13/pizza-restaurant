@@ -9,6 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataBaseAccess", "DataBaseA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository", "Repository\Repository.csproj", "{C3B95821-9216-42E3-BCDD-83E2FAC2C8B8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{7D6053A5-DAC4-4AF8-9A1F-65310F9A16CF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D932BE11-0104-4FCA-8A1F-F1F1EA3DDA1D} = {D932BE11-0104-4FCA-8A1F-F1F1EA3DDA1D}
+		{C3B95821-9216-42E3-BCDD-83E2FAC2C8B8} = {C3B95821-9216-42E3-BCDD-83E2FAC2C8B8}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +33,10 @@ Global
 		{C3B95821-9216-42E3-BCDD-83E2FAC2C8B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3B95821-9216-42E3-BCDD-83E2FAC2C8B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3B95821-9216-42E3-BCDD-83E2FAC2C8B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D6053A5-DAC4-4AF8-9A1F-65310F9A16CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D6053A5-DAC4-4AF8-9A1F-65310F9A16CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D6053A5-DAC4-4AF8-9A1F-65310F9A16CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D6053A5-DAC4-4AF8-9A1F-65310F9A16CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -30,7 +30,7 @@ Można znaleźć tam również skrypt SQL wypełniający bazę danych.
 ---
 
 ## **Schemat bazy danych**
-![](resources/Relacyjny_ver_8.PNG)
+![](resources/Relacyjny_ver_9.PNG)
 
 ---
 
