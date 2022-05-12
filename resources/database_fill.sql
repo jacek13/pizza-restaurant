@@ -1,6 +1,6 @@
 -- Create new admin
 INSERT INTO [pizza_restaurant_ver_9].[dbo].[account] (e_mail, login, password, name, surname, account_creation_date, phone_number, role)
-VALUES ('root@root.pl','root','1234','Admin','szef', GETDATE(), '123654789', 'Admin');
+VALUES ('root@root.pl','root','?E?r?O-?e??K?x?)','Admin','szef', GETDATE(), '123654789', 'Admin');
 
 INSERT INTO pizza_restaurant_ver_9.dbo.client (points, address, account_id_account)
 VALUES (0,'Fryderyka Chopina 9', (	SELECT [pizza_restaurant_ver_9].[dbo].[account].[id_account] 
@@ -9,7 +9,7 @@ VALUES (0,'Fryderyka Chopina 9', (	SELECT [pizza_restaurant_ver_9].[dbo].[accoun
 
 -- Create new Client
 INSERT INTO [pizza_restaurant_ver_9].[dbo].[account] (e_mail, login, password, name, surname, account_creation_date, phone_number, role)
-VALUES ('random@o2.pl','borubar4321','1234','Fidol','Pêpenek', GETDATE(), '123654789', 'Client');
+VALUES ('random@o2.pl','borubar4321','?E?r?O-?e??K?x?)','Fidol','Pêpenek', GETDATE(), '123654789', 'Client');
 
 INSERT INTO pizza_restaurant_ver_9.dbo.client (points,address,account_id_account)
 VALUES (0,'Zwyciêstwa 2', (	SELECT [pizza_restaurant_ver_9].[dbo].[account].[id_account] 
@@ -18,7 +18,7 @@ VALUES (0,'Zwyciêstwa 2', (	SELECT [pizza_restaurant_ver_9].[dbo].[account].[id_
 
 -- Create new Manager
 INSERT INTO [pizza_restaurant_ver_9].[dbo].[account] (e_mail, login, password, name, surname, account_creation_date, phone_number, role)
-VALUES ('kowalski@o2.pl','Kowal','1234','Janek','Kowalski', GETDATE(), '123654789', 'Manager');
+VALUES ('kowalski@o2.pl','Kowal','?E?r?O-?e??K?x?)','Janek','Kowalski', GETDATE(), '123654789', 'Manager');
 
 INSERT INTO pizza_restaurant_ver_9.dbo.client (points, address, account_id_account)
 VALUES (0,'Amarantowa 1', (	SELECT [pizza_restaurant_ver_9].[dbo].[account].[id_account] 

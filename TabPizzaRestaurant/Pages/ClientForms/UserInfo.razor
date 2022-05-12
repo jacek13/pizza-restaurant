@@ -1,5 +1,6 @@
 ﻿@page "/client/info"
 
+@using TabPizzaRestaurant.Data
 
 @inject NavigationManager NavigationManager
 @inject Repository.Services.PizzaService Storage
@@ -113,8 +114,9 @@ else
 
     private async Task initAccountData()
     {
-        var dbUser = await accountService.GetAccountByLoginAndPassword(await sessionStorage.GetItemAsStringAsync("email"), 
-            await sessionStorage.GetItemAsStringAsync("password"));
+        var passwordFromSession = await sessionStorage.GetItemAsStringAsync("password");
+        var passwordHashed = new passwordController().hashPassword(passwordFromSession);
+        var dbUser = await accountService.GetAccountByLoginAndPassword(await sessionStorage.GetItemAsStringAsync("email"), passwordHashed);
         accountFront = new Models.AccountFront()
             {
                 IdAccount = dbUser.IdAccount,
@@ -153,10 +155,10 @@ else
             {
                 var accountId = await sessionStorage.GetItemAsStringAsync("account_id");
 
-
+            var newHashedPassword = new passwordController().hashPassword(insertedNewPassword);
             var tmp = await accountManagementService.UpdateAccountAndClient(accountFront.IdAccount,
                 accountFront.EMail, accountFront.Login,
-            insertedNewPassword, accountFront.Name, accountFront.Surname, accountFront.AccountCreationDate,
+            newHashedPassword, accountFront.Name, accountFront.Surname, accountFront.AccountCreationDate,
             accountFront.PhoneNumber, clientFrontDataUpdate.Points, clientFrontDataUpdate.Address, accountFront.Role,
             clientFrontDataUpdate.IdClient);
 

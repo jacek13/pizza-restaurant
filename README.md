@@ -21,7 +21,7 @@ Można znaleźć tam również skrypt SQL wypełniający bazę danych.
    - [X] dostęp do informacji o lokalach(adres/kontakt),
    - [X] możliwość złożenia zamówienia pod podanym numerem telefonu.
 3. Klient zalogowany posiada:
-   - [ ] możliwość zmiany hasła,
+   - [X] możliwość zmiany hasła,
    - [X] opcję wylogowania,
    - [X] dostęp do menu oraz możliwość złożenia zamówienia przez stonę z wyborem adresu dostawy,
    - [X] dostęp do informacji związanych ze swoim profilem,

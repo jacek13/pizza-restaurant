@@ -7,24 +7,27 @@ using System.Threading.Tasks;
 namespace TabPizzaRestaurant.Models
 {
     public class OrderFront
-    { 
-        [Required]
-        [StringLength(20, ErrorMessage = "First Name is too long.")]
-        [MinLength(3, ErrorMessage = "First Name is too short")]
+    {
+        [Required(ErrorMessage = "Imię wymagane!")]
+        [StringLength(30, ErrorMessage = "Za długie!")]
+        [MinLength(5, ErrorMessage = "Za krótkie!")]
         public string FirstName { get; set; }
 
-        [Required]
-        [StringLength(20, ErrorMessage = "Last Name is too long.")]
-        [MinLength(3, ErrorMessage = "Last Name is too short")]
+        [Required(ErrorMessage = "Nazwisko wymagane!")]
+        [StringLength(30, ErrorMessage = "Za długie!")]
+        [MinLength(5, ErrorMessage = "Za krótkie!")]
         public string LastName { get; set; }
 
-        [DataType(DataType.PhoneNumber)]
+        [StringLength(11, ErrorMessage = "Za długie!")]
+        [Phone(ErrorMessage = "Zły format!")]
         public string PhoneNumber { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Pole wymagane!")]
+        [StringLength(30, ErrorMessage = "Za długie!")]
         public string Address { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Pole wymagane!")]
+        [StringLength(40, ErrorMessage = "Za długie!")]
         public string City { get; set; }
 
         [Required]

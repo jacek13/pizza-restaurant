@@ -6,6 +6,7 @@
 @using System
 @using DataBaseAccess.Models
 @using TabPizzaRestaurant.Models
+@using TabPizzaRestaurant.Data
 
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @inject Repository.Services.ClientService clientService
@@ -194,11 +195,11 @@ else
     {
         try
         {
+            var hashedPassword = new passwordController().hashPassword(await sessionStorage.GetItemAsStringAsync("password"));
             await sessionStorage.RemoveItemAsync("order_info");
             var accountId = await sessionStorage.GetItemAsStringAsync("account_id");
             var client = await clientService.GetClientByAccountId(Int32.Parse(accountId));
-            var account = await accountService.GetAccountByLoginAndPassword(await sessionStorage.GetItemAsStringAsync("email"), 
-            await sessionStorage.GetItemAsStringAsync("password"));
+            var account = await accountService.GetAccountByLoginAndPassword(await sessionStorage.GetItemAsStringAsync("email"), hashedPassword);
             var tmp = await orderManagmentService.AddNewOrderAndDishes( orderData.Address, orderData.City, 
                                                                         orderData.FirstName, orderData.LastName, 
                                                                         orderData.PhoneNumber, orderData.RestaurantId, 

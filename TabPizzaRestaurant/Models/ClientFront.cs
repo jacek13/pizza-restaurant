@@ -8,32 +8,42 @@ namespace TabPizzaRestaurant.Models
 {
     public class ClientFront
     {
-        //[Required]
-        //[EmailAddress]
+        [Required(ErrorMessage = "Email wymagany!")]
+        [EmailAddress(ErrorMessage = "Zły format!")]
         public string EMail { get; set; }
 
-        //[Required]
-        //[StringLength(30, ErrorMessage = "Login is too long.")]
-        //[MinLength(5, ErrorMessage = "Login is too short")]
+        [Required(ErrorMessage = "Login wymagany!")]
+        [StringLength(30, ErrorMessage = "Za długie!")]
+        [MinLength(5, ErrorMessage = "Za krótkie!")]
         public string Login { get; set; }
 
-        //[Required]
-        //[DataType(DataType.Password)]
+        [Required(ErrorMessage = "Hasło wymagane!")]
+        [StringLength(30, ErrorMessage = "Za długie!")]
+        [MinLength(5, ErrorMessage = "Za krótkie!")]
+        [DataType(DataType.Password)]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,}$",
+            ErrorMessage = "Wymagane znaki specjalne, cyfry, małe i duże litery!")]
         public string Password { get; set; }
 
-        //[Required]
-        //[StringLength(15, ErrorMessage = "First Name is too long.")]
-        //[MinLength(5, ErrorMessage = "First Name is too short")]
+        [Required(ErrorMessage = "Imię wymagane!")]
+        [StringLength(15, ErrorMessage = "Za długie!")]
+        [MinLength(5, ErrorMessage = "Za krótkie!")]
+        [RegularExpression(@"^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]{1,40}$",
+            ErrorMessage = "Błędne znaki!")]
         public string Name { get; set; }
 
-        //[Required]
-        //[StringLength(15, ErrorMessage = "Last Name is too long.")]
-        //[MinLength(5, ErrorMessage = "Last Name is too short")]
+        [Required(ErrorMessage = "Nazwisko wymagane!")]
+        [StringLength(15, ErrorMessage = "Za długie!")]
+        [MinLength(5, ErrorMessage = "Za krótkie!")]
+        [RegularExpression(@"^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]{1,40}$",
+            ErrorMessage = "Błędne znaki!")]
         public string Surname { get; set; }
 
-        [DataType(DataType.PhoneNumber)]
+        [StringLength(11, ErrorMessage = "Za długie!")]
+        [Phone(ErrorMessage = "Zły format!")]
         public string PhoneNumber { get; set; }
 
+        [StringLength(30, ErrorMessage = "Za długie!")]
         public string Address { get; set; }
 
         public string Role { get; set; }

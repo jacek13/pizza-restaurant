@@ -1,7 +1,4 @@
 ﻿@page "/Manager/phoneOrder"
-<center>
-<h3 class="my-4">Wprowadź zamówienie ręcznie</h3>
-</center>
 
 @using System
 @using DataBaseAccess.Models
@@ -10,6 +7,7 @@
 
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @inject Repository.Services.ClientService clientService
+@inject Repository.Services.ManagerService managerService
 @inject Repository.Services.PizzaService pizzaService
 @inject Repository.Services.OrderManagmentService orderManagmentService
 @inject Repository.Services.RestaurantService restaurantService
@@ -142,100 +140,125 @@ td.text-right {
     text-align: right;
 }
 </style>
+@if (isLoaded && isAuthorised)
+{
+    @if (menu is null || restaurants is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <center>
+            <h3 class="my-4">Wprowadź zamówienie ręcznie</h3>
+        </center>
 
-@if(menu is null || restaurants is null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <center class="box-shadow"> 
-        <div class ="flex_container">
-            <!-- Dane o wybranych pizzach -->
+        <center class="box-shadow"> 
+            <div class ="flex_container">
+                <!-- Dane o wybranych pizzach -->
             <div class="flex-item1">
-            
-            <h4 class="my-3">Wybierz dania</h4>
-            <EditForm Model="@forValidation" OnSubmit="@addDish">
-                    <InputSelect id="date" @bind-Value="forValidation.id">
-                        @foreach (var pizza in menu)
-                        {
-                            <option value="@pizza.IdPizza">@pizza.Type</option>
-                        }
-                    </InputSelect>
-                    <p class="mt-3">Ilość:</p>  <InputNumber id="Ammount" @bind-Value="forValidation.ammount"/>
-               
-                <button type="submit" class="btn btn-primary mb-2">Dodaj do zamówienia</button>
-                 
-
-                <DataAnnotationsValidator/>
-                <ValidationSummary/>  
-            </EditForm>
-            @if (selectedDishes is not null)
-            {
-                    @if (selectedDishes.Count > 0)
+                    @if (menu.Count > 0)
                     {
-                        <table class="table-fill">
-                            <thead>
-                                <tr>
-                                    <th class="text-left">Pizza</th>
-                                    <th class="text-left">Ilość</th>
-                                    <th class="text-left">Cena</th>
-                                </tr>
-                            </thead>
-                            <tbody class = "table-hover">
-                                @foreach (var dish in selectedDishes)
+                        <h4 class="my-3">Wybierz dania</h4>
+                        <EditForm Model="@forValidation" OnSubmit="@addDish">
+                            <InputSelect id="date" @bind-Value="forValidation.id">
+                                @foreach (var pizza in menu)
                                 {
-                                    <tr>
-                                        <td class="text-left">@dish.Item1.Type</td>
-                                        <td class="text-left">@dish.Item2</td>
-                                        <td class="text-left">@calculatePrice(@dish.Item1.Price, @dish.Item2)</td>
-                                    </tr>
+                                    <option value="@pizza.IdPizza">@pizza.Type</option>
                                 }
-                            </tbody>
-                        </table>
-                        <h3 class ="mx-2">Kwota łącznie: @calculateTheSum() @currencyType</h3>
+                            </InputSelect>
+                            <p class="mt-3">Ilość:</p>
+                            <input type="number" id="pizzaAmount@(forValidation.ammount)" min="0" step="1"  @bind="@forValidation.ammount">
+                                <button type="submit" class="btn btn-primary mb-2">Dodaj do zamówienia</button>
+                            <DataAnnotationsValidator/>
+                            <ValidationSummary/>  
+                        </EditForm>
                     }
-            }
-            </div>
-            <!-- Dane Kliencie-->
-            <div class ="flex-item2">
-                <h3>Dane klienta</h3>
-                <EditForm Model="@orderData" OnValidSubmit="@makeOrder">
-                    <div>
-                        <div class="row">
-                            <div class="flex-md-column mx-auto pr-3"><p>Imię:</p>      <InputText id="firstName" @bind-Value="orderData.FirstName"/></div>
-                            <div class="flex-md-column mx-auto"><p>Nazwisko:</p>   <InputText id="secondName" @bind-Value="orderData.LastName"/></div>
-                        </div>
-                        <br />
-                        <div class="row">
-                            <div class="flex-md-column mx-auto"><p>Telefon:</p>     <InputText id="Phone" @bind-Value="orderData.PhoneNumber"/></div>
-                        </div>
-                        <br />
-                        <div class="row">
-                            <div class="flex-md-column mx-auto  pr-3"><p>Adres:</p>  <InputText id="Address" @bind-Value="orderData.Address"/></div>
-                            <div class="flex-md-column mx-auto"><p>Miasto:</p>  <InputText id="City" @bind-Value="orderData.City"/></div>
-                        </div>
-                        <div class="row">
-                            <div class="flex-md-column mx-auto mt-3"><p>Adres naszej restauracji:</p>  
-                                <InputSelect id="restaurant" @bind-Value="orderData.RestaurantId">
-                                    @foreach (var restaurant in restaurants)
+                    @if (selectedDishes is not null)
+                    {
+                        @if (selectedDishes.Count > 0)
+                        {
+                            <table class="table-fill">
+                                <thead>
+                                    <tr>
+                                        <th class="text-left">Pizza</th>
+                                        <th class="text-left">Ilość</th>
+                                        <th class="text-left">Cena</th>
+                                    </tr>
+                                </thead>
+                                <tbody class = "table-hover">
+                                    @foreach (var dish in selectedDishes)
                                     {
-                                        <option value="@restaurant.IdRestaurant">@restaurant.Address</option>
+                                        <tr>
+                                            <td class="text-left">@dish.Item1.Type</td>
+                                            <td class="text-left">@dish.Item2</td>
+                                            <td class="text-left">@calculatePrice(@dish.Item1.Price, @dish.Item2)</td>
+                                        </tr>
                                     }
-                                </InputSelect>
+                                </tbody>
+                            </table>
+                            <h3 class ="mx-2">Kwota łącznie: @calculateTheSum() @currencyType</h3>
+                        }
+                    }
+                    </div>
+                    <!-- Dane Kliencie-->
+                    <div class ="flex-item2">
+                    <h3>Dane klienta</h3>
+                    <EditForm Model="@orderData" OnValidSubmit="@makeOrder">
+                        <div>
+                            <DataAnnotationsValidator/>
+                            <div class="row">
+                                <div class="flex-md-column mx-auto pr-3"><p>Imię:</p>      <InputText id="firstName" @bind-Value="orderData.FirstName"/></div>
+                                <div style="color:rgb(255,51,51)">
+                                    <ValidationMessage For="() => orderData.PhoneNumber"/>
+                                </div>
+                                <div class="flex-md-column mx-auto"><p>Nazwisko:</p>   <InputText id="secondName" @bind-Value="orderData.LastName"/></div>
+                                <div style="color:rgb(255,51,51)">
+                                    <ValidationMessage For="() => orderData.LastName"/>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row">
+                                <div class="flex-md-column mx-auto"><p>Telefon:</p>     <InputText id="Phone" @bind-Value="orderData.PhoneNumber"/></div>
+                                <div style="color:rgb(255,51,51)">
+                                    <ValidationMessage For="() => orderData.PhoneNumber"/>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row">
+                                <div class="flex-md-column mx-auto  pr-3"><p>Adres:</p>  <InputText id="Address" @bind-Value="orderData.Address"/></div>
+                                <div style="color:rgb(255,51,51)">
+                                    <ValidationMessage For="() => orderData.Address"/>
+                                </div>
+                                <div class="flex-md-column mx-auto"><p>Miasto:</p>  <InputText id="City" @bind-Value="orderData.City"/></div>
+                            </div>
+                            <div class="row">
+                                <div class="flex-md-column mx-auto mt-3"><p>Adres naszej restauracji:</p>  
+                                    <InputSelect id="restaurant" @bind-Value="orderData.RestaurantId">
+                                        @foreach (var restaurant in restaurants)
+                                        {
+                                            <option value="@restaurant.IdRestaurant">@restaurant.Address</option>
+                                        }
+                                    </InputSelect>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="box-shadow"> 
-                        <DataAnnotationsValidator/>
-                        <ValidationSummary/>  
-                    </div>
-                    <br />
-                    <button type="submit" class="btn btn-primary mb-3">Złóż zamówienie</button>
-                </EditForm>
+                        <div class="box-shadow"> 
+                        </div>
+                        <br />
+                        @if (selectedDishes.Count > 0)
+                        {
+                            <button type="submit" class="btn btn-primary mb-3">Złóż zamówienie</button>
+                        }
+                    </EditForm>
+                </div>
             </div>
-        </div>
-    </center>
+        </center>
+    }
+}
+
+@if (!isAuthorised)
+{
+    <h2 style="color:rgb(255,51,51)">You are not authorized to obtain this resource!</h2>
 }
 
 @if(wasException)
@@ -251,32 +274,39 @@ else
     private string currencyType;
     private string error;
     private bool wasException;
+    private bool isLoaded;
+    private bool isAuthorised;
     private OrderFront orderData;
     List<(Pizza, int)> selectedDishes;
     List<Restaurant> restaurants;
     private List<Pizza> menu;
     private PizzaSelectionForm forValidation;
+    private Manager manager;
 
     protected override async Task OnParametersSetAsync()
     {
-        wasException = false;
-        currencyType = "ZŁ";
-        try
+        await authorizationHandler();
+        isLoaded = true;
+        if (isAuthorised)
         {
-            forValidation = new PizzaSelectionForm()
+            wasException = false;
+            currencyType = "ZŁ";
+            try
             {
-                id = 1,
-                ammount = 0
-            };
-            menu = await pizzaService.GetMenu();
-            restaurants = await restaurantService.GetRestaurants();
-            initOrderData();
-            selectedDishes = new List<(Pizza, int)>();
-        }
-        catch(Exception e)
-        {
-            error = e.Message;
-            wasException = true;
+                menu = await pizzaService.GetMenu();
+                forValidation = new PizzaSelectionForm()
+                    {
+                        id = menu != null ? menu[0].IdPizza : 1,
+                        ammount = 0
+                    };
+                initOrderData();
+                selectedDishes = new List<(Pizza, int)>();
+            }
+            catch (Exception e)
+            {
+                error = e.Message;
+                wasException = true;
+            }
         }
     }
 
@@ -301,15 +331,17 @@ else
 
     private void initOrderData()
     {
-        orderData = new OrderFront()
+        if(restaurants != null)
+            orderData = new OrderFront()
             {
-                FirstName = "Wprowadź imię klienta",
-                LastName = "Wprowadź nazwisko klienta",
-                PhoneNumber = "Wprowadź telefon klienta",
-                Address = "Wprowadź adres zamówienia",
+                FirstName = "Imię",
+                LastName = "Nazwisko",
+                PhoneNumber = "Telefon",
+                Address = "Adres",
                 City = "Gliwice",
-                RestaurantId = 1    // TODO kiedyś dać tutaj selecta
+                RestaurantId = (restaurants.Count > 0 ? restaurants[0].IdRestaurant : -1 )
             };
+        if (orderData.RestaurantId == -1) throw new Exception("There is no restaurants in DB");
     }
 
     private async void makeOrder()
@@ -333,10 +365,14 @@ else
 
     private void addDish()
     {
-        var pizza = menu.FirstOrDefault(p => p.IdPizza == forValidation.id);
-        menu.Remove(pizza);
-        selectedDishes.Add((pizza, forValidation.ammount));
-        this.refresh();
+        if (forValidation.ammount > 0 && forValidation.ammount < 16)
+        {
+            var pizza = menu.FirstOrDefault(p => p.IdPizza == forValidation.id);
+            menu.Remove(pizza);
+            selectedDishes.Add((pizza, forValidation.ammount));
+            forValidation.id = menu.Count > 0 ? menu[0].IdPizza : 0;
+            this.refresh();
+        }
     }
 
     private void refresh()
@@ -347,8 +383,31 @@ else
     private class PizzaSelectionForm
     {
         public int id { get; set; }
-        [Required]
-        [Range(0, 16, ErrorMessage = "Liczba spoza zakresu!")]
+        [Required, Range(0, 16, ErrorMessage = "Liczba spoza zakresu!")]
         public int ammount { get; set; }
+    }
+
+    public async Task authorizationHandler()
+    {
+        try
+        {
+            await authorizeManager();
+            if(manager != null && restaurants != null)
+            {
+                if (restaurants.Count > 0) // Manager is assign to 1 or more restaurants
+                    isAuthorised = true;
+            }
+        }
+        catch(Exception e)
+        {
+            isAuthorised = false;
+        }
+    }
+
+    public async Task authorizeManager()
+    {
+       string accountId = await sessionStorage.GetItemAsStringAsync("account_id");
+       manager = await managerService.getManagerFromAccountID(Int32.Parse(accountId)); 
+       restaurants = await restaurantService.getAllAssignedRestaurants(manager.IdManager);
     }
 }

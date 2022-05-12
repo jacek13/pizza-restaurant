@@ -48,41 +48,71 @@
     <div class="box-shadow">
         <div class="outer_container">
             <div class ="flex-container_login">
-                <div>E-Mail: <br />   <InputText id="Email" @bind-Value="newClient.EMail" /></div>
+                <DataAnnotationsValidator/>
+                <div>E-Mail: <br />   <InputText id="Email" @bind-Value="newClient.EMail" />
+                <div style="color:rgb(255,51,51)">
+                    <ValidationMessage For="() => newClient.EMail"/>
+                </div>
+                </div>
                 <br />
-                <div>Login: <br />    <InputText id="Login" @bind-Value="newClient.Login"/></div>
+                <div>Login: <br />    <InputText id="Login" @bind-Value="newClient.Login"/>
+                <div style="color:rgb(255,51,51)">
+                    <ValidationMessage For="() => newClient.Login"/>
+                </div>
+                </div>
                 <br />
                 <div>Hasło:<br />   <InputText type="password" id="password" @bind-Value="newClient.Password"/></div>
+                <div style="color:rgb(255,51,51)">
+                    <ValidationMessage For="() => newClient.Password"/>
+                </div>
                 <br />
                 <div>Powtórz:<br />   <InputText type="password" id="retypePassword" @bind-Value="retypePassword"/></div>
+                <div style="color:rgb(255,51,51)">
+                    @if(wrongPassword)
+                    {
+                        <p>Hasła się różnią!</p>
+                    }
+                </div>
                 <br />
                 <center>
                     <button type="submit" class="btn btn-primary">Zarejestruj się</button>
                 </center>
              </div>
              <div class ="flex-container_addres">
-                <div>Imię: <br />     <InputText id="firstName" @bind-Value="newClient.Name"/></div>
+                <div>Imię: <br />     <InputText id="firstName" @bind-Value="newClient.Name"/>
+                 <div style="color:rgb(255,51,51)">
+                    <ValidationMessage For="() => newClient.Name"/>
+                </div>
+                </div>
                 <br />
-                <div>Nazwisko:<br />   <InputText id="secondName" @bind-Value="newClient.Surname"/></div>
+                <div>Nazwisko:<br />   <InputText id="secondName" @bind-Value="newClient.Surname"/>
+                <div style="color:rgb(255,51,51)">
+                    <ValidationMessage For="() => newClient.Surname"/>
+                </div>
+                </div>
                 <br />
-                <div>Telefon: <br />    <InputText id="Phone" @bind-Value="newClient.PhoneNumber"/></div>
+                <div>Telefon: <br />    <InputText id="Phone" @bind-Value="newClient.PhoneNumber"/>
+                <div style="color:rgb(255,51,51)">
+                    <ValidationMessage For="() => newClient.PhoneNumber"/>
+                </div>
+                </div>
                 <br />
                 <div>Adres zamieszkania:<br />  <InputText id="Address" style="width:220px;" @bind-Value="newClient.Address"/></div>
                 <br />
                </div>
         </div>
     </div>
-    <DataAnnotationsValidator/>
-    <ValidationSummary/>  
 </EditForm>
 
-@if(isException)
+@if(isException) // FOR DEBUG
 {
+<!-- 
     <center> 
         <hr>
-        <h3 style="color:rgb(255,51,51)">Błędne dane!</h3> 
+        <h3 style="color:rgb(255,51,51)">Błędne hasło!</h3> 
     </center>
-    <!-- <p>@error</p> --> 
+    <p>@error</p> 
+--> 
 }
 
 @code 
@@ -92,11 +122,14 @@
     private string error;
     private string retypePassword;
     private bool isException = false;
+    private bool wrongPassword = false;
+    private string passwordValidationMessage = "";
 
     protected override Task OnInitializedAsync()
     {
         //user = new User();
         newClient = new ClientFront();
+        newClient.Address = "";
         return base.OnInitializedAsync();
     }
 
@@ -108,9 +141,10 @@
         {
             if (checkPasswordFront())
             {
-                isException = false;
+                wrongPassword = isException = false;
                 newClient.Role = "Client";
-                var AccountAndClient = await managmentService.AddNewClient(newClient.EMail, newClient.Login, newClient.Password,
+                var hashedPassword = new passwordController().hashPassword(newClient.Password);
+                var AccountAndClient = await managmentService.AddNewClient(newClient.EMail, newClient.Login, hashedPassword,
                                             newClient.Name, newClient.Surname, DateTime.Today, newClient.PhoneNumber, 0, newClient.Address, newClient.Role);
 
                 ((CustomAuthenticationStateProvider)AuthenticationStateProvider).MarkUserAsAuthenticated(newClient);
@@ -132,12 +166,14 @@
             }
             else
             {
+                wrongPassword = true;
                 isException = true;
                 throw new Exception("Incorect password!");
             }
         }
         catch (Exception e)
         {
+            this.StateHasChanged();
             error = e.ToString();
             isException = true;
             return await Task.FromResult(false);

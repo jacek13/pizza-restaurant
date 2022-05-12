@@ -41,7 +41,6 @@
     </div>
 </center>
 
-
 @if(isException)
 {
     <center> 
@@ -50,6 +49,7 @@
     </center>
     <!-- <p>@error</p> --> 
 }
+
 @code 
 {
     private User user;
@@ -68,7 +68,8 @@
     {
         try
         {
-            var dbUser = await accountService.GetAccountByLoginAndPassword(user.Email, user.Password);
+            var hashedPassword = new passwordController().hashPassword(user.Password);
+            var dbUser = await accountService.GetAccountByLoginAndPassword(user.Email, hashedPassword);
             var clientData = await clientService.GetClientByAccountId(dbUser.IdAccount);
             Client.Name = dbUser.Name;
             Client.Password = dbUser.Password;
@@ -89,7 +90,7 @@
             await sessionStorage.SetItemAsStringAsync("name", Client.Name);
             await sessionStorage.SetItemAsStringAsync("surname", Client.Surname);
             await sessionStorage.SetItemAsStringAsync("login", Client.Login);
-            await sessionStorage.SetItemAsStringAsync("password", Client.Password);
+            await sessionStorage.SetItemAsStringAsync("password", user.Password);
             await sessionStorage.SetItemAsStringAsync("phone", Client.PhoneNumber);
             await sessionStorage.SetItemAsStringAsync("address", Client.Address);
             await sessionStorage.SetItemAsStringAsync("role", Client.Role);
