@@ -9,6 +9,7 @@
 @inject Repository.Services.ManagerService managerService
 @inject Repository.Services.ManagerAssignmentService managerAssigmentService
 @inject Repository.Services.RestaurantService restaurantService
+
 <style>
     .table-fill {
     background: white;
@@ -127,10 +128,7 @@ td.text-right {
 
 <center>
     <h3>Statystyki restauracji  </h3>
-    
     <br />
-
-   
     @if (dishes is null || restaurants is null || menu is null || managerAssignments is null)
     {
         <p><em>Loading...</em></p>
@@ -140,35 +138,25 @@ td.text-right {
         <div class="box-shadow">
         <h4>Wybierz restauracje</h4>
         <select id="restaurant" @bind="chosenRestaurantId">
+            @if(assignedRestaurants!=null)
+            {
            
-       @if(assignedRestaurants!=null)
-       {
-           
-           @foreach(var assignedRestaurant in assignedRestaurants)
-              {
-                <option value="@assignedRestaurant.IdRestaurant">@assignedRestaurant.Address</option>
-              }
-       }
-       
-    </select>
-
-    <br />
-
-    <br />
-        <h4> Wybierz przedział</h4>
-       <form>
-         <input type="date" id="datemin" @bind="lowerDate">
-         <label> - </label>
-         <input type="date" id="datemax" @bind="upperDate">
-         <br />
-    
-         
-      
-       
-        </form>
-    </div>
-
-    
+                @foreach(var assignedRestaurant in assignedRestaurants)
+                    {
+                    <option value="@assignedRestaurant.IdRestaurant">@assignedRestaurant.Address</option>
+                    }
+            }
+            </select>
+            <br />
+            <br />
+            <h4> Wybierz przedział</h4>
+           <form>
+             <input type="date" id="datemin" @bind="lowerDate">
+             <label> - </label>
+             <input type="date" id="datemax" @bind="upperDate">
+             <br />
+           </form>
+        </div>
         <div class="border-secondary">
             <center>
                 <table class="table-fill">
@@ -202,16 +190,8 @@ td.text-right {
              <h6>Dochód Restauracji z @assignedRestaurants.Find(item=> item.IdRestaurant ==chosenRestaurantId).Address: @sumsOfAll().Item2 zł</h6>
              <h6>z @sumsOfAll().Item1 sztuk pizzy.</h6>
         }
-       
     }
-
-    
-    
- 
-    
-    
 </center>
-
 
 @if(wasException)
 {
@@ -252,8 +232,6 @@ td.text-right {
             upperDate = DateOnly.FromDateTime(DateTime.Now);
             lowerDate = upperDate.AddMonths(-1);
             initRestaurants();
-
-
         }
         catch(Exception e)
         {
@@ -340,10 +318,7 @@ td.text-right {
                             {
                                 pizzaIncome += dish.Item1.Amount.GetValueOrDefault() * (dish.Item1.HistoricalPrice.GetValueOrDefault() - dish.Item1.HistoricalCost.GetValueOrDefault());
                             }
-
                         }
-
-
                     }
                 }
             }
@@ -377,8 +352,6 @@ td.text-right {
                                 }
 
                             }
-
-
                         }
                     }
 
@@ -388,6 +361,5 @@ td.text-right {
         Tuple<int, int> sum = new Tuple<int, int>(amountOfPizza,pizzaIncome);
         return sum;
     }
-
 
 }

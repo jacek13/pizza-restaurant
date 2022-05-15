@@ -56,16 +56,6 @@ else
                             <AuthorizeView Roles="Client">
                                 <Authorized>
                                     <input type="number" id="pizzaAmount@(pizza.IdPizza)" min="0" step="1" class="custom-class text-center col-md-1 offset-md-1 " @bind="@order[local]">
-                                    <!--
-                                    <div class="form-check text-center col-md-1 col-6">
-                                        <center>
-                                            <input class="checkbox-xl" type="checkbox" id="pizzaIsChecked@(pizza.IdPizza) ">
-                                            <label class="form-check-label" for="flexCheckChecked">
-                                                Dodaj
-                                            </label>
-                                        </center>
-                                    </div>
-                                    -->
                                 </Authorized>
                             </AuthorizeView>
                         </div>
