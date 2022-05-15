@@ -51,7 +51,9 @@
                       }
                       </tbody>
                     </table>
-                    <a href="/Manager/AddReservation/@table.IdTable/@RestaurantID" class="btn btn-success btn-sm">Dodaj nową rezerwację</a>
+                    <div class="col-md-12 text-center">
+                        <a href="/Manager/AddReservation/@table.IdTable/@RestaurantID" text-center class="btn btn-success btn-sm">Dodaj nową rezerwację</a>
+                    </div>
                   </div>
             </div>
         </div>
@@ -61,7 +63,7 @@
 @if (DeleteDialogReservationOpen)
 {
     <ModalDialog Title="Czy jesteś pewny?"
-                 Text="Czy chcesz usunąc tą rezerwację?"
+                 Text="Czy chcesz usunąć tą rezerwację?"
                  OnClose="@OnDeleteReservationDialogClose"
                  DialogType="ModalDialog.ModalDialogType.DeleteCancel">
     </ModalDialog>
