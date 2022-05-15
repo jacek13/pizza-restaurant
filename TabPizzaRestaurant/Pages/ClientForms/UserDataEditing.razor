@@ -1,0 +1,276 @@
+﻿@page "/client/info/edit"
+
+@using TabPizzaRestaurant.Data
+
+
+@inject NavigationManager NavigationManager
+@inject Repository.Services.PizzaService Storage
+@inject Repository.Services.ClientService clientService
+@inject Repository.Services.AccountManagmentService accountManagementService
+@inject Repository.Services.AccountService accountService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+<h3>Edytuj dane konta</h3>
+<hr>
+
+
+@if (accountFront is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="flex-item2">
+        <h3></h3>
+        <EditForm class="box-shadow" Model="@accountFront" OnValidSubmit="@updateAccountData">
+            <div>
+
+                <div class="container">
+                    <div class="row">
+                        <div class="flex-md-column mx-auto"><p>Imię:</p>   <InputText id="Name" @bind-Value="accountFront.Name" /></div>
+
+                        <div class="flex-md-column mx-auto">
+
+                            <p>Stare hasło:</p>
+                            <div class='e-input-group'>
+                                <InputText type="@TxtType" id="Password" @bind-Value="oldPassword" class='e-input' />
+
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+
+                    <div class="row">
+                        <div class="flex-md-column mx-auto"><p>Nazwisko:</p>     <InputText id="Surname" @bind-Value="accountFront.Surname" /></div>
+
+                        <div class="flex-md-column mx-auto">
+                            <p>Nowe hasło:</p>
+                            <div class='e-input-group'>
+                                <InputText type="@TxtType" id="ConfirmPassword" @bind-Value="insertedNewPassword" class='e-input' />
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+
+                    <div class="row">
+                        <div class="flex-md-column mx-auto"><p>Adres:</p>  <InputText id="Address" @bind-Value="clientFrontDataUpdate.Address" /></div>
+
+                        <div class="flex-md-column mx-auto">
+                            <p>Powtórz nowe hasło:</p>
+                            <div class='e-input-group'>
+                                <InputText type="@TxtType" id="ConfirmPassword" @bind-Value="insertedNewPasswordConfirmation" class='e-input' />
+
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                    <br />
+
+
+                    <div class="row">
+                        <div class="flex-md-column mx-auto"><p>Telefon:</p>     <InputText id="PhoneNumber" @bind-Value="accountFront.PhoneNumber" /></div>
+
+                        <div class="flex-md-column mx-auto"><p><button type="button" class="btn btn-primary" @onclick="ShowPassword">Pokaż/ukryj hasła</button></p></div>
+
+                    </div>
+                    <br />
+
+                </div>
+
+
+            </div>
+
+
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <br />
+            <center>
+                <button type="submit" class="btn btn-primary mb-2">Zaktualizuj dane</button>
+            </center>
+            <br />
+
+            <center>
+                <button type="button" class="btn btn-primary" @onclick="goToUserData">Powrót</button>
+            </center>
+        </EditForm>
+    </div>
+
+}
+
+@if (wasException)
+{
+    <center>
+        <hr>
+        <p style="color:rgb(255,51,51)">@error</p>
+    </center>
+}
+
+@code
+{
+    private string oldPassword;
+    private string insertedNewPassword;
+    private string insertedNewPasswordConfirmation;
+    private string insertedOldPassword;
+    private Models.AccountFront accountFront;
+    private Models.ClientFrontDataUpdate clientFrontDataUpdate;
+    private string error;
+    private bool wasException;
+    public string TxtType = "password";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        wasException = false;
+        try
+        {
+            await initAccountData();
+            oldPassword = "";
+            insertedNewPassword = "";
+            insertedNewPasswordConfirmation = "";
+
+        }
+        catch (Exception e)
+        {
+            error = e.Message;
+            wasException = true;
+        }
+    }
+
+    private async Task initAccountData()
+    {
+        var passwordFromSession = await sessionStorage.GetItemAsStringAsync("password");
+        var passwordHashed = new passwordController().hashPassword(passwordFromSession);
+        var dbUser = await accountService.GetAccountByLoginAndPassword(await sessionStorage.GetItemAsStringAsync("email"), passwordHashed);
+        accountFront = new Models.AccountFront()
+            {
+                IdAccount = dbUser.IdAccount,
+                EMail = dbUser.EMail,
+                Login = dbUser.Login,
+                Password = dbUser.Password,
+                Name = dbUser.Name,
+                Surname = dbUser.Surname,
+                PhoneNumber = dbUser.PhoneNumber,
+                Role = dbUser.Role,
+                AccountCreationDate = dbUser.AccountCreationDate
+            };
+
+        var clientData = await clientService.GetClientByAccountId(accountFront.IdAccount);
+        clientFrontDataUpdate = new Models.ClientFrontDataUpdate()
+            {
+                IdClient = clientData.IdClient,
+                Address = clientData.Address,
+                Points = clientData.Points,
+                AccountIdAccount = clientData.AccountIdAccount
+            };
+
+
+    }
+
+    private async void updateAccountData()
+    {
+
+        try
+        {
+
+            if (insertedNewPassword != insertedNewPasswordConfirmation) throw new Exception("Błędnie podane stare lub nowe hasła!");
+
+            if ((oldPassword == "" && insertedNewPassword != "" && insertedNewPasswordConfirmation != "") || 
+                (oldPassword != "" && insertedNewPassword == "" && insertedNewPasswordConfirmation != "") || 
+                (oldPassword != "" && insertedNewPassword != "" && insertedNewPasswordConfirmation == "") || 
+                (oldPassword != "" && insertedNewPassword == "" && insertedNewPasswordConfirmation == "") ||
+                (oldPassword == "" && insertedNewPassword != "" && insertedNewPasswordConfirmation == "") ||
+                (oldPassword == "" && insertedNewPassword == "" && insertedNewPasswordConfirmation != ""))
+                throw new Exception("Uzupełnij pola haseł!");
+            if (accountFront.PhoneNumber == "") throw new Exception("Podaj poprawny numer telefonu!");
+
+            if (oldPassword == "" && insertedNewPassword == "" && insertedNewPasswordConfirmation == "" &&
+                    accountFront.IdAccount.ToString() != "" && accountFront.Surname.ToString() != "" && clientFrontDataUpdate.Address.ToString() != "" && accountFront.PhoneNumber.ToString() != "")
+            {
+                var accountId = await sessionStorage.GetItemAsStringAsync("account_id");
+
+                var tmp = await accountManagementService.UpdateAccountAndClient(accountFront.IdAccount,
+                    accountFront.EMail, accountFront.Login,
+                accountFront.Password, accountFront.Name, accountFront.Surname, accountFront.AccountCreationDate,
+                accountFront.PhoneNumber, clientFrontDataUpdate.Points, clientFrontDataUpdate.Address, accountFront.Role,
+                clientFrontDataUpdate.IdClient);
+
+                await sessionStorage.SetItemAsStringAsync("email", accountFront.EMail);
+                await sessionStorage.SetItemAsStringAsync("name", accountFront.Name);
+                await sessionStorage.SetItemAsStringAsync("surname", accountFront.Surname);
+                await sessionStorage.SetItemAsStringAsync("login", accountFront.Login);
+                //await sessionStorage.SetItemAsStringAsync("password", accountFront.Password);
+                await sessionStorage.SetItemAsStringAsync("phone", accountFront.PhoneNumber);
+                await sessionStorage.SetItemAsStringAsync("address", clientFrontDataUpdate.Address);
+                await sessionStorage.SetItemAsStringAsync("role", accountFront.Role);
+                await sessionStorage.SetItemAsStringAsync("account_id", accountFront.IdAccount.ToString());
+                await sessionStorage.SetItemAsStringAsync("points", clientFrontDataUpdate.Points.ToString());
+
+
+
+                NavigationManager.NavigateTo("/client/info");
+            }
+
+            else
+            {
+                if (oldPassword != await sessionStorage.GetItemAsStringAsync("password")) throw new Exception("Błednie podane stare hasło!");
+
+                var accountId = await sessionStorage.GetItemAsStringAsync("account_id");
+
+                var newHashedPassword = new passwordController().hashPassword(insertedNewPassword);
+                var tmp = await accountManagementService.UpdateAccountAndClient(accountFront.IdAccount,
+                    accountFront.EMail, accountFront.Login,
+                newHashedPassword, accountFront.Name, accountFront.Surname, accountFront.AccountCreationDate,
+                accountFront.PhoneNumber, clientFrontDataUpdate.Points, clientFrontDataUpdate.Address, accountFront.Role,
+                clientFrontDataUpdate.IdClient);
+
+  
+
+                await sessionStorage.SetItemAsStringAsync("email", accountFront.EMail);
+                await sessionStorage.SetItemAsStringAsync("name", accountFront.Name);
+                await sessionStorage.SetItemAsStringAsync("surname", accountFront.Surname);
+                await sessionStorage.SetItemAsStringAsync("login", accountFront.Login);
+                await sessionStorage.SetItemAsStringAsync("password", insertedNewPassword);
+                await sessionStorage.SetItemAsStringAsync("phone", accountFront.PhoneNumber);
+                await sessionStorage.SetItemAsStringAsync("address", clientFrontDataUpdate.Address);
+                await sessionStorage.SetItemAsStringAsync("role", accountFront.Role);
+                await sessionStorage.SetItemAsStringAsync("account_id", accountFront.IdAccount.ToString());
+                await sessionStorage.SetItemAsStringAsync("points", clientFrontDataUpdate.Points.ToString());
+
+
+
+                NavigationManager.NavigateTo("/client/info");
+            }
+
+
+        }
+        catch (Exception e)
+        {
+
+            wasException = true;
+            error = e.Message;
+            this.StateHasChanged();
+
+        }
+    }
+
+    public void ShowPassword()
+    {
+        if (this.TxtType == "password")
+        {
+            this.TxtType = "text";
+        }
+        else
+        {
+            this.TxtType = "password";
+        }
+    }
+
+    private void goToUserData()
+    {
+        NavigationManager.NavigateTo("/client/info");
+    }
+
+}
+
