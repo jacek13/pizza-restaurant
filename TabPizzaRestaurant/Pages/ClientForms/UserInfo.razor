@@ -9,6 +9,7 @@
 @inject Repository.Services.AccountService accountService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
 <h3>Dane konta</h3>
 <hr>
 
@@ -21,45 +22,36 @@ else
 {
     <div class="flex-item2">
         <h3></h3>
-        <EditForm class="box-shadow" Model="@accountFront" OnValidSubmit="@updateAccountData">
+        <EditForm class="box-shadow" Model="@accountFront">
             <div>
              
         <div class="outer_container">
                 <div class="row">
-                    <div class="flex-md-column pr-3 mx-auto"><p>E-Mail:</p>      <InputText id="EMail" @bind-Value="accountFront.EMail" /></div>
-                    <div class="flex-md-column mx-auto"><p>Imię:</p>   <InputText id="Name" @bind-Value="accountFront.Name" /></div>
-                </div>
-                <br />
-
-                <div class="row">
-                    <div class="flex-md-column pr-3 mx-auto"><p>Login:</p>     <InputText id="Login" @bind-Value="accountFront.Login" /></div>
-                    <div class="flex-md-column mx-auto"><p>Nazwisko:</p>     <InputText id="Surname" @bind-Value="accountFront.Surname" /></div>
-                </div>
-
-                <br />
-                <div class="row">
-
-                    <div class="flex-md-column pr-3 mx-auto"><p>Stare hasło:</p>  <InputText type="password" id="Password" @bind-Value="oldPassword" /></div>
                     
-                    <div class="flex-md-column mx-auto"><p>Telefon:</p>     <InputText id="PhoneNumber" @bind-Value="accountFront.PhoneNumber" /></div>
+                    <div class="flex-md-column mx-auto"><p><strong>Imię:</strong></p><p>@accountFront.Name </p></div>
+                    <div class="flex-md-column mx-auto"><p><strong>Login:</strong></p><p>@accountFront.Login </p></div> 
+                </div>
+                <br />
+
+                <div class="row">  
+                    <div class="flex-md-column mx-auto"><p><strong>Nazwisko:</strong></p><p>@accountFront.Surname </p></div>
+                    <div class="flex-md-column mx-auto"><p><strong>E-Mail:</strong></p><p>@accountFront.EMail </p></div>
                 </div>
                 <br />
 
                 <div class="row">
-                    <div class="flex-md-column pr-3 mx-auto"><p>Nowe hasło:</p>  <InputText type="password"id="ConfirmPassword" @bind-Value="insertedNewPassword" /></div>
-                    <div class="flex-md-column pr-3 mx-auto"><p>Adres:</p>  <InputText id="Address" @bind-Value="clientFrontDataUpdate.Address" /></div>
+                    <div class="flex-md-column mx-auto"><p><strong>Adres:</strong></p><p>@clientFrontDataUpdate.Address </p></div>
+                    <div class="flex-md-column mx-auto"><p><strong>Telefon:</strong></p><p>@accountFront.PhoneNumber </p></div>
                 </div>
                 <br />
+
                 <div class="row">
-                        <div class="flex-md-column pr-3 mx-auto"><p>Potwierdź nowe hasło:</p>  <InputText type="password"id="ConfirmPassword" @bind-Value="insertedNewPasswordConfirmation" /></div>
-                        <div class="flex-md-column pr-3 mx-auto"><p>Punkty:</p> <p> @clientFrontDataUpdate.Points</p>  </div>
-                    </div>
-                        <br />
+                     <div class="flex-md-column pr-3 mx-auto"><p><strong>Punkty:</strong></p><p>@clientFrontDataUpdate.Points</p></div>
+                </div>
+                <br />
 
-                    </div>
-                    
-
-                    </div>
+             </div>
+            </div>
 
 
             <DataAnnotationsValidator />
@@ -67,7 +59,7 @@ else
 
             <br />
             <center>
-            <button type="submit" class="btn btn-primary mb-2">Zaktualizuj dane</button>
+            <button type="button" class="btn btn-primary" @onclick="goToUserDataEditing">Edytuj dane</button>
             </center>
             
         </EditForm>
@@ -142,51 +134,11 @@ else
 
     }
 
-    private async void updateAccountData()
+    
+
+    private void goToUserDataEditing()
     {
-        try
-        {
-            if(oldPassword != await sessionStorage.GetItemAsStringAsync("password") 
-                || insertedNewPassword != insertedNewPasswordConfirmation)
-            {
-                throw new Exception("Błędnie podane stare lub nowe hasła!");
-            }
-            else
-            {
-                var accountId = await sessionStorage.GetItemAsStringAsync("account_id");
-
-            var newHashedPassword = new passwordController().hashPassword(insertedNewPassword);
-            var tmp = await accountManagementService.UpdateAccountAndClient(accountFront.IdAccount,
-                accountFront.EMail, accountFront.Login,
-            newHashedPassword, accountFront.Name, accountFront.Surname, accountFront.AccountCreationDate,
-            accountFront.PhoneNumber, clientFrontDataUpdate.Points, clientFrontDataUpdate.Address, accountFront.Role,
-            clientFrontDataUpdate.IdClient);
-
-            await sessionStorage.SetItemAsStringAsync("email", accountFront.EMail);
-            await sessionStorage.SetItemAsStringAsync("name", accountFront.Name);
-            await sessionStorage.SetItemAsStringAsync("surname", accountFront.Surname);
-            await sessionStorage.SetItemAsStringAsync("login", accountFront.Login);
-            await sessionStorage.SetItemAsStringAsync("password", insertedNewPassword);
-            await sessionStorage.SetItemAsStringAsync("phone", accountFront.PhoneNumber);
-            await sessionStorage.SetItemAsStringAsync("address", clientFrontDataUpdate.Address);
-            await sessionStorage.SetItemAsStringAsync("role", accountFront.Role);
-            await sessionStorage.SetItemAsStringAsync("account_id", accountFront.IdAccount.ToString());
-            await sessionStorage.SetItemAsStringAsync("points", clientFrontDataUpdate.Points.ToString());
-
-            
-
-            NavigationManager.NavigateTo("/client/info");
-            }
-
-        
-        }
-        catch (Exception e)
-        {
-
-            wasException = true;
-            error = e.Message;
-            this.StateHasChanged();
-        }
+        NavigationManager.NavigateTo("/client/info/edit");
     }
 
 }
