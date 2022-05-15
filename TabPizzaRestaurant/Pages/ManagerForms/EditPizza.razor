@@ -12,22 +12,30 @@
 <h4>@header</h4>
         <div class="box-shadow">
             <EditForm Model="@newPizza" OnValidSubmit="@editPizza">
-           
-                    <div>Price:         <InputNumber id="price" @bind-Value="newPizza.price"/></div>
+                <DataAnnotationsValidator/>
+                    <div>Price:         <InputNumber id="price" @bind-Value="newPizza.price"/>
+                        <div style="color:rgb(255,51,51)"><ValidationMessage For="() => newPizza.price"/></div>
+                    </div>
                     <br />
-                    <div>Cost:          <InputNumber id="cost" @bind-Value="newPizza.cost"/></div>
+                    <div>Cost:          <InputNumber id="cost" @bind-Value="newPizza.cost"/>
+                        <div style="color:rgb(255,51,51)"><ValidationMessage For="() => newPizza.cost"/></div>
+                    </div>
                     <br />
-                    <div>Availability:  <InputCheckbox id="availability" @bind-Value="newPizza.isAvailable"/></div>
+                    <div>Availability:  <InputCheckbox id="availability" @bind-Value="newPizza.isAvailable"/>
+                        <div style="color:rgb(255,51,51)"><ValidationMessage For="() => newPizza.isAvailable"/></div>    
+                    </div>
                     <br />
-                    <div>Type:          <InputText id="type" @bind-Value="newPizza.type"/></div>
+                    <div>Type:          <InputText id="type" @bind-Value="newPizza.type"/>
+                        <div style="color:rgb(255,51,51)"><ValidationMessage For="() => newPizza.type"/></div>
+                    </div>
                     <br />
-                    <div>Size:          <InputNumber id="size" @bind-Value="newPizza.size"/></div>
+                    <div>Size:          <InputNumber id="size" @bind-Value="newPizza.size"/>
+                        <div style="color:rgb(255,51,51)"><ValidationMessage For="() => newPizza.size"/></div>
+                    </div>
                     <br />
-                    <div>Points:        <InputNumber id="points" @bind-Value="newPizza.points"/></div>
-           
-                    <DataAnnotationsValidator/>
-                    <ValidationSummary/>  
-
+                    <div>Points:        <InputNumber id="points" @bind-Value="newPizza.points"/>
+                        <div style="color:rgb(255,51,51)"><ValidationMessage For="() => newPizza.points"/></div>
+                    </div>
                 <button type="submit" class="btn btn-primary ml-2 mt-2">@buttonText</button>
             </EditForm>
         </div>

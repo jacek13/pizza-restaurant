@@ -119,20 +119,21 @@ td.text-right {
 
 @using DataBaseAccess.Models
 @using TabPizzaRestaurant.Models
+@using System;
 
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @inject Repository.Services.ClientService clientService
 @inject Repository.Services.OrderManagmentService orderManagmentService
 @inject Repository.Services.PizzaService pizzaService
 
-@if(historicalOrders is null)
+@if(historicalOrdersWithSummary is null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
     <center>
-        @if(historicalOrders.Count > 0)
+        @if(historicalOrdersWithSummary.Count > 0)
         {
             <h3>Łącznie wydałeś u nas: @calculateOverallPrice() @currencyType</h3>
             <hr>
@@ -153,12 +154,21 @@ else
                         <th class="text-left">Data zamówienia</th>
                         <th class="text-left">Adres dostawy</th>
                         <th class="text-left">Status</th>
-                        <th class="text-left">Kwota</th>
+                        <th class="text-left">Kwota
+                            <table>
+                                <tr>
+                                    <button type="submit" class="btn btn-primary" @onclick="() => sortOrders(true)"><span class="material-icons">trending_up</span></button>
+                                </tr>
+                                <tr>
+                                    <button type="submit" class="btn btn-primary" @onclick="() => sortOrders(false)"><span class="material-icons">trending_down</span></button>
+                                </tr>
+                            </table>
+                        </th>
                         <th class="text-left">Szczegóły</th>
                     </tr>
                 </thead>
                 <tbody>
-                @foreach(var historicalOrder in historicalOrders)
+                @foreach(var historicalOrder in historicalOrdersWithSummary)
                 {
                     if (@DateOnly.Parse(@historicalOrder.Item1.Date.ToShortDateString()) == @selectedDay)
                     {
@@ -212,6 +222,7 @@ else
 @code 
 {
     private List<(Order, List<Dishes>)> historicalOrders;
+    private List<(Order, List<Dishes>, int)> historicalOrdersWithSummary;
     private bool wasException = false;
     private string error;
     private string currencyType;
@@ -231,8 +242,13 @@ else
             client = await clientService.GetClientByAccountId(Int32.Parse(accountId));
             menu = await pizzaService.GetMenu();
             historicalOrders = await orderManagmentService.GetAllClientOrdersAndDishes(client.IdClient);
-            //historicalOrders.Sort((a) => a.Item.CompareTo(calculatePrice(a.Item2)); // TODO sortowanie rosnącą/malejąco
-            //var tmp = historicalOrders.OrderByDescending(a => calculatePrice(a.Item2));
+            historicalOrdersWithSummary = new List<(Order, List<Dishes>, int)>();
+
+            foreach(var order in historicalOrders)
+            {
+                historicalOrdersWithSummary.Add((order.Item1, order.Item2, calculatePrice(order.Item2)));
+            }
+
             initDays();
             selectedDay = DateOnly.FromDateTime(DateTime.Now);
         }
@@ -288,6 +304,15 @@ else
     private void refresh()
     {
         selectedDay = forValidation.Date;
+        this.StateHasChanged();
+    }
+
+    private void sortOrders(bool orderByDescending = false)
+    {
+        if (orderByDescending)
+            historicalOrdersWithSummary = historicalOrdersWithSummary.OrderByDescending(hows => hows.Item3).ToList();
+        else
+            historicalOrdersWithSummary = historicalOrdersWithSummary.OrderBy(hows => hows.Item3).ToList();
         this.StateHasChanged();
     }
 
